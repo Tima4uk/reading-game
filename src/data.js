@@ -49,7 +49,7 @@ export const ALPHABET_DATA = {
     { letter: 'Ы', emoji: '🧀', word: 'Сыр' },
     { letter: 'Ь', emoji: '🐴', word: 'Конь' },
     { letter: 'Э', emoji: '🚜', word: 'Экскаватор' },
-    { letter: 'Ю', emoji: '🪀', word: 'Юла' },
+    { letter: 'Ю', emoji: '👗', word: 'Юбка' },
     { letter: 'Я', emoji: '🍎', word: 'Яблоко' }
   ],
   pl: [
@@ -60,7 +60,7 @@ export const ALPHABET_DATA = {
     { letter: 'Ć', emoji: '🍂', word: 'Liść' },
     { letter: 'D', emoji: '🏠', word: 'Dom' },
     { letter: 'E', emoji: '📺', word: 'Ekran' },
-    { letter: 'Ę', emoji: '🪿', word: 'Gęś' },
+    { letter: 'Ę', emoji: '✋', word: 'Ręka' },
     { letter: 'F', emoji: '🦭', word: 'Foka' },
     { letter: 'G', emoji: '🍄', word: 'Grzyb' },
     { letter: 'H', emoji: '🍵', word: 'Herbata' },
@@ -124,227 +124,1426 @@ export const VOWELS = {
 };
 
 export const WORDS_DATA = {
-  ru: [
-    // 3 буквы
-    { word: 'КОТ', emoji: '🐱', hint: 'Мяукает и ловит мышей' },
-    { word: 'ДОМ', emoji: '🏠', hint: 'В нем мы живем' },
-    { word: 'ЛЕС', emoji: '🌲', hint: 'Там растут деревья' },
-    { word: 'СЫР', emoji: '🧀', hint: 'Вкусный сыр с дырочками' },
-    { word: 'МЯЧ', emoji: '⚽', hint: 'Круглый, можно пинать' },
-    { word: 'ЖУК', emoji: '🪲', hint: 'Жужжит и ползает' },
-    { word: 'НОС', emoji: '👃', hint: 'Им мы нюхаем запахи' },
-    { word: 'РОТ', emoji: '👄', hint: 'Им мы едим и говорим' },
-    { word: 'СОК', emoji: '🧃', hint: 'Сладкий фруктовый напиток' },
-    { word: 'МАК', emoji: '🌺', hint: 'Красный полевой цветок' },
-    { word: 'КИТ', emoji: '🐋', hint: 'Огромный житель океана' },
-    { word: 'МЕД', emoji: '🍯', hint: 'Сладкое лакомство пчел' },
-    { word: 'ЛУК', emoji: '🧅', hint: 'От него плачут глазки' },
-    { word: 'ЛЕВ', emoji: '🦁', hint: 'Царь зверей' },
-
-    // 4 буквы
-    { word: 'РЫБА', emoji: '🐟', hint: 'Плавает в воде' },
-    { word: 'МАМА', emoji: '👩', hint: 'Самый дорогой человек' },
-    { word: 'ПАПА', emoji: '👨', hint: 'Любимый папа' },
-    { word: 'ЛИСА', emoji: '🦊', hint: 'Рыжая плутовка' },
-    { word: 'ВОЛК', emoji: '🐺', hint: 'Серый лесной хищник' },
-    { word: 'УТКА', emoji: '🦆', hint: 'Кря-кря' },
-    { word: 'ЛУНА', emoji: '🌙', hint: 'Светит ночью в небе' },
-    { word: 'СЛОН', emoji: '🐘', hint: 'Огромный с хоботом' },
-    { word: 'ГРИБ', emoji: '🍄', hint: 'Растет в лесу под елкой' },
-    { word: 'ЗИМА', emoji: '❄️', hint: 'Время снега и санок' },
-    { word: 'ЛЕТО', emoji: '☀️', hint: 'Жаркое солнечное время' },
-    { word: 'НЕБО', emoji: '☁️', hint: 'Синее над головой' },
-    { word: 'ВОДА', emoji: '💧', hint: 'Ее мы пьем каждый день' },
-    { word: 'РОЗА', emoji: '🌹', hint: 'Красивый цветок с шипами' },
-    { word: 'СНЕГ', emoji: '⛄', hint: 'Белый и холодный' },
-    { word: 'ЗВУК', emoji: '🎵', hint: 'То, что мы слышим' },
-
-    // 5 букв
-    { word: 'ЛОДКА', emoji: '🛶', hint: 'Плывет по реке с веслами' },
-    { word: 'ЗЕМЛЯ', emoji: '🌍', hint: 'Наша планета' },
-    { word: 'ТРАВА', emoji: '🌱', hint: 'Зеленый ковер во дворе' },
-    { word: 'КОШКА', emoji: '🐈', hint: 'Ласковый пушистый друг' },
-    { word: 'ПТИЦА', emoji: '🐦', hint: 'Летает высоко в небе' },
-    { word: 'ВИШНЯ', emoji: '🍒', hint: 'Сладкая красная ягода' },
-    { word: 'КНИГА', emoji: '📖', hint: 'В ней много сказок' },
-    { word: 'ДОЖДЬ', emoji: '🌧️', hint: 'Капает с неба на зонтик' },
-    { word: 'ШАРИК', emoji: '🎈', hint: 'Летит высоко в воздух' },
-    { word: 'ЗАЙКА', emoji: '🐰', hint: 'Длинноухий прыгун' }
+  "ru": [
+    {
+      "word": "КОТ",
+      "emoji": "🐱",
+      "hint": "Мяукает и мурлычет"
+    },
+    {
+      "word": "ДОМ",
+      "emoji": "🏠",
+      "hint": "В нем уютно и тепло"
+    },
+    {
+      "word": "ЛЕС",
+      "emoji": "🌲",
+      "hint": "Там растут деревья и грибы"
+    },
+    {
+      "word": "СЫР",
+      "emoji": "🧀",
+      "hint": "Желтый и вкусный"
+    },
+    {
+      "word": "МЯЧ",
+      "emoji": "⚽",
+      "hint": "Круглый, можно пинать"
+    },
+    {
+      "word": "ЖУК",
+      "emoji": "🪲",
+      "hint": "Жужжит в траве"
+    },
+    {
+      "word": "НОС",
+      "emoji": "👃",
+      "hint": "Им мы нюхаем запахи"
+    },
+    {
+      "word": "РОТ",
+      "emoji": "👄",
+      "hint": "Им мы кушаем и улыбаемся"
+    },
+    {
+      "word": "СОК",
+      "emoji": "🧃",
+      "hint": "Сладкий фруктовый напиток"
+    },
+    {
+      "word": "ЧАЙ",
+      "emoji": "🍵",
+      "hint": "Теплый вкусный напиток"
+    },
+    {
+      "word": "СУП",
+      "emoji": "🍲",
+      "hint": "Горячий обед в тарелке"
+    },
+    {
+      "word": "ДЕД",
+      "emoji": "👴",
+      "hint": "Любимый дедушка"
+    },
+    {
+      "word": "МЕД",
+      "emoji": "🍯",
+      "hint": "Сладкое лакомство пчел"
+    },
+    {
+      "word": "ЛУК",
+      "emoji": "🧅",
+      "hint": "От него щиплет глазки"
+    },
+    {
+      "word": "ЛЕВ",
+      "emoji": "🦁",
+      "hint": "Царь зверей с гривой"
+    },
+    {
+      "word": "ПОЛ",
+      "emoji": "🧹",
+      "hint": "По нему мы ходим дома"
+    },
+    {
+      "word": "МАМА",
+      "emoji": "👩",
+      "hint": "Самый дорогой человек"
+    },
+    {
+      "word": "ПАПА",
+      "emoji": "👨",
+      "hint": "Любимый папа"
+    },
+    {
+      "word": "ВОДА",
+      "emoji": "💧",
+      "hint": "Ее мы пьем каждый день"
+    },
+    {
+      "word": "ХЛЕБ",
+      "emoji": "🍞",
+      "hint": "Свежий и мягкий"
+    },
+    {
+      "word": "СТОЛ",
+      "emoji": "🪑",
+      "hint": "За ним мы кушаем и рисуем"
+    },
+    {
+      "word": "СТУЛ",
+      "emoji": "🪑",
+      "hint": "На нем мы сидим"
+    },
+    {
+      "word": "ОКНО",
+      "emoji": "🪟",
+      "hint": "Смотрим через него на улицу"
+    },
+    {
+      "word": "КАША",
+      "emoji": "🥣",
+      "hint": "Вкусный полезный завтрак"
+    },
+    {
+      "word": "РУКА",
+      "emoji": "✋",
+      "hint": "Ей мы держим ложку и рисуем"
+    },
+    {
+      "word": "НОГА",
+      "emoji": "🦵",
+      "hint": "Шагает по дорожке"
+    },
+    {
+      "word": "МЫЛО",
+      "emoji": "🧼",
+      "hint": "Моет ручки до скрипа"
+    },
+    {
+      "word": "ЧАСЫ",
+      "emoji": "⏰",
+      "hint": "Тикают и показывают время"
+    },
+    {
+      "word": "ДЕТИ",
+      "emoji": "👧",
+      "hint": "Весело играют вместе"
+    },
+    {
+      "word": "ШКАФ",
+      "emoji": "🚪",
+      "hint": "В нем висит одежда"
+    },
+    {
+      "word": "РЫБА",
+      "emoji": "🐟",
+      "hint": "Плавает в воде"
+    },
+    {
+      "word": "ЛИСА",
+      "emoji": "🦊",
+      "hint": "Рыжая плутовка"
+    },
+    {
+      "word": "ВОЛК",
+      "emoji": "🐺",
+      "hint": "Серый лесной житель"
+    },
+    {
+      "word": "УТКА",
+      "emoji": "🦆",
+      "hint": "Кря-кря"
+    },
+    {
+      "word": "ЛУНА",
+      "emoji": "🌙",
+      "hint": "Светит ночью на небе"
+    },
+    {
+      "word": "СЛОН",
+      "emoji": "🐘",
+      "hint": "Большой добрый великан"
+    },
+    {
+      "word": "ГРИБ",
+      "emoji": "🍄",
+      "hint": "Растет в лесу под елкой"
+    },
+    {
+      "word": "ЗИМА",
+      "emoji": "❄️",
+      "hint": "Время снега и санок"
+    },
+    {
+      "word": "ЛЕТО",
+      "emoji": "☀️",
+      "hint": "Жаркое солнечное время"
+    },
+    {
+      "word": "НЕБО",
+      "emoji": "☁️",
+      "hint": "Синее над головой"
+    },
+    {
+      "word": "СНЕГ",
+      "emoji": "⛄",
+      "hint": "Белый и пушистый"
+    },
+    {
+      "word": "РОЗА",
+      "emoji": "🌹",
+      "hint": "Красивый цветок с шипами"
+    },
+    {
+      "word": "ЛОЖКА",
+      "emoji": "🥄",
+      "hint": "Ей мы кушаем кашу и суп"
+    },
+    {
+      "word": "ЧАШКА",
+      "emoji": "☕",
+      "hint": "Из нее пьем чай или какао"
+    },
+    {
+      "word": "ВИЛКА",
+      "emoji": "🍴",
+      "hint": "Помогает кушать макароны"
+    },
+    {
+      "word": "ДВЕРЬ",
+      "emoji": "🚪",
+      "hint": "Вход в теплую комнату"
+    },
+    {
+      "word": "КУКЛА",
+      "emoji": "🪆",
+      "hint": "Любимая игрушка"
+    },
+    {
+      "word": "ШАПКА",
+      "emoji": "🧢",
+      "hint": "Надеваем на голову на прогулку"
+    },
+    {
+      "word": "КУРТКА",
+      "emoji": "🧥",
+      "hint": "Греет нас на улице"
+    },
+    {
+      "word": "НОСКИ",
+      "emoji": "🧦",
+      "hint": "Мягкие и теплые на ножках"
+    },
+    {
+      "word": "ШКОЛА",
+      "emoji": "🎒",
+      "hint": "Там учатся и находят друзей"
+    },
+    {
+      "word": "КОШКА",
+      "emoji": "🐈",
+      "hint": "Ласковый пушистый друг"
+    },
+    {
+      "word": "СОБАКА",
+      "emoji": "🐶",
+      "hint": "Преданный друг, виляет хвостом"
+    },
+    {
+      "word": "ЯБЛОКО",
+      "emoji": "🍎",
+      "hint": "Сочное, хрустящее и сладкое"
+    },
+    {
+      "word": "БАНАН",
+      "emoji": "🍌",
+      "hint": "Желтый и сладкий фрукт"
+    },
+    {
+      "word": "СОЛНЦЕ",
+      "emoji": "☀️",
+      "hint": "Дарит свет и тепло"
+    },
+    {
+      "word": "КНИГА",
+      "emoji": "📖",
+      "hint": "В ней много картинок и сказок"
+    },
+    {
+      "word": "ПОЕЗД",
+      "emoji": "🚂",
+      "hint": "Чух-чух, едет по рельсам"
+    },
+    {
+      "word": "МАШИНА",
+      "emoji": "🚗",
+      "hint": "Едет по дороге, би-би"
+    },
+    {
+      "word": "ЛОДКА",
+      "emoji": "🛶",
+      "hint": "Плывет по озеру"
+    },
+    {
+      "word": "ТРАВА",
+      "emoji": "🌱",
+      "hint": "Зеленый ковер во дворе"
+    },
+    {
+      "word": "ПТИЦА",
+      "emoji": "🐦",
+      "hint": "Поет звонкие песенки"
+    },
+    {
+      "word": "ВИШНЯ",
+      "emoji": "🍒",
+      "hint": "Сладкая спелая ягода"
+    },
+    {
+      "word": "ДОЖДЬ",
+      "emoji": "🌧️",
+      "hint": "Капает с неба на зонтик"
+    },
+    {
+      "word": "ШАРИК",
+      "emoji": "🎈",
+      "hint": "Летит высоко в воздух"
+    },
+    {
+      "word": "ЗАЙКА",
+      "emoji": "🐰",
+      "hint": "Прыг-скок с длинными ушками"
+    }
   ],
-
-  pl: [
-    // 3 litery (w tym z polskimi znakami!)
-    { word: 'KOT', emoji: '🐱', hint: 'Mruczy i łapie myszy' },
-    { word: 'DOM', emoji: '🏠', hint: 'Nasz ciepły dom' },
-    { word: 'LAS', emoji: '🌲', hint: 'Rosną w nim drzewa' },
-    { word: 'SER', emoji: '🧀', hint: 'Żółty i pyszny' },
-    { word: 'SOK', emoji: '🧃', hint: 'Słodki napój z owoców' },
-    { word: 'LIS', emoji: '🦊', hint: 'Rudy spryciarz w lesie' },
-    { word: 'BÓB', emoji: '🫘', hint: 'Pyszne warzywo (litera Ó)' },
-    { word: 'KOŃ', emoji: '🐎', hint: 'Biega kłusem i rży (litera Ń)' },
-    { word: 'MIŚ', emoji: '🧸', hint: 'Pluszowy przyjaciel (litera Ś)' },
-    { word: 'WĄŻ', emoji: '🐍', hint: 'Długi, syczy w trawie (litery Ą, Ż)' },
-    { word: 'GĘŚ', emoji: '🪿', hint: 'Gęga na łące (litery Ę, Ś)' },
-    { word: 'BYK', emoji: '🐂', hint: 'Silny z rogami' },
-    { word: 'LÓD', emoji: '🧊', hint: 'Zimny jak zima (litera Ó)' },
-    { word: 'RÓG', emoji: '📯', hint: 'Muzyczny lub u jelenia (litera Ó)' },
-
-    // 4 litery (z polskimi znakami: Ł, Ó, Ż, Ę, Ą, Ć, Ś)
-    { word: 'RYBA', emoji: '🐟', hint: 'Pływa szybko w wodzie' },
-    { word: 'MAMA', emoji: '👩', hint: 'Najukochańsza mama' },
-    { word: 'TATA', emoji: '👨', hint: 'Najlepszy tata' },
-    { word: 'PIES', emoji: '🐶', hint: 'Wierny przyjaciel człowieka' },
-    { word: 'WILK', emoji: '🐺', hint: 'Wyje do księżyca' },
-    { word: 'WODA', emoji: '💧', hint: 'Krystaliczna do picia' },
-    { word: 'LATO', emoji: '☀️', hint: 'Ciepła i słoneczna pora' },
-    { word: 'ZIMA', emoji: '❄️', hint: 'Czas na bałwana i sanki' },
-    { word: 'PTAK', emoji: '🐦', hint: 'Śpiewa rano na gałęzi' },
-    { word: 'ŻABA', emoji: '🐸', hint: 'Kumka w stawie (litera Ż)' },
-    { word: 'KOŁO', emoji: '🛞', hint: 'Kręci się w rowerze (litera Ł)' },
-    { word: 'ŻÓŁW', emoji: '🐢', hint: 'Chodzi powoli w pancerzu (Ż, Ó, Ł!)' },
-    { word: 'ŁÓDŹ', emoji: '⛵', hint: 'Płynie po jeziorze (Ł, Ó, Ź!)' },
-    { word: 'DĄB', emoji: '🌳', hint: 'Mocarne drzewo (litera Ą)' },
-    { word: 'LIŚĆ', emoji: '🍂', hint: 'Spada z drzewa jesienią (Ś, Ć!)' },
-    { word: 'RÓŻA', emoji: '🌹', hint: 'Piękny kwiat pachnący (Ó, Ż)' },
-    { word: 'GÓRA', emoji: '⛰️', hint: 'Wysoka ze śniegiem (litera Ó)' },
-    { word: 'ZĄB', emoji: '🦷', hint: 'Myjemy go codziennie (litera Ą)' },
-    { word: 'KOZA', emoji: '🐐', hint: 'Lubi skakać i daje mleko' },
-
-    // 5-6 liter
-    { word: 'KROWA', emoji: '🐄', hint: 'Daje pyszne mleko' },
-    { word: 'JABŁKO', emoji: '🍎', hint: 'Czerwone, soczyste (litera Ł)' },
-    { word: 'SŁOŃCE', emoji: '🌞', hint: 'Świeci wysoko na niebie (Ł, Ń)' },
-    { word: 'KSIĄŻKA', emoji: '📖', hint: 'Czytamy z niej bajki (Ą, Ż)' },
-    { word: 'BAŁWAN', emoji: '⛄', hint: 'Ulepiony ze śniegu (litera Ł)' },
-    { word: 'CHLEB', emoji: '🍞', hint: 'Pachnący z piekarni' },
-    { word: 'SERCE', emoji: '❤️', hint: 'Bije z miłości' },
-    { word: 'DRZEWO', emoji: '🌳', hint: 'Zielone w ogrodzie' },
-    { word: 'ŚNIEG', emoji: '🌨️', hint: 'Biały puch w zimie (litera Ś)' },
-    { word: 'MOTYL', emoji: '🦋', hint: 'Kolorowy na łące' },
-    { word: 'POCIĄG', emoji: '🚂', hint: 'Jedzie po torach (litera Ą)' },
-    { word: 'ZAJĄC', emoji: '🐇', hint: 'Kica po trawie (litera Ą)' }
+  "pl": [
+    {
+      "word": "KOT",
+      "emoji": "🐱",
+      "hint": "Mruczy i łapie myszy"
+    },
+    {
+      "word": "DOM",
+      "emoji": "🏠",
+      "hint": "Nasz ciepły dom"
+    },
+    {
+      "word": "LAS",
+      "emoji": "🌲",
+      "hint": "Rosną w nim drzewa"
+    },
+    {
+      "word": "SER",
+      "emoji": "🧀",
+      "hint": "Żółty i pyszny"
+    },
+    {
+      "word": "SOK",
+      "emoji": "🧃",
+      "hint": "Słodki napój z owoców"
+    },
+    {
+      "word": "LIS",
+      "emoji": "🦊",
+      "hint": "Rudy spryciarz w lesie"
+    },
+    {
+      "word": "KOŃ",
+      "emoji": "🐎",
+      "hint": "Biega kłusem i rży (litera Ń)"
+    },
+    {
+      "word": "MIŚ",
+      "emoji": "🧸",
+      "hint": "Pluszowy przyjaciel (litera Ś)"
+    },
+    {
+      "word": "WĄŻ",
+      "emoji": "🐍",
+      "hint": "Długi, syczy w trawie (litery Ą, Ż)"
+    },
+    {
+      "word": "LÓD",
+      "emoji": "🧊",
+      "hint": "Zimny jak zima (litera Ó)"
+    },
+    {
+      "word": "BUT",
+      "emoji": "👟",
+      "hint": "Wygodny na spacer"
+    },
+    {
+      "word": "KOC",
+      "emoji": "🛋️",
+      "hint": "Ciepły do przykrycia"
+    },
+    {
+      "word": "NOS",
+      "emoji": "👃",
+      "hint": "Czuje zapach ciasta"
+    },
+    {
+      "word": "PAS",
+      "emoji": "🥋",
+      "hint": "Zapinamy w aucie"
+    },
+    {
+      "word": "MAMA",
+      "emoji": "👩",
+      "hint": "Najukochańsza mama"
+    },
+    {
+      "word": "TATA",
+      "emoji": "👨",
+      "hint": "Najlepszy tata"
+    },
+    {
+      "word": "PIES",
+      "emoji": "🐶",
+      "hint": "Wierny przyjaciel człowieka"
+    },
+    {
+      "word": "WODA",
+      "emoji": "💧",
+      "hint": "Pyszna i zdrowa do picia"
+    },
+    {
+      "word": "STÓŁ",
+      "emoji": "🪑",
+      "hint": "Jemy przy nim obiad (litery Ó, Ł!)"
+    },
+    {
+      "word": "RĘKA",
+      "emoji": "✋",
+      "hint": "Rysuje i macha na powitanie (litera Ę)"
+    },
+    {
+      "word": "NOGA",
+      "emoji": "🦵",
+      "hint": "Biega i skacze wysoko"
+    },
+    {
+      "word": "OKNO",
+      "emoji": "🪟",
+      "hint": "Widać przez nie słońce"
+    },
+    {
+      "word": "ZUPA",
+      "emoji": "🍲",
+      "hint": "Ciepła i smaczna na obiad"
+    },
+    {
+      "word": "BUTY",
+      "emoji": "👟",
+      "hint": "Wkładamy przed wyjściem"
+    },
+    {
+      "word": "OCZY",
+      "emoji": "👀",
+      "hint": "Widzą cały piękny świat"
+    },
+    {
+      "word": "USZY",
+      "emoji": "👂",
+      "hint": "Słuchają bajek i muzyki"
+    },
+    {
+      "word": "AUTO",
+      "emoji": "🚗",
+      "hint": "Jedzie szybko po drodze"
+    },
+    {
+      "word": "KOŁO",
+      "emoji": "🛞",
+      "hint": "Kręci się w rowerze (litera Ł)"
+    },
+    {
+      "word": "ZĄB",
+      "emoji": "🦷",
+      "hint": "Myjemy rano i wieczorem (litera Ą)"
+    },
+    {
+      "word": "DĄB",
+      "emoji": "🌳",
+      "hint": "Mocarne drzewo w lesie (litera Ą)"
+    },
+    {
+      "word": "LIŚĆ",
+      "emoji": "🍂",
+      "hint": "Spada z drzewa jesienią (litery Ś, Ć)"
+    },
+    {
+      "word": "RYBA",
+      "emoji": "🐟",
+      "hint": "Pływa szybko w wodzie"
+    },
+    {
+      "word": "WILK",
+      "emoji": "🐺",
+      "hint": "Wyje do księżyca"
+    },
+    {
+      "word": "PTAK",
+      "emoji": "🐦",
+      "hint": "Śpiewa rano na gałęzi"
+    },
+    {
+      "word": "ŻABA",
+      "emoji": "🐸",
+      "hint": "Kumka wesoło w stawie (litera Ż)"
+    },
+    {
+      "word": "ŻÓŁW",
+      "emoji": "🐢",
+      "hint": "Chodzi powoli w pancerzu (Ż, Ó, Ł!)"
+    },
+    {
+      "word": "ŁÓDŹ",
+      "emoji": "⛵",
+      "hint": "Płynie po jeziorze (Ł, Ó, Ź!)"
+    },
+    {
+      "word": "LATO",
+      "emoji": "☀️",
+      "hint": "Ciepła i słoneczna pora"
+    },
+    {
+      "word": "ZIMA",
+      "emoji": "❄️",
+      "hint": "Czas na bałwana i sanki"
+    },
+    {
+      "word": "RÓŻA",
+      "emoji": "🌹",
+      "hint": "Piękny pachnący kwiat (litery Ó, Ż)"
+    },
+    {
+      "word": "GÓRA",
+      "emoji": "⛰️",
+      "hint": "Wysoka ze śniegiem (litera Ó)"
+    },
+    {
+      "word": "KOZA",
+      "emoji": "🐐",
+      "hint": "Lubi skakać po łące"
+    },
+    {
+      "word": "ŁÓŻKO",
+      "emoji": "🛏️",
+      "hint": "Ciepłe do spania (litery Ł, Ó, Ż!)"
+    },
+    {
+      "word": "KUBEK",
+      "emoji": "🥛",
+      "hint": "Pijemy z niego mleko i herbatę"
+    },
+    {
+      "word": "ŁYŻKA",
+      "emoji": "🥄",
+      "hint": "Jemy nią pyszną zupę (litery Ł, Ż)"
+    },
+    {
+      "word": "CZAPKA",
+      "emoji": "🧢",
+      "hint": "Chroni głowę przed zimnem"
+    },
+    {
+      "word": "PIŁKA",
+      "emoji": "⚽",
+      "hint": "Gramy nią wesoło w ogrodzie (litera Ł)"
+    },
+    {
+      "word": "LALKA",
+      "emoji": "🪆",
+      "hint": "Ulubiona zabawka"
+    },
+    {
+      "word": "SZKOŁA",
+      "emoji": "🏫",
+      "hint": "Uczymy się tam i bawimy (litera Ł)"
+    },
+    {
+      "word": "PLECAK",
+      "emoji": "🎒",
+      "hint": "Pakujemy do niego skarby"
+    },
+    {
+      "word": "KANAPKA",
+      "emoji": "🥪",
+      "hint": "Pyszne drugie śniadanie"
+    },
+    {
+      "word": "MLEKO",
+      "emoji": "🥛",
+      "hint": "Białe i zdrowe"
+    },
+    {
+      "word": "SPODNIE",
+      "emoji": "👖",
+      "hint": "Wygodne ubranie na co dzień"
+    },
+    {
+      "word": "ROWER",
+      "emoji": "🚲",
+      "hint": "Jeździmy nim po parku"
+    },
+    {
+      "word": "CHLEB",
+      "emoji": "🍞",
+      "hint": "Pachnący ze złocistą skórką"
+    },
+    {
+      "word": "KROWA",
+      "emoji": "🐄",
+      "hint": "Daje świeże mleko"
+    },
+    {
+      "word": "JABŁKO",
+      "emoji": "🍎",
+      "hint": "Czerwone i soczyste (litera Ł)"
+    },
+    {
+      "word": "SŁOŃCE",
+      "emoji": "🌞",
+      "hint": "Świeci wysoko na niebie (litery Ł, Ń)"
+    },
+    {
+      "word": "KSIĄŻKA",
+      "emoji": "📖",
+      "hint": "Czytamy z niej ciekawe bajki (litery Ą, Ż)"
+    },
+    {
+      "word": "BAŁWAN",
+      "emoji": "⛄",
+      "hint": "Ulepiony ze śniegu (litera Ł)"
+    },
+    {
+      "word": "SERCE",
+      "emoji": "❤️",
+      "hint": "Bije mocno z miłości"
+    },
+    {
+      "word": "DRZEWO",
+      "emoji": "🌳",
+      "hint": "Zielone i wysokie w parku"
+    },
+    {
+      "word": "ŚNIEG",
+      "emoji": "🌨️",
+      "hint": "Biały puch w zimie (litera Ś)"
+    },
+    {
+      "word": "MOTYL",
+      "emoji": "🦋",
+      "hint": "Kolorowy na łące"
+    },
+    {
+      "word": "POCIĄG",
+      "emoji": "🚂",
+      "hint": "Jedzie szybko po torach (litera Ą)"
+    },
+    {
+      "word": "ZAJĄC",
+      "emoji": "🐇",
+      "hint": "Kica po zielonej trawie (litera Ą)"
+    }
   ],
-  en: [
-    // 3 letters
-    { word: 'CAT', emoji: '🐱', hint: 'Says meow and purrs' },
-    { word: 'DOG', emoji: '🐶', hint: 'Barks and wags tail' },
-    { word: 'SUN', emoji: '☀️', hint: 'Shines warm and bright' },
-    { word: 'FOX', emoji: '🦊', hint: 'Clever and orange' },
-    { word: 'PIG', emoji: '🐷', hint: 'Oink-oink on the farm' },
-    { word: 'CAR', emoji: '🚗', hint: 'Drives on the road' },
-    { word: 'BUS', emoji: '🚌', hint: 'Big yellow transport' },
-    { word: 'BAT', emoji: '🦇', hint: 'Flies in the night' },
-    { word: 'HAT', emoji: '🎩', hint: 'We wear on head' },
-    { word: 'BEE', emoji: '🐝', hint: 'Bumbles and makes honey' },
-    { word: 'BED', emoji: '🛏️', hint: 'Where we sleep at night' },
-    { word: 'EGG', emoji: '🥚', hint: 'Breakfast from hen' },
-    { word: 'BOX', emoji: '📦', hint: 'Holds toys and gifts' },
-    { word: 'CUP', emoji: '☕', hint: 'For milk or tea' },
-
-    // 4 letters
-    { word: 'FISH', emoji: '🐟', hint: 'Swims in water' },
-    { word: 'BIRD', emoji: '🐦', hint: 'Sings on branches' },
-    { word: 'FROG', emoji: '🐸', hint: 'Jumps and ribbits' },
-    { word: 'DUCK', emoji: '🦆', hint: 'Quack-quack in pond' },
-    { word: 'BEAR', emoji: '🐻', hint: 'Big furry forest animal' },
-    { word: 'LION', emoji: '🦁', hint: 'King of animals' },
-    { word: 'WOLF', emoji: '🐺', hint: 'Howls at moon' },
-    { word: 'STAR', emoji: '⭐', hint: 'Twinkles in sky' },
-    { word: 'MOON', emoji: '🌙', hint: 'Glows at night' },
-    { word: 'SNOW', emoji: '⛄', hint: 'White and cold' },
-    { word: 'TREE', emoji: '🌳', hint: 'Tall with green leaves' },
-    { word: 'BOOK', emoji: '📖', hint: 'Full of fairy tales' },
-    { word: 'BALL', emoji: '⚽', hint: 'Round toy to kick' },
-    { word: 'CAKE', emoji: '🎂', hint: 'Sweet birthday treat' },
-    { word: 'MILK', emoji: '🥛', hint: 'Healthy white drink' },
-    { word: 'ROSE', emoji: '🌹', hint: 'Fragrant flower' },
-    { word: 'BOAT', emoji: '⛵', hint: 'Sails on water' },
-    { word: 'RING', emoji: '💍', hint: 'Shiny jewelry' },
-    { word: 'KITE', emoji: '🪁', hint: 'Flies high in wind' },
-
-    // 5-6 letters
-    { word: 'APPLE', emoji: '🍎', hint: 'Crunchy sweet fruit' },
-    { word: 'HOUSE', emoji: '🏠', hint: 'Warm and cozy home' },
-    { word: 'WATER', emoji: '💧', hint: 'We drink every day' },
-    { word: 'PANDA', emoji: '🐼', hint: 'Black and white bear' },
-    { word: 'TIGER', emoji: '🐯', hint: 'Big striped cat' },
-    { word: 'ZEBRA', emoji: '🦓', hint: 'Horse with stripes' },
-    { word: 'TRAIN', emoji: '🚂', hint: 'Choo-choo on tracks' },
-    { word: 'PLANE', emoji: '✈️', hint: 'Flies above clouds' },
-    { word: 'CLOCK', emoji: '⏰', hint: 'Tells what time it is' },
-    { word: 'BREAD', emoji: '🍞', hint: 'From the bakery' },
-    { word: 'SMILE', emoji: '😊', hint: 'Happy joyful face' },
-    { word: 'FLOWER', emoji: '🌸', hint: 'Blooms in garden' },
-    { word: 'MONKEY', emoji: '🐵', hint: 'Loves bananas' },
-    { word: 'RABBIT', emoji: '🐰', hint: 'Hops with long ears' }
+  "en": [
+    {
+      "word": "CAT",
+      "emoji": "🐱",
+      "hint": "Says meow and purrs"
+    },
+    {
+      "word": "DOG",
+      "emoji": "🐶",
+      "hint": "Barks and wags tail"
+    },
+    {
+      "word": "SUN",
+      "emoji": "☀️",
+      "hint": "Shines warm and bright"
+    },
+    {
+      "word": "FOX",
+      "emoji": "🦊",
+      "hint": "Clever and orange"
+    },
+    {
+      "word": "PIG",
+      "emoji": "🐷",
+      "hint": "Oink-oink on the farm"
+    },
+    {
+      "word": "CAR",
+      "emoji": "🚗",
+      "hint": "Drives on the road, beep-beep"
+    },
+    {
+      "word": "BUS",
+      "emoji": "🚌",
+      "hint": "Big yellow transport"
+    },
+    {
+      "word": "HAT",
+      "emoji": "🎩",
+      "hint": "We wear it on head"
+    },
+    {
+      "word": "BEE",
+      "emoji": "🐝",
+      "hint": "Bumbles and makes honey"
+    },
+    {
+      "word": "BED",
+      "emoji": "🛏️",
+      "hint": "Where we sleep cozy at night"
+    },
+    {
+      "word": "EGG",
+      "emoji": "🥚",
+      "hint": "Yummy breakfast"
+    },
+    {
+      "word": "BOX",
+      "emoji": "📦",
+      "hint": "Holds toys and gifts"
+    },
+    {
+      "word": "CUP",
+      "emoji": "☕",
+      "hint": "For warm milk or tea"
+    },
+    {
+      "word": "MOM",
+      "emoji": "👩",
+      "hint": "Sweetest and dearest mother"
+    },
+    {
+      "word": "DAD",
+      "emoji": "👨",
+      "hint": "Strong and loving father"
+    },
+    {
+      "word": "BOY",
+      "emoji": "👦",
+      "hint": "Happy smiling kid"
+    },
+    {
+      "word": "TOY",
+      "emoji": "🧸",
+      "hint": "Fun to play with"
+    },
+    {
+      "word": "TEA",
+      "emoji": "🍵",
+      "hint": "Warm drink in a mug"
+    },
+    {
+      "word": "JAM",
+      "emoji": "🍓",
+      "hint": "Sweet berry spread"
+    },
+    {
+      "word": "PAN",
+      "emoji": "🍳",
+      "hint": "Used for cooking food"
+    },
+    {
+      "word": "SHOE",
+      "emoji": "👟",
+      "hint": "We put on feet to walk"
+    },
+    {
+      "word": "DOOR",
+      "emoji": "🚪",
+      "hint": "Open to enter the room"
+    },
+    {
+      "word": "HAND",
+      "emoji": "✋",
+      "hint": "Five fingers to wave and hold"
+    },
+    {
+      "word": "SOUP",
+      "emoji": "🍲",
+      "hint": "Warm dinner in a bowl"
+    },
+    {
+      "word": "FORK",
+      "emoji": "🍴",
+      "hint": "Helps us eat tasty noodles"
+    },
+    {
+      "word": "COAT",
+      "emoji": "🧥",
+      "hint": "Keeps us warm outdoors"
+    },
+    {
+      "word": "DESK",
+      "emoji": "🪑",
+      "hint": "Where we draw and learn"
+    },
+    {
+      "word": "PARK",
+      "emoji": "🌳",
+      "hint": "Fun green place to run and play"
+    },
+    {
+      "word": "BABY",
+      "emoji": "👶",
+      "hint": "Cute little sister or brother"
+    },
+    {
+      "word": "BALL",
+      "emoji": "⚽",
+      "hint": "Round toy to kick and catch"
+    },
+    {
+      "word": "BOOK",
+      "emoji": "📖",
+      "hint": "Full of stories and pictures"
+    },
+    {
+      "word": "FISH",
+      "emoji": "🐟",
+      "hint": "Swims in the clear water"
+    },
+    {
+      "word": "BIRD",
+      "emoji": "🐦",
+      "hint": "Sings songs on green tree"
+    },
+    {
+      "word": "FROG",
+      "emoji": "🐸",
+      "hint": "Jumps and ribbits in pond"
+    },
+    {
+      "word": "DUCK",
+      "emoji": "🦆",
+      "hint": "Quack-quack in the pond"
+    },
+    {
+      "word": "BEAR",
+      "emoji": "🐻",
+      "hint": "Big furry cuddly animal"
+    },
+    {
+      "word": "LION",
+      "emoji": "🦁",
+      "hint": "Brave king of animals"
+    },
+    {
+      "word": "WOLF",
+      "emoji": "🐺",
+      "hint": "Howls at the bright moon"
+    },
+    {
+      "word": "STAR",
+      "emoji": "⭐",
+      "hint": "Twinkles at night in sky"
+    },
+    {
+      "word": "MOON",
+      "emoji": "🌙",
+      "hint": "Glows gently in night sky"
+    },
+    {
+      "word": "SNOW",
+      "emoji": "⛄",
+      "hint": "White and cold fluffy flakes"
+    },
+    {
+      "word": "TREE",
+      "emoji": "🌳",
+      "hint": "Tall with fresh green leaves"
+    },
+    {
+      "word": "CAKE",
+      "emoji": "🎂",
+      "hint": "Sweet birthday treat with candles"
+    },
+    {
+      "word": "MILK",
+      "emoji": "🥛",
+      "hint": "Healthy white drink for kids"
+    },
+    {
+      "word": "ROSE",
+      "emoji": "🌹",
+      "hint": "Fragrant beautiful flower"
+    },
+    {
+      "word": "BOAT",
+      "emoji": "⛵",
+      "hint": "Sails smoothly on the lake"
+    },
+    {
+      "word": "KITE",
+      "emoji": "🪁",
+      "hint": "Flies high up in the wind"
+    },
+    {
+      "word": "CHAIR",
+      "emoji": "🪑",
+      "hint": "Comfortable to sit on"
+    },
+    {
+      "word": "SPOON",
+      "emoji": "🥄",
+      "hint": "To eat soup and yogurt"
+    },
+    {
+      "word": "PLATE",
+      "emoji": "🍽️",
+      "hint": "Holds our yummy dinner"
+    },
+    {
+      "word": "SHIRT",
+      "emoji": "👕",
+      "hint": "Clean clothes to wear"
+    },
+    {
+      "word": "SHOES",
+      "emoji": "👟",
+      "hint": "We put on our feet"
+    },
+    {
+      "word": "SCHOOL",
+      "emoji": "🎒",
+      "hint": "Where we learn and meet friends"
+    },
+    {
+      "word": "PENCIL",
+      "emoji": "✏️",
+      "hint": "Draws colorful pictures"
+    },
+    {
+      "word": "GARDEN",
+      "emoji": "🏡",
+      "hint": "Full of flowers and green grass"
+    },
+    {
+      "word": "ORANGE",
+      "emoji": "🍊",
+      "hint": "Juicy citrus round fruit"
+    },
+    {
+      "word": "BANANA",
+      "emoji": "🍌",
+      "hint": "Sweet yellow fruit"
+    },
+    {
+      "word": "APPLE",
+      "emoji": "🍎",
+      "hint": "Crunchy sweet and red"
+    },
+    {
+      "word": "HOUSE",
+      "emoji": "🏠",
+      "hint": "Warm and cozy home"
+    },
+    {
+      "word": "WATER",
+      "emoji": "💧",
+      "hint": "Fresh drink we need each day"
+    },
+    {
+      "word": "PANDA",
+      "emoji": "🐼",
+      "hint": "Cuddly black and white bear"
+    },
+    {
+      "word": "TIGER",
+      "emoji": "🐯",
+      "hint": "Big strong striped cat"
+    },
+    {
+      "word": "ZEBRA",
+      "emoji": "🦓",
+      "hint": "Striped horse on the grass"
+    },
+    {
+      "word": "TRAIN",
+      "emoji": "🚂",
+      "hint": "Choo-choo on the railroad"
+    },
+    {
+      "word": "PLANE",
+      "emoji": "✈️",
+      "hint": "Flies high above the white clouds"
+    },
+    {
+      "word": "CLOCK",
+      "emoji": "⏰",
+      "hint": "Tick-tock tells what time it is"
+    },
+    {
+      "word": "BREAD",
+      "emoji": "🍞",
+      "hint": "Warm and fresh from bakery"
+    },
+    {
+      "word": "SMILE",
+      "emoji": "😊",
+      "hint": "Happy joyful cheerful face"
+    },
+    {
+      "word": "FLOWER",
+      "emoji": "🌸",
+      "hint": "Blooms brightly in the garden"
+    },
+    {
+      "word": "MONKEY",
+      "emoji": "🐵",
+      "hint": "Playful and loves bananas"
+    },
+    {
+      "word": "RABBIT",
+      "emoji": "🐰",
+      "hint": "Hops quickly with long ears"
+    }
   ]
 };
 
-// Сложные слова для продвинутого уровня (8x8) — колоритный польский с переводами для взрослых и продвинутых
+// Сложные слова для продвинутого уровня (8x8)
 export const WORDS_DATA_HARD = {
-  pl: [
-    { word: 'CHRZĄSZCZ', emoji: '🪲', hint: 'хрущ / майский жук' },
-    { word: 'SZCZĘŚCIE', emoji: '🍀', hint: 'счастье, удача' },
-    { word: 'PSZCZOŁA', emoji: '🐝', hint: 'пчела' },
-    { word: 'NIEDŹWIEDŹ', emoji: '🐻', hint: 'медведь' },
-    { word: 'TRUSKAWKA', emoji: '🍓', hint: 'клубника' },
-    { word: 'KSIĘŻYC', emoji: '🌙', hint: 'луна, месяц' },
-    { word: 'BŁYSKAWICA', emoji: '⚡', hint: 'молния' },
-    { word: 'CZEKOLADA', emoji: '🍫', hint: 'шоколад' },
-    { word: 'DZIĘCIOŁ', emoji: '🪵', hint: 'дятел' },
-    { word: 'SAMOCHÓD', emoji: '🚗', hint: 'автомобиль' },
-    { word: 'PRZYJACIEL', emoji: '🤝', hint: 'друг' },
-    { word: 'PRZYGODA', emoji: '🗺️', hint: 'приключение' },
-    { word: 'ŚWIEŻOŚĆ', emoji: '🍃', hint: 'свежесть' },
-    { word: 'PIEROGI', emoji: '🥟', hint: 'вареники' },
-    { word: 'JARZĘBINA', emoji: '🍒', hint: 'рябина' },
-    { word: 'JASTRZĄB', emoji: '🦅', hint: 'ястреб' },
-    { word: 'WIELBŁĄD', emoji: '🐪', hint: 'верблюд' },
-    { word: 'WIEWIÓRKA', emoji: '🐿️', hint: 'белочка' },
-    { word: 'JASZCZURKA', emoji: '🦎', hint: 'ящерица' },
-    { word: 'PARASOL', emoji: '☂️', hint: 'зонт' },
-    { word: 'DROŻDŻE', emoji: '🍞', hint: 'дрожжи' },
-    { word: 'ZMIERZCH', emoji: '🌆', hint: 'сумерки' },
-    { word: 'DZWONECZEK', emoji: '🔔', hint: 'колокольчик' },
-    { word: 'POZIOMKA', emoji: '🍓', hint: 'земляника' },
-    { word: 'PORZECZKA', emoji: '🫐', hint: 'смородина' },
-    { word: 'PRZEPIÓRKA', emoji: '🐦', hint: 'перепелка' },
-    { word: 'KROKODYL', emoji: '🐊', hint: 'крокодил' },
-    { word: 'SZCZYPIOREK', emoji: '🌱', hint: 'зеленый лук' }
+  "pl": [
+    {
+      "word": "CHRZĄSZCZ",
+      "emoji": "🪲",
+      "hint": "хрущ / майский жук"
+    },
+    {
+      "word": "SZCZĘŚCIE",
+      "emoji": "🍀",
+      "hint": "счастье, удача"
+    },
+    {
+      "word": "PSZCZOŁA",
+      "emoji": "🐝",
+      "hint": "пчела"
+    },
+    {
+      "word": "NIEDŹWIEDŹ",
+      "emoji": "🐻",
+      "hint": "медведь"
+    },
+    {
+      "word": "TRUSKAWKA",
+      "emoji": "🍓",
+      "hint": "клубника"
+    },
+    {
+      "word": "KSIĘŻYC",
+      "emoji": "🌙",
+      "hint": "луна, месяц"
+    },
+    {
+      "word": "BŁYSKAWICA",
+      "emoji": "⚡",
+      "hint": "молния"
+    },
+    {
+      "word": "CZEKOLADA",
+      "emoji": "🍫",
+      "hint": "шоколад"
+    },
+    {
+      "word": "DZIĘCIOŁ",
+      "emoji": "🪵",
+      "hint": "дятел"
+    },
+    {
+      "word": "SAMOCHÓD",
+      "emoji": "🚗",
+      "hint": "автомобиль"
+    },
+    {
+      "word": "PRZYJACIEL",
+      "emoji": "🤝",
+      "hint": "друг"
+    },
+    {
+      "word": "PRZYGODA",
+      "emoji": "🗺️",
+      "hint": "приключение"
+    },
+    {
+      "word": "ŚWIEŻOŚĆ",
+      "emoji": "🍃",
+      "hint": "свежесть"
+    },
+    {
+      "word": "PIEROGI",
+      "emoji": "🥟",
+      "hint": "вареники"
+    },
+    {
+      "word": "WIEWIÓRKA",
+      "emoji": "🐿️",
+      "hint": "белочка"
+    },
+    {
+      "word": "JASZCZURKA",
+      "emoji": "🦎",
+      "hint": "ящерица"
+    },
+    {
+      "word": "PARASOL",
+      "emoji": "☂️",
+      "hint": "зонт"
+    },
+    {
+      "word": "DZWONECZEK",
+      "emoji": "🔔",
+      "hint": "колокольчик"
+    },
+    {
+      "word": "POZIOMKA",
+      "emoji": "🍓",
+      "hint": "земляника"
+    },
+    {
+      "word": "KROKODYL",
+      "emoji": "🐊",
+      "hint": "крокодил"
+    },
+    {
+      "word": "ŚNIADANIE",
+      "emoji": "🥞",
+      "hint": "завтрак"
+    },
+    {
+      "word": "HULAJNOGA",
+      "emoji": "🛴",
+      "hint": "самокат"
+    },
+    {
+      "word": "PIÓRNIK",
+      "emoji": "✏️",
+      "hint": "пенал"
+    },
+    {
+      "word": "CUKIERKI",
+      "emoji": "🍬",
+      "hint": "конфеты"
+    },
+    {
+      "word": "ZABAWKI",
+      "emoji": "🧸",
+      "hint": "игрушки"
+    },
+    {
+      "word": "TRAMWAJ",
+      "emoji": "🚊",
+      "hint": "трамвай"
+    },
+    {
+      "word": "HERBATA",
+      "emoji": "🍵",
+      "hint": "чай"
+    },
+    {
+      "word": "TELEFON",
+      "emoji": "📱",
+      "hint": "телефон"
+    },
+    {
+      "word": "KOMPUTER",
+      "emoji": "💻",
+      "hint": "компьютер"
+    },
+    {
+      "word": "PODUSZKA",
+      "emoji": "🛋️",
+      "hint": "подушка"
+    }
   ],
-  ru: [
-    { word: 'КОСМОНАВТ', emoji: '👨‍🚀', hint: 'летит к далеким звездам' },
-    { word: 'СОЛНЫШКО', emoji: '☀️', hint: 'теплое и ласковое' },
-    { word: 'ЗЕМЛЯНИКА', emoji: '🍓', hint: 'сладкая лесная ягода' },
-    { word: 'ВЕРТОЛЕТ', emoji: '🚁', hint: 'летает с винтом' },
-    { word: 'ОДУВАНЧИК', emoji: '🌼', hint: 'желтый пушистый цветок' },
-    { word: 'КРОКОДИЛ', emoji: '🐊', hint: 'зеленый в реке' },
-    { word: 'МЕДВЕДИЦА', emoji: '🐻', hint: 'мама медвежат' },
-    { word: 'ПРИКЛЮЧЕНИЕ', emoji: '🗺️', hint: 'увлекательный поход' },
-    { word: 'ТЕЛЕВИЗОР', emoji: '📺', hint: 'показывает передачи' },
-    { word: 'ЧЕРЕПАХА', emoji: '🐢', hint: 'с крепким панцирем' },
-    { word: 'СНЕГОВИК', emoji: '⛄', hint: 'из снега с морковкой' }
+  "ru": [
+    {
+      "word": "КОСМОНАВТ",
+      "emoji": "👨‍🚀",
+      "hint": "летит к далеким звездам"
+    },
+    {
+      "word": "СОЛНЫШКО",
+      "emoji": "☀️",
+      "hint": "теплое и ласковое"
+    },
+    {
+      "word": "ЗЕМЛЯНИКА",
+      "emoji": "🍓",
+      "hint": "сладкая лесная ягода"
+    },
+    {
+      "word": "ВЕРТОЛЕТ",
+      "emoji": "🚁",
+      "hint": "летает с винтом"
+    },
+    {
+      "word": "ОДУВАНЧИК",
+      "emoji": "🌼",
+      "hint": "желтый пушистый цветок"
+    },
+    {
+      "word": "КРОКОДИЛ",
+      "emoji": "🐊",
+      "hint": "зеленый в реке"
+    },
+    {
+      "word": "ПРИКЛЮЧЕНИЕ",
+      "emoji": "🗺️",
+      "hint": "увлекательный поход"
+    },
+    {
+      "word": "ТЕЛЕВИЗОР",
+      "emoji": "📺",
+      "hint": "показывает мультики"
+    },
+    {
+      "word": "ЧЕРЕПАХА",
+      "emoji": "🐢",
+      "hint": "с крепким панцирем"
+    },
+    {
+      "word": "СНЕГОВИК",
+      "emoji": "⛄",
+      "hint": "из снега с морковкой"
+    },
+    {
+      "word": "МОРОЖЕНОЕ",
+      "emoji": "🍦",
+      "hint": "холодное сладкое лакомство"
+    },
+    {
+      "word": "БУТЕРБРОД",
+      "emoji": "🥪",
+      "hint": "сытный завтрак с сыром"
+    },
+    {
+      "word": "ВЕЛОСИПЕД",
+      "emoji": "🚲",
+      "hint": "крутим педали и едем"
+    },
+    {
+      "word": "САМОКАТ",
+      "emoji": "🛴",
+      "hint": "быстро мчит по дорожке"
+    },
+    {
+      "word": "БУДИЛЬНИК",
+      "emoji": "⏰",
+      "hint": "звонит по утрам в садик"
+    },
+    {
+      "word": "КАРАНДАШ",
+      "emoji": "✏️",
+      "hint": "рисует яркие картинки"
+    },
+    {
+      "word": "ПЛАНШЕТ",
+      "emoji": "📱",
+      "hint": "на нем мы играем и учимся"
+    },
+    {
+      "word": "АВТОБУС",
+      "emoji": "🚌",
+      "hint": "возит пассажиров по городу"
+    },
+    {
+      "word": "САМОЛЕТ",
+      "emoji": "✈️",
+      "hint": "летит высоко над облаками"
+    },
+    {
+      "word": "ШОКОЛАД",
+      "emoji": "🍫",
+      "hint": "вкусная сладкая плитка"
+    },
+    {
+      "word": "ПРАЗДНИК",
+      "emoji": "🎉",
+      "hint": "шарики, торт и веселье"
+    }
   ],
-  en: [
-    { word: 'BUTTERFLY', emoji: '🦋', hint: 'бабочка' },
-    { word: 'ELEPHANT', emoji: '🐘', hint: 'слон' },
-    { word: 'RAINBOW', emoji: '🌈', hint: 'радуга' },
-    { word: 'SUNSHINE', emoji: '☀️', hint: 'солнечный свет' },
-    { word: 'PENGUIN', emoji: '🐧', hint: 'пингвин' },
-    { word: 'DOLPHIN', emoji: '🐬', hint: 'дельфин' },
-    { word: 'ASTRONAUT', emoji: '👨‍🚀', hint: 'астронавт / космонавт' },
-    { word: 'CHOCOLATE', emoji: '🍫', hint: 'шоколад' },
-    { word: 'DINOSAUR', emoji: '🦖', hint: 'динозавр' },
-    { word: 'STRAWBERRY', emoji: '🍓', hint: 'клубника' },
-    { word: 'ADVENTURE', emoji: '🗺️', hint: 'приключение' },
-    { word: 'FIRETRUCK', emoji: '🚒', hint: 'пожарная машина' },
-    { word: 'CROCODILE', emoji: '🐊', hint: 'крокодил' },
-    { word: 'WATERMELON', emoji: '🍉', hint: 'арбуз' },
-    { word: 'KANGAROO', emoji: '🦘', hint: 'кенгуру' },
-    { word: 'JELLYFISH', emoji: '🪼', hint: 'медуза' },
-    { word: 'LIGHTNING', emoji: '⚡', hint: 'молния' },
-    { word: 'SNOWMAN', emoji: '⛄', hint: 'снеговик' },
-    { word: 'GIRAFFE', emoji: '🦒', hint: 'жираф' }
+  "en": [
+    {
+      "word": "BUTTERFLY",
+      "emoji": "🦋",
+      "hint": "бабочка"
+    },
+    {
+      "word": "ELEPHANT",
+      "emoji": "🐘",
+      "hint": "слон"
+    },
+    {
+      "word": "RAINBOW",
+      "emoji": "🌈",
+      "hint": "радуга"
+    },
+    {
+      "word": "SUNSHINE",
+      "emoji": "☀️",
+      "hint": "солнечный свет"
+    },
+    {
+      "word": "PENGUIN",
+      "emoji": "🐧",
+      "hint": "пингвин"
+    },
+    {
+      "word": "DOLPHIN",
+      "emoji": "🐬",
+      "hint": "дельфин"
+    },
+    {
+      "word": "ASTRONAUT",
+      "emoji": "👨‍🚀",
+      "hint": "астронавт / космонавт"
+    },
+    {
+      "word": "CHOCOLATE",
+      "emoji": "🍫",
+      "hint": "шоколад"
+    },
+    {
+      "word": "DINOSAUR",
+      "emoji": "🦖",
+      "hint": "динозавр"
+    },
+    {
+      "word": "STRAWBERRY",
+      "emoji": "🍓",
+      "hint": "клубника"
+    },
+    {
+      "word": "ADVENTURE",
+      "emoji": "🗺️",
+      "hint": "приключение"
+    },
+    {
+      "word": "FIRETRUCK",
+      "emoji": "🚒",
+      "hint": "пожарная машина"
+    },
+    {
+      "word": "CROCODILE",
+      "emoji": "🐊",
+      "hint": "крокодил"
+    },
+    {
+      "word": "WATERMELON",
+      "emoji": "🍉",
+      "hint": "арбуз"
+    },
+    {
+      "word": "KANGAROO",
+      "emoji": "🦘",
+      "hint": "кенгуру"
+    },
+    {
+      "word": "JELLYFISH",
+      "emoji": "🪼",
+      "hint": "медуза"
+    },
+    {
+      "word": "LIGHTNING",
+      "emoji": "⚡",
+      "hint": "молния"
+    },
+    {
+      "word": "SNOWMAN",
+      "emoji": "⛄",
+      "hint": "снеговик"
+    },
+    {
+      "word": "GIRAFFE",
+      "emoji": "🦒",
+      "hint": "жираф"
+    },
+    {
+      "word": "BREAKFAST",
+      "emoji": "🥞",
+      "hint": "завтрак"
+    },
+    {
+      "word": "SANDWICH",
+      "emoji": "🥪",
+      "hint": "бутерброд"
+    },
+    {
+      "word": "BICYCLE",
+      "emoji": "🚲",
+      "hint": "велосипед"
+    },
+    {
+      "word": "SCOOTER",
+      "emoji": "🛴",
+      "hint": "самокат"
+    },
+    {
+      "word": "BACKPACK",
+      "emoji": "🎒",
+      "hint": "рюкзак"
+    },
+    {
+      "word": "COMPUTER",
+      "emoji": "💻",
+      "hint": "компьютер"
+    },
+    {
+      "word": "AIRPLANE",
+      "emoji": "✈️",
+      "hint": "самолет"
+    },
+    {
+      "word": "ICECREAM",
+      "emoji": "🍦",
+      "hint": "мороженое"
+    }
   ]
 };
 
@@ -485,7 +1684,7 @@ export const RHYMES_DATA = {
       target: { word: 'DĄB', emoji: '🌳' },
       correct: { word: 'ZĄB', emoji: '🦷' },
       distractors: [
-        { word: 'BÓB', emoji: '🫘' },
+        { word: 'KOT', emoji: '🐱' },
         { word: 'KOŃ', emoji: '🐎' }
       ]
     },
@@ -502,7 +1701,7 @@ export const RHYMES_DATA = {
       correct: { word: 'PAS', emoji: '🥋' },
       distractors: [
         { word: 'MIŚ', emoji: '🧸' },
-        { word: 'BYK', emoji: '🐂' }
+        { word: 'SOK', emoji: '🧃' }
       ]
     },
     {
