@@ -206,6 +206,16 @@ export const WORDS_DATA = {
       "hint": "По нему мы ходим дома"
     },
     {
+      "word": "МУХА",
+      "emoji": "🪰",
+      "hint": "Летает и жужжит"
+    },
+    {
+      "word": "ЛАПА",
+      "emoji": "🐾",
+      "hint": "Пушистая лапка котика или собачки"
+    },
+    {
       "word": "МАМА",
       "emoji": "👩",
       "hint": "Самый дорогой человек"
@@ -528,6 +538,11 @@ export const WORDS_DATA = {
       "hint": "Zapinamy w aucie"
     },
     {
+      "word": "OKO",
+      "emoji": "👁️",
+      "hint": "Patrzy i widzi wszystko"
+    },
+    {
       "word": "MAMA",
       "emoji": "👩",
       "hint": "Najukochańsza mama"
@@ -591,6 +606,11 @@ export const WORDS_DATA = {
       "word": "AUTO",
       "emoji": "🚗",
       "hint": "Jedzie szybko po drodze"
+    },
+    {
+      "word": "MYSZ",
+      "emoji": "🐭",
+      "hint": "Mała, szara, lubi ser (litery SZ)"
     },
     {
       "word": "KOŁO",
