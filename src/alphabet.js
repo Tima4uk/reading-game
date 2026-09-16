@@ -73,20 +73,25 @@ export class AlphabetGame {
 
   render() {
     const isRu = this.lang === 'ru';
+    const isPl = this.lang === 'pl';
     const data = ALPHABET_DATA[this.lang];
+
+    const exploreTab = isRu ? 'Все буквы' : (isPl ? 'Wszystkie litery' : 'All Letters');
+    const quizTab = isRu ? 'Где буква?' : (isPl ? 'Gdzie jest litera?' : 'Where is Letter?');
+    const puzzleTab = isRu ? 'Собери букву' : (isPl ? 'Złóż literkę' : 'Build a Letter');
 
     this.container.innerHTML = `
       <div class="ab-wrapper">
         <!-- Мини-переключатель режимов Азбуки -->
         <div class="ab-subnav">
           <button class="ab-subnav-btn ${this.subMode === 'explore' ? 'active' : ''}" id="ab-btn-explore">
-            📖 ${isRu ? 'Все буквы' : 'Wszystkie litery'}
+            📖 ${exploreTab}
           </button>
           <button class="ab-subnav-btn ${this.subMode === 'quiz' ? 'active' : ''}" id="ab-btn-quiz">
-            🎯 ${isRu ? 'Где буква?' : 'Gdzie jest litera?'}
+            🎯 ${quizTab}
           </button>
           <button class="ab-subnav-btn ${this.subMode === 'puzzle' ? 'active' : ''}" id="ab-btn-puzzle">
-            🧩 ${isRu ? 'Собери букву' : 'Złóż literkę'}
+            🧩 ${puzzleTab}
           </button>
         </div>
 
@@ -125,6 +130,8 @@ export class AlphabetGame {
 
   renderLetterModalContent(item) {
     const isRu = this.lang === 'ru';
+    const isPl = this.lang === 'pl';
+    const speakText = isRu ? 'Послушать' : (isPl ? 'Posłuchaj' : 'Listen');
     return `
       <div class="ab-modal-backdrop" id="ab-modal-close-bg"></div>
       <div class="ab-modal-box">
@@ -139,7 +146,7 @@ export class AlphabetGame {
         <div class="ab-modal-actions">
           <button class="ab-action-btn" id="ab-btn-prev">◀</button>
           <button class="ab-sound-btn" id="ab-btn-speak">
-            🔊 ${isRu ? 'Послушать' : 'Posłuchaj'}
+            🔊 ${speakText}
           </button>
           <button class="ab-action-btn" id="ab-btn-next">▶</button>
         </div>
@@ -230,15 +237,23 @@ export class AlphabetGame {
 
   renderQuizHTML() {
     const isRu = this.lang === 'ru';
+    const isPl = this.lang === 'pl';
+    const promptText = isRu ? 'Где буква' : (isPl ? 'Gdzie jest litera' : 'Where is letter');
+    const repeatText = isRu ? 'Повторить' : (isPl ? 'Powtórz' : 'Repeat');
+    const repeatTitle = isRu ? 'Повторить вопрос' : (isPl ? 'Powtórz pytanie' : 'Repeat question');
+    const feedbackDefault = isRu 
+      ? 'Нажми на правильную букву!' 
+      : (isPl ? 'Kliknij na odpowiednią literę!' : 'Tap the correct letter!');
+
     return `
       <div class="ab-quiz-box">
         <div class="ab-quiz-header">
           <div class="ab-quiz-prompt">
-            ${isRu ? 'Где буква' : 'Gdzie jest litera'} 
+            ${promptText} 
             <span class="ab-target-letter-badge">${this.quizTarget.letter}</span> ?
           </div>
-          <button class="ab-quiz-repeat-btn" id="ab-quiz-repeat" title="Повторить вопрос">
-            🔊 ${isRu ? 'Повторить' : 'Powtórz'}
+          <button class="ab-quiz-repeat-btn" id="ab-quiz-repeat" title="${repeatTitle}">
+            🔊 ${repeatText}
           </button>
         </div>
 
@@ -253,7 +268,7 @@ export class AlphabetGame {
         </div>
 
         <div class="ab-quiz-feedback" id="ab-quiz-feedback">
-          ${isRu ? 'Нажми на правильную букву!' : 'Kliknij na odpowiednią literę!'}
+          ${feedbackDefault}
         </div>
       </div>
     `;
@@ -263,6 +278,7 @@ export class AlphabetGame {
     if (this.quizAnswered) return;
 
     const isRu = this.lang === 'ru';
+    const isPl = this.lang === 'pl';
     const feedbackEl = this.container.querySelector('#ab-quiz-feedback');
 
     if (letter === this.quizTarget.letter) {
@@ -272,8 +288,9 @@ export class AlphabetGame {
       sound.playSuccess();
       sound.speakLetterAndWord(this.quizTarget.letter, this.quizTarget.word, this.lang);
 
+      const successExcl = isRu ? 'Ура! Правильно!' : (isPl ? 'Brawo! Dobrze!' : 'Great job! Correct!');
       if (feedbackEl) {
-        feedbackEl.innerHTML = `⭐ <strong>${isRu ? 'Ура! Правильно!' : 'Brawo! Dobrze!'}</strong>`;
+        feedbackEl.innerHTML = `⭐ <strong>${successExcl}</strong>`;
         feedbackEl.style.color = '#10b981';
       }
 
@@ -296,7 +313,9 @@ export class AlphabetGame {
       if (feedbackEl) {
         feedbackEl.textContent = isRu 
           ? `Это буква ${letter} (${chosenWord}). Попробуй еще!` 
-          : `To jest litera ${letter} (${chosenWord}). Spróbuj jeszcze raz!`;
+          : (isPl
+              ? `To jest litera ${letter} (${chosenWord}). Spróbuj jeszcze raz!`
+              : `That is letter ${letter} (${chosenWord}). Try again!`);
         feedbackEl.style.color = '#ef4444';
       }
 

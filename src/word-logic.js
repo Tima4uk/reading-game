@@ -41,16 +41,20 @@ export class WordLogicGame {
 
   render() {
     const isRu = this.lang === 'ru';
+    const isPl = this.lang === 'pl';
+
+    const rhymeTab = isRu ? 'Найди рифму' : (isPl ? 'Znajdź rym' : 'Find Rhyme');
+    const oddTab = isRu ? 'Лишнее слово' : (isPl ? 'Co nie pasuje?' : 'Odd One Out');
 
     this.container.innerHTML = `
       <div class="wl-wrapper">
         <!-- Переключатель подрежимов -->
         <div class="wl-subnav">
           <button class="wl-subnav-btn ${this.subMode === 'rhyme' ? 'active' : ''}" id="wl-btn-rhyme">
-            🎵 ${isRu ? 'Найди рифму' : 'Znajdź rym'}
+            🎵 ${rhymeTab}
           </button>
           <button class="wl-subnav-btn ${this.subMode === 'odd' ? 'active' : ''}" id="wl-btn-odd">
-            🧠 ${isRu ? 'Лишнее слово' : 'Co nie pasuje?'}
+            🧠 ${oddTab}
           </button>
         </div>
 
@@ -68,6 +72,7 @@ export class WordLogicGame {
   // ==========================================
   renderRhymeHTML() {
     const isRu = this.lang === 'ru';
+    const isPl = this.lang === 'pl';
     const round = this.shuffledRhymes[this.currentRhymeIndex % this.shuffledRhymes.length];
 
     // Варианты ответов: 1 правильный + дистракторы
@@ -75,16 +80,20 @@ export class WordLogicGame {
       round.optionsCache = [round.correct, ...round.distractors].sort(() => 0.5 - Math.random());
     }
 
+    const promptText = isRu ? 'Подбери рифму к слову:' : (isPl ? 'Dobierz rym do słowa:' : 'Find the rhyming word for:');
+    const soundTitle = isRu ? 'Послушать' : (isPl ? 'Posłuchaj' : 'Listen');
+    const feedbackPrompt = isRu ? 'Что звучит складно?' : (isPl ? 'Co brzmi podobnie?' : 'Which words sound alike?');
+
     return `
       <div class="wl-box">
         <div class="wl-prompt">
-          ${isRu ? 'Подбери рифму к слову:' : 'Dobierz rym do słowa:'}
+          ${promptText}
         </div>
 
         <div class="wl-target-card" id="wl-target-rhyme">
           <span class="wl-target-emoji">${round.target.emoji}</span>
           <span class="wl-target-word">${round.target.word}</span>
-          <span class="wl-sound-icon" title="Послушать">🔊</span>
+          <span class="wl-sound-icon" title="${soundTitle}">🔊</span>
         </div>
 
         <div class="wl-options-grid">
@@ -97,7 +106,7 @@ export class WordLogicGame {
         </div>
 
         <div class="wl-feedback" id="wl-feedback">
-          ${isRu ? 'Что звучит складно?' : 'Co brzmi podobnie?'}
+          ${feedbackPrompt}
         </div>
       </div>
     `;
@@ -107,6 +116,7 @@ export class WordLogicGame {
     if (this.roundAnswered) return;
 
     const isRu = this.lang === 'ru';
+    const isPl = this.lang === 'pl';
     const round = this.shuffledRhymes[this.currentRhymeIndex % this.shuffledRhymes.length];
     const feedbackEl = this.container.querySelector('#wl-feedback');
 
@@ -116,8 +126,9 @@ export class WordLogicGame {
       sound.playSuccess();
       sound.speakRhyme(round.target.word, round.correct.word, this.lang);
 
+      const rhymeExcl = isRu ? 'В рифму!' : (isPl ? 'Rymuje się!' : 'They rhyme!');
       if (feedbackEl) {
-        feedbackEl.innerHTML = `⭐ <strong>${round.target.word} — ${round.correct.word}! ${isRu ? 'В рифму!' : 'Rymuje się!'}</strong>`;
+        feedbackEl.innerHTML = `⭐ <strong>${round.target.word} — ${round.correct.word}! ${rhymeExcl}</strong>`;
         feedbackEl.style.color = '#10b981';
       }
 
@@ -137,7 +148,9 @@ export class WordLogicGame {
       if (feedbackEl) {
         feedbackEl.textContent = isRu 
           ? `«${chosenWord}» не рифмуется с «${round.target.word}». Попробуй еще!` 
-          : `«${chosenWord}» nie rymuje się z «${round.target.word}». Spróbuj jeszcze!`;
+          : (isPl 
+              ? `«${chosenWord}» nie rymuje się z «${round.target.word}». Spróbuj jeszcze raz!` 
+              : `"${chosenWord}" does not rhyme with "${round.target.word}". Try again!`);
         feedbackEl.style.color = '#ef4444';
       }
 
@@ -150,12 +163,18 @@ export class WordLogicGame {
   // ==========================================
   renderOddHTML() {
     const isRu = this.lang === 'ru';
+    const isPl = this.lang === 'pl';
     const round = this.shuffledOdds[this.currentOddIndex % this.shuffledOdds.length];
+
+    const promptText = isRu ? 'Какое слово здесь лишнее?' : (isPl ? 'Które słowo tu nie pasuje?' : 'Which word does not belong?');
+    const feedbackPrompt = isRu 
+      ? 'Прочитай слова и найди то, что не подходит к остальным!' 
+      : (isPl ? 'Przeczytaj słowa i wskaż to, które nie pasuje!' : 'Read the words and find the one that doesn’t fit!');
 
     return `
       <div class="wl-box">
         <div class="wl-prompt">
-          ${isRu ? 'Какое слово здесь лишнее?' : 'Które słowo tu nie pasuje?'}
+          ${promptText}
         </div>
 
         <div class="wl-odd-grid">
@@ -168,7 +187,7 @@ export class WordLogicGame {
         </div>
 
         <div class="wl-feedback" id="wl-feedback">
-          ${isRu ? 'Прочитай слова и найди то, что не подходит к остальным!' : 'Przeczytaj słowa i wskaż to, które nie pasuje!'}
+          ${feedbackPrompt}
         </div>
       </div>
     `;
@@ -178,6 +197,7 @@ export class WordLogicGame {
     if (this.roundAnswered) return;
 
     const isRu = this.lang === 'ru';
+    const isPl = this.lang === 'pl';
     const round = this.shuffledOdds[this.currentOddIndex % this.shuffledOdds.length];
     const feedbackEl = this.container.querySelector('#wl-feedback');
 
@@ -208,7 +228,9 @@ export class WordLogicGame {
       if (feedbackEl) {
         feedbackEl.textContent = isRu 
           ? `«${chosenWord}» подходит к группе. Ищи другое!` 
-          : `«${chosenWord}» pasuje do reszty. Szukaj dalej!`;
+          : (isPl
+              ? `«${chosenWord}» pasuje do reszty. Szukaj dalej!`
+              : `"${chosenWord}" fits with the group. Look for another!`);
         feedbackEl.style.color = '#ef4444';
       }
 

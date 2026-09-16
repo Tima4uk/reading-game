@@ -24,6 +24,7 @@ class App {
     this.starCountEl = document.getElementById('star-count');
     this.btnLangRu = document.getElementById('btn-lang-ru');
     this.btnLangPl = document.getElementById('btn-lang-pl');
+    this.btnLangEn = document.getElementById('btn-lang-en');
     this.btnModeSearch = document.getElementById('tab-search');
     this.btnModeBuilder = document.getElementById('tab-builder');
     this.btnModeLogic = document.getElementById('tab-logic');
@@ -91,6 +92,9 @@ class App {
     // Переключение языков
     this.btnLangRu.addEventListener('click', () => this.setLanguage('ru'));
     this.btnLangPl.addEventListener('click', () => this.setLanguage('pl'));
+    if (this.btnLangEn) {
+      this.btnLangEn.addEventListener('click', () => this.setLanguage('en'));
+    }
 
     // Переключение режимов игры
     this.btnModeSearch.addEventListener('click', () => this.switchMode('search'));
@@ -145,6 +149,9 @@ class App {
 
     this.btnLangRu.classList.toggle('active', lang === 'ru');
     this.btnLangPl.classList.toggle('active', lang === 'pl');
+    if (this.btnLangEn) {
+      this.btnLangEn.classList.toggle('active', lang === 'en');
+    }
 
     this.updateLanguageUI();
 
@@ -189,35 +196,58 @@ class App {
   }
 
   updateLanguageUI() {
-    const isRu = this.currentLang === 'ru';
-    document.getElementById('app-title').textContent = isRu ? 'Словознайка' : 'Słowotwórca';
-    this.btnModeSearch.querySelector('.tab-text').textContent = isRu ? 'Сетка' : 'Wykreślanka';
-    this.btnModeBuilder.querySelector('.tab-text').textContent = isRu ? 'Слово' : 'Słowa';
+    const lang = this.currentLang;
+    const isRu = lang === 'ru';
+    const isPl = lang === 'pl';
+    const isEn = lang === 'en';
+
+    document.getElementById('app-title').textContent = isRu 
+      ? 'Словознайка' 
+      : (isPl ? 'Słowotwórca' : 'WordQuest');
+
+    this.btnModeSearch.querySelector('.tab-text').textContent = isRu 
+      ? 'Сетка' 
+      : (isPl ? 'Wykreślanka' : 'Search');
+
+    this.btnModeBuilder.querySelector('.tab-text').textContent = isRu 
+      ? 'Слово' 
+      : (isPl ? 'Słowa' : 'Builder');
+
     if (this.btnModeLogic) {
-      this.btnModeLogic.querySelector('.tab-text').textContent = isRu ? 'Логика' : 'Logika';
+      this.btnModeLogic.querySelector('.tab-text').textContent = isRu 
+        ? 'Логика' 
+        : (isPl ? 'Logika' : 'Logic');
     }
     if (this.btnModeAlphabet) {
-      this.btnModeAlphabet.querySelector('.tab-text').textContent = isRu ? 'Азбука' : 'Alfabet';
+      this.btnModeAlphabet.querySelector('.tab-text').textContent = isRu 
+        ? 'Азбука' 
+        : (isPl ? 'Alfabet' : 'ABC');
     }
 
     const modalTitle = document.getElementById('modal-title');
     const modalSubtitle = document.querySelector('.modal-subtitle');
     const modalBtn = document.getElementById('btn-next-round');
     if (modalTitle) {
-      modalTitle.textContent = isRu ? 'Ура! Все слова найдены!' : 'Brawo! Wszystkie słowa odnalezione!';
+      modalTitle.textContent = isRu 
+        ? 'Ура! Все слова найдены!' 
+        : (isPl ? 'Brawo! Wszystkie słowa odnalezione!' : 'Awesome! All words found!');
     }
     if (modalSubtitle) {
-      modalSubtitle.textContent = isRu ? '+3 ⭐ в копилку!' : '+3 ⭐ do skarbonki!';
+      modalSubtitle.textContent = isRu 
+        ? '+3 ⭐ в копилку!' 
+        : (isPl ? '+3 ⭐ do skarbonki!' : '+3 ⭐ added to bank!');
     }
     if (modalBtn) {
-      modalBtn.textContent = isRu ? 'Играть ещё! 🚀' : 'Graj dalej! 🚀';
+      modalBtn.textContent = isRu 
+        ? 'Играть ещё! 🚀' 
+        : (isPl ? 'Graj dalej! 🚀' : 'Play again! 🚀');
     }
 
     const footerSpan = document.querySelector('.app-footer span');
     if (footerSpan) {
       footerSpan.textContent = isRu 
         ? 'Нажимай на слова, чтобы услышать, как они звучат! 🔊' 
-        : 'Dotknij słowa, aby usłyszeć jak brzmi! 🔊';
+        : (isPl ? 'Dotknij słowa, aby usłyszeć jak brzmi! 🔊' : 'Tap on words to hear how they sound! 🔊');
     }
   }
 

@@ -43,11 +43,17 @@ class SoundEngine {
     }
   }
 
+  getLangTag(lang) {
+    if (lang === 'pl') return 'pl-PL';
+    if (lang === 'en') return 'en-US';
+    return 'ru-RU';
+  }
+
   getVoice(langCode) {
     if (!this.voices || this.voices.length === 0) {
       this.voices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
     }
-    const prefix = langCode === 'ru' ? 'ru' : 'pl';
+    const prefix = langCode === 'ru' ? 'ru' : (langCode === 'pl' ? 'pl' : 'en');
     // Ищем подходящий голос
     const match = this.voices.find(v => v.lang && v.lang.toLowerCase().startsWith(prefix));
     return match || null;
@@ -59,7 +65,7 @@ class SoundEngine {
     window.speechSynthesis.cancel(); // останавливаем предыдущую речь
 
     const utterance = new SpeechSynthesisUtterance(letter.toLowerCase());
-    utterance.lang = lang === 'ru' ? 'ru-RU' : 'pl-PL';
+    utterance.lang = this.getLangTag(lang);
     utterance.rate = 0.85; // чуть медленнее для четкости
     utterance.pitch = 1.05;
 
@@ -75,7 +81,7 @@ class SoundEngine {
     window.speechSynthesis.cancel();
 
     const utterance = new SpeechSynthesisUtterance(word.toLowerCase());
-    utterance.lang = lang === 'ru' ? 'ru-RU' : 'pl-PL';
+    utterance.lang = this.getLangTag(lang);
     utterance.rate = 0.8;
     utterance.pitch = 1.05;
 
@@ -85,14 +91,14 @@ class SoundEngine {
     window.speechSynthesis.speak(utterance);
   }
 
-  // Озвучивание буквы и слова для малыша: "К! Кот!" / "Ż! Żaba!"
+  // Озвучивание буквы и слова для малыша: "К! Кот!" / "Ż! Żaba!" / "A! Apple!"
   speakLetterAndWord(letter, word, lang = 'ru') {
     if (!this.speechEnabled || !('speechSynthesis' in window)) return;
     window.speechSynthesis.cancel();
 
     const text = `${letter}! ${word}`;
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = lang === 'ru' ? 'ru-RU' : 'pl-PL';
+    utterance.lang = this.getLangTag(lang);
     utterance.rate = 0.85;
     utterance.pitch = 1.1;
 
@@ -102,14 +108,16 @@ class SoundEngine {
     window.speechSynthesis.speak(utterance);
   }
 
-  // Озвучивание вопроса викторины: "Где буква М?" / "Gdzie jest litera M?"
+  // Озвучивание вопроса викторины
   speakQuestion(letter, lang = 'ru') {
     if (!this.speechEnabled || !('speechSynthesis' in window)) return;
     window.speechSynthesis.cancel();
 
-    const text = lang === 'ru' ? `Где буква ${letter}?` : `Gdzie jest litera ${letter}?`;
+    const text = lang === 'ru' 
+      ? `Где буква ${letter}?` 
+      : (lang === 'pl' ? `Gdzie jest litera ${letter}?` : `Where is letter ${letter}?`);
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = lang === 'ru' ? 'ru-RU' : 'pl-PL';
+    utterance.lang = this.getLangTag(lang);
     utterance.rate = 0.85;
     utterance.pitch = 1.1;
 
@@ -126,9 +134,9 @@ class SoundEngine {
 
     const text = lang === 'ru' 
       ? `${word1} и ${word2}! Звучит в рифму!` 
-      : `${word1} i ${word2}! To się rymuje!`;
+      : (lang === 'pl' ? `${word1} i ${word2}! To się rymuje!` : `${word1} and ${word2}! They rhyme!`);
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = lang === 'ru' ? 'ru-RU' : 'pl-PL';
+    utterance.lang = this.getLangTag(lang);
     utterance.rate = 0.85;
     utterance.pitch = 1.05;
 
@@ -144,7 +152,7 @@ class SoundEngine {
     window.speechSynthesis.cancel();
 
     const utterance = new SpeechSynthesisUtterance(explanation);
-    utterance.lang = lang === 'ru' ? 'ru-RU' : 'pl-PL';
+    utterance.lang = this.getLangTag(lang);
     utterance.rate = 0.9;
     utterance.pitch = 1.05;
 
@@ -160,7 +168,7 @@ class SoundEngine {
     window.speechSynthesis.cancel();
 
     const utterance = new SpeechSynthesisUtterance(phrase);
-    utterance.lang = lang === 'ru' ? 'ru-RU' : 'pl-PL';
+    utterance.lang = this.getLangTag(lang);
     utterance.rate = 0.95;
     utterance.pitch = 1.1;
 

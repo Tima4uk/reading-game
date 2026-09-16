@@ -91,17 +91,25 @@ export class WordBuilderGame {
   render() {
     const isCompleted = this.isCompleted;
     const isRu = this.lang === 'ru';
+    const isPl = this.lang === 'pl';
     const isHard = this.difficulty === 'hard';
+
+    const easyLabel = isRu ? 'Легкий (3-4 буквы)' : (isPl ? 'Łatwy (3-4 litery)' : 'Easy (3-4 letters)');
+    const hardLabel = isRu ? 'Мастер (5-9 букв)' : (isPl ? 'Mistrz (5-9 liter)' : 'Master (5-9 letters)');
+    const listenTitle = isRu ? 'Послушать' : (isPl ? 'Posłuchaj' : 'Listen');
+    const listenText = isRu ? 'Послушать слово' : (isPl ? 'Posłuchaj słowa' : 'Listen to word');
+    const hintLabel = isRu ? 'Подсказка' : (isPl ? 'Podpowiedź' : 'Hint');
+    const clearLabel = isRu ? 'Стереть' : (isPl ? 'Wyczyść' : 'Clear');
 
     this.container.innerHTML = `
       <div class="wb-game ${isHard ? 'wb-hard-mode' : ''}">
         <!-- Переключатель сложности -->
         <div class="ws-diff-bar">
           <button class="ws-diff-btn ${!isHard ? 'active' : ''}" id="wb-diff-easy">
-            🐣 ${isRu ? 'Легкий (3-4 буквы)' : 'Łatwy (3-4 litery)'}
+            🐣 ${easyLabel}
           </button>
           <button class="ws-diff-btn ${isHard ? 'active' : ''}" id="wb-diff-hard">
-            🚀 ${isRu ? 'Мастер (5-9 букв)' : 'Mistrz (5-9 liter)'}
+            🚀 ${hardLabel}
           </button>
         </div>
 
@@ -111,8 +119,8 @@ export class WordBuilderGame {
             <span class="wb-emoji">${this.currentWordItem.emoji}</span>
           </div>
           <div class="wb-hint-text">${this.currentWordItem.hint}</div>
-          <button class="wb-listen-btn" id="wb-listen-btn" title="${isRu ? 'Послушать' : 'Posłuchaj'}">
-            🔊 ${isRu ? 'Послушать слово' : 'Posłuchaj słowa'}
+          <button class="wb-listen-btn" id="wb-listen-btn" title="${listenTitle}">
+            🔊 ${listenText}
           </button>
         </div>
 
@@ -147,10 +155,10 @@ export class WordBuilderGame {
         <!-- Кнопки управления: Подсказка и Очистить -->
         <div class="wb-controls">
           <button class="wb-ctrl-btn btn-hint" id="wb-hint-btn">
-            💡 ${this.lang === 'ru' ? 'Подсказка' : 'Podpowiedź'}
+            💡 ${hintLabel}
           </button>
           <button class="wb-ctrl-btn btn-clear" id="wb-clear-btn">
-            ↺ ${this.lang === 'ru' ? 'Стереть' : 'Wyczyść'}
+            ↺ ${clearLabel}
           </button>
         </div>
       </div>

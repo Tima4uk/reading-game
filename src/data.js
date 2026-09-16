@@ -10,6 +10,11 @@ export const RUSSIAN_ALPHABET = [
   'П', 'Р', 'С', 'Т', 'У', 'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Щ', 'Ъ', 'Ы', 'Ь', 'Э', 'Ю', 'Я'
 ];
 
+export const ENGLISH_ALPHABET = [
+  'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+  'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
+];
+
 // Данные интерактивной Азбуки для 4.5 лет: Буква, Эмодзи, Слово-ассоциация
 export const ALPHABET_DATA = {
   ru: [
@@ -80,13 +85,42 @@ export const ALPHABET_DATA = {
     { letter: 'Z', emoji: '🏰', word: 'Zamek' },
     { letter: 'Ź', emoji: '🐴', word: 'Źrebię' },
     { letter: 'Ż', emoji: '🐸', word: 'Żaba' }
+  ],
+  en: [
+    { letter: 'A', emoji: '🍎', word: 'Apple' },
+    { letter: 'B', emoji: '🐻', word: 'Bear' },
+    { letter: 'C', emoji: '🐱', word: 'Cat' },
+    { letter: 'D', emoji: '🐶', word: 'Dog' },
+    { letter: 'E', emoji: '🐘', word: 'Elephant' },
+    { letter: 'F', emoji: '🐟', word: 'Fish' },
+    { letter: 'G', emoji: '🦒', word: 'Giraffe' },
+    { letter: 'H', emoji: '🏠', word: 'House' },
+    { letter: 'I', emoji: '🍦', word: 'Ice cream' },
+    { letter: 'J', emoji: '🧃', word: 'Juice' },
+    { letter: 'K', emoji: '🪁', word: 'Kite' },
+    { letter: 'L', emoji: '🦁', word: 'Lion' },
+    { letter: 'M', emoji: '🐵', word: 'Monkey' },
+    { letter: 'N', emoji: '👃', word: 'Nose' },
+    { letter: 'O', emoji: '🍊', word: 'Orange' },
+    { letter: 'P', emoji: '🐼', word: 'Panda' },
+    { letter: 'Q', emoji: '👑', word: 'Queen' },
+    { letter: 'R', emoji: '🚀', word: 'Rocket' },
+    { letter: 'S', emoji: '☀️', word: 'Sun' },
+    { letter: 'T', emoji: '🐯', word: 'Tiger' },
+    { letter: 'U', emoji: '☂️', word: 'Umbrella' },
+    { letter: 'V', emoji: '🎻', word: 'Violin' },
+    { letter: 'W', emoji: '🐺', word: 'Wolf' },
+    { letter: 'X', emoji: '📦', word: 'Fox / Box' },
+    { letter: 'Y', emoji: '🪀', word: 'Yo-yo' },
+    { letter: 'Z', emoji: '🦓', word: 'Zebra' }
   ]
 };
 
 // Гласные для цветового кодирования (гласные - розово-красные, согласные - сине-голубые)
 export const VOWELS = {
   ru: new Set(['А', 'Е', 'Ё', 'И', 'О', 'У', 'Ы', 'Э', 'Ю', 'Я']),
-  pl: new Set(['A', 'Ą', 'E', 'Ę', 'I', 'O', 'Ó', 'U', 'Y'])
+  pl: new Set(['A', 'Ą', 'E', 'Ę', 'I', 'O', 'Ó', 'U', 'Y']),
+  en: new Set(['A', 'E', 'I', 'O', 'U', 'Y'])
 };
 
 export const WORDS_DATA = {
@@ -189,6 +223,60 @@ export const WORDS_DATA = {
     { word: 'MOTYL', emoji: '🦋', hint: 'Kolorowy na łące' },
     { word: 'POCIĄG', emoji: '🚂', hint: 'Jedzie po torach (litera Ą)' },
     { word: 'ZAJĄC', emoji: '🐇', hint: 'Kica po trawie (litera Ą)' }
+  ],
+  en: [
+    // 3 letters
+    { word: 'CAT', emoji: '🐱', hint: 'Says meow and purrs' },
+    { word: 'DOG', emoji: '🐶', hint: 'Barks and wags tail' },
+    { word: 'SUN', emoji: '☀️', hint: 'Shines warm and bright' },
+    { word: 'FOX', emoji: '🦊', hint: 'Clever and orange' },
+    { word: 'PIG', emoji: '🐷', hint: 'Oink-oink on the farm' },
+    { word: 'CAR', emoji: '🚗', hint: 'Drives on the road' },
+    { word: 'BUS', emoji: '🚌', hint: 'Big yellow transport' },
+    { word: 'BAT', emoji: '🦇', hint: 'Flies in the night' },
+    { word: 'HAT', emoji: '🎩', hint: 'We wear on head' },
+    { word: 'BEE', emoji: '🐝', hint: 'Bumbles and makes honey' },
+    { word: 'BED', emoji: '🛏️', hint: 'Where we sleep at night' },
+    { word: 'EGG', emoji: '🥚', hint: 'Breakfast from hen' },
+    { word: 'BOX', emoji: '📦', hint: 'Holds toys and gifts' },
+    { word: 'CUP', emoji: '☕', hint: 'For milk or tea' },
+
+    // 4 letters
+    { word: 'FISH', emoji: '🐟', hint: 'Swims in water' },
+    { word: 'BIRD', emoji: '🐦', hint: 'Sings on branches' },
+    { word: 'FROG', emoji: '🐸', hint: 'Jumps and ribbits' },
+    { word: 'DUCK', emoji: '🦆', hint: 'Quack-quack in pond' },
+    { word: 'BEAR', emoji: '🐻', hint: 'Big furry forest animal' },
+    { word: 'LION', emoji: '🦁', hint: 'King of animals' },
+    { word: 'WOLF', emoji: '🐺', hint: 'Howls at moon' },
+    { word: 'STAR', emoji: '⭐', hint: 'Twinkles in sky' },
+    { word: 'MOON', emoji: '🌙', hint: 'Glows at night' },
+    { word: 'SNOW', emoji: '⛄', hint: 'White and cold' },
+    { word: 'TREE', emoji: '🌳', hint: 'Tall with green leaves' },
+    { word: 'BOOK', emoji: '📖', hint: 'Full of fairy tales' },
+    { word: 'BALL', emoji: '⚽', hint: 'Round toy to kick' },
+    { word: 'CAKE', emoji: '🎂', hint: 'Sweet birthday treat' },
+    { word: 'MILK', emoji: '🥛', hint: 'Healthy white drink' },
+    { word: 'ROSE', emoji: '🌹', hint: 'Fragrant flower' },
+    { word: 'BOAT', emoji: '⛵', hint: 'Sails on water' },
+    { word: 'RING', emoji: '💍', hint: 'Shiny jewelry' },
+    { word: 'KITE', emoji: '🪁', hint: 'Flies high in wind' },
+
+    // 5-6 letters
+    { word: 'APPLE', emoji: '🍎', hint: 'Crunchy sweet fruit' },
+    { word: 'HOUSE', emoji: '🏠', hint: 'Warm and cozy home' },
+    { word: 'WATER', emoji: '💧', hint: 'We drink every day' },
+    { word: 'PANDA', emoji: '🐼', hint: 'Black and white bear' },
+    { word: 'TIGER', emoji: '🐯', hint: 'Big striped cat' },
+    { word: 'ZEBRA', emoji: '🦓', hint: 'Horse with stripes' },
+    { word: 'TRAIN', emoji: '🚂', hint: 'Choo-choo on tracks' },
+    { word: 'PLANE', emoji: '✈️', hint: 'Flies above clouds' },
+    { word: 'CLOCK', emoji: '⏰', hint: 'Tells what time it is' },
+    { word: 'BREAD', emoji: '🍞', hint: 'From the bakery' },
+    { word: 'SMILE', emoji: '😊', hint: 'Happy joyful face' },
+    { word: 'FLOWER', emoji: '🌸', hint: 'Blooms in garden' },
+    { word: 'MONKEY', emoji: '🐵', hint: 'Loves bananas' },
+    { word: 'RABBIT', emoji: '🐰', hint: 'Hops with long ears' }
   ]
 };
 
@@ -236,6 +324,27 @@ export const WORDS_DATA_HARD = {
     { word: 'ТЕЛЕВИЗОР', emoji: '📺', hint: 'показывает передачи' },
     { word: 'ЧЕРЕПАХА', emoji: '🐢', hint: 'с крепким панцирем' },
     { word: 'СНЕГОВИК', emoji: '⛄', hint: 'из снега с морковкой' }
+  ],
+  en: [
+    { word: 'BUTTERFLY', emoji: '🦋', hint: 'бабочка' },
+    { word: 'ELEPHANT', emoji: '🐘', hint: 'слон' },
+    { word: 'RAINBOW', emoji: '🌈', hint: 'радуга' },
+    { word: 'SUNSHINE', emoji: '☀️', hint: 'солнечный свет' },
+    { word: 'PENGUIN', emoji: '🐧', hint: 'пингвин' },
+    { word: 'DOLPHIN', emoji: '🐬', hint: 'дельфин' },
+    { word: 'ASTRONAUT', emoji: '👨‍🚀', hint: 'астронавт / космонавт' },
+    { word: 'CHOCOLATE', emoji: '🍫', hint: 'шоколад' },
+    { word: 'DINOSAUR', emoji: '🦖', hint: 'динозавр' },
+    { word: 'STRAWBERRY', emoji: '🍓', hint: 'клубника' },
+    { word: 'ADVENTURE', emoji: '🗺️', hint: 'приключение' },
+    { word: 'FIRETRUCK', emoji: '🚒', hint: 'пожарная машина' },
+    { word: 'CROCODILE', emoji: '🐊', hint: 'крокодил' },
+    { word: 'WATERMELON', emoji: '🍉', hint: 'арбуз' },
+    { word: 'KANGAROO', emoji: '🦘', hint: 'кенгуру' },
+    { word: 'JELLYFISH', emoji: '🪼', hint: 'медуза' },
+    { word: 'LIGHTNING', emoji: '⚡', hint: 'молния' },
+    { word: 'SNOWMAN', emoji: '⛄', hint: 'снеговик' },
+    { word: 'GIRAFFE', emoji: '🦒', hint: 'жираф' }
   ]
 };
 
@@ -257,6 +366,15 @@ export const PRAISE_PHRASES = {
     'Doskonale!',
     'Jesteś mistrzem!',
     'Bardzo ładnie!'
+  ],
+  en: [
+    'Great job!',
+    'Awesome!',
+    'Well done!',
+    'Superstar!',
+    'Brilliant!',
+    'Fantastic!',
+    'Keep it up!'
   ]
 };
 
@@ -467,6 +585,104 @@ export const RHYMES_DATA = {
         { word: 'MIŚ', emoji: '🧸' }
       ]
     }
+  ],
+  en: [
+    {
+      target: { word: 'CAT', emoji: '🐱' },
+      correct: { word: 'HAT', emoji: '🎩' },
+      distractors: [
+        { word: 'DOG', emoji: '🐶' },
+        { word: 'PIG', emoji: '🐷' }
+      ]
+    },
+    {
+      target: { word: 'DOG', emoji: '🐶' },
+      correct: { word: 'FROG', emoji: '🐸' },
+      distractors: [
+        { word: 'CAR', emoji: '🚗' },
+        { word: 'BEE', emoji: '🐝' }
+      ]
+    },
+    {
+      target: { word: 'SUN', emoji: '☀️' },
+      correct: { word: 'RUN', emoji: '🏃' },
+      distractors: [
+        { word: 'FOX', emoji: '🦊' },
+        { word: 'HAT', emoji: '🎩' }
+      ]
+    },
+    {
+      target: { word: 'FOX', emoji: '🦊' },
+      correct: { word: 'BOX', emoji: '📦' },
+      distractors: [
+        { word: 'FISH', emoji: '🐟' },
+        { word: 'BOOK', emoji: '📖' }
+      ]
+    },
+    {
+      target: { word: 'BEAR', emoji: '🐻' },
+      correct: { word: 'PEAR', emoji: '🍐' },
+      distractors: [
+        { word: 'WOLF', emoji: '🐺' },
+        { word: 'DUCK', emoji: '🦆' }
+      ]
+    },
+    {
+      target: { word: 'STAR', emoji: '⭐' },
+      correct: { word: 'CAR', emoji: '🚗' },
+      distractors: [
+        { word: 'MOON', emoji: '🌙' },
+        { word: 'TREE', emoji: '🌳' }
+      ]
+    },
+    {
+      target: { word: 'FISH', emoji: '🐟' },
+      correct: { word: 'DISH', emoji: '🍽️' },
+      distractors: [
+        { word: 'BOAT', emoji: '⛵' },
+        { word: 'BIRD', emoji: '🐦' }
+      ]
+    },
+    {
+      target: { word: 'BEE', emoji: '🐝' },
+      correct: { word: 'TREE', emoji: '🌳' },
+      distractors: [
+        { word: 'ANT', emoji: '🐜' },
+        { word: 'FROG', emoji: '🐸' }
+      ]
+    },
+    {
+      target: { word: 'BOAT', emoji: '⛵' },
+      correct: { word: 'COAT', emoji: '🧥' },
+      distractors: [
+        { word: 'SHIP', emoji: '🚢' },
+        { word: 'BOOT', emoji: '🥾' }
+      ]
+    },
+    {
+      target: { word: 'DUCK', emoji: '🦆' },
+      correct: { word: 'TRUCK', emoji: '🚚' },
+      distractors: [
+        { word: 'BIRD', emoji: '🐦' },
+        { word: 'HORSE', emoji: '🐎' }
+      ]
+    },
+    {
+      target: { word: 'CAKE', emoji: '🎂' },
+      correct: { word: 'SNAKE', emoji: '🐍' },
+      distractors: [
+        { word: 'BALL', emoji: '⚽' },
+        { word: 'RING', emoji: '💍' }
+      ]
+    },
+    {
+      target: { word: 'RING', emoji: '💍' },
+      correct: { word: 'KING', emoji: '👑' },
+      distractors: [
+        { word: 'GOLD', emoji: '🪙' },
+        { word: 'CROWN', emoji: '👑' }
+      ]
+    }
   ]
 };
 
@@ -647,6 +863,88 @@ export const ODD_ONE_OUT_DATA = {
       oddWord: 'PALMA',
       explanation: 'Palma rośnie w ciepłych krajach, a reszta to zima!'
     }
+  ],
+  en: [
+    {
+      items: [
+        { word: 'APPLE', emoji: '🍎' },
+        { word: 'BANANA', emoji: '🍌' },
+        { word: 'ORANGE', emoji: '🍊' },
+        { word: 'CAR', emoji: '🚗' }
+      ],
+      oddWord: 'CAR',
+      explanation: 'Car is a vehicle, the rest are fruits!'
+    },
+    {
+      items: [
+        { word: 'CAT', emoji: '🐱' },
+        { word: 'DOG', emoji: '🐶' },
+        { word: 'LION', emoji: '🦁' },
+        { word: 'AIRPLANE', emoji: '✈️' }
+      ],
+      oddWord: 'AIRPLANE',
+      explanation: 'Airplane flies with wings, the rest are animals!'
+    },
+    {
+      items: [
+        { word: 'HAT', emoji: '🧢' },
+        { word: 'SHIRT', emoji: '👕' },
+        { word: 'BOOTS', emoji: '👞' },
+        { word: 'PLATE', emoji: '🍽️' }
+      ],
+      oddWord: 'PLATE',
+      explanation: 'Plate is for food, the rest are clothes!'
+    },
+    {
+      items: [
+        { word: 'OAK', emoji: '🌳' },
+        { word: 'PINE', emoji: '🌲' },
+        { word: 'BIRCH', emoji: '🪵' },
+        { word: 'BALL', emoji: '⚽' }
+      ],
+      oddWord: 'BALL',
+      explanation: 'Ball is a toy, the rest are trees!'
+    },
+    {
+      items: [
+        { word: 'CARROT', emoji: '🥕' },
+        { word: 'CUCUMBER', emoji: '🥒' },
+        { word: 'TOMATO', emoji: '🍅' },
+        { word: 'BEAR', emoji: '🐻' }
+      ],
+      oddWord: 'BEAR',
+      explanation: 'Bear is an animal, the rest are vegetables!'
+    },
+    {
+      items: [
+        { word: 'TABLE', emoji: '🪑' },
+        { word: 'CHAIR', emoji: '🪑' },
+        { word: 'BED', emoji: '🛏️' },
+        { word: 'BREAD', emoji: '🍞' }
+      ],
+      oddWord: 'BREAD',
+      explanation: 'Bread is food to eat, the rest are furniture!'
+    },
+    {
+      items: [
+        { word: 'GUITAR', emoji: '🎸' },
+        { word: 'DRUM', emoji: '🥁' },
+        { word: 'TRUMPET', emoji: '🎺' },
+        { word: 'SPOON', emoji: '🥄' }
+      ],
+      oddWord: 'SPOON',
+      explanation: 'Spoon is cutlery, the rest are musical instruments!'
+    },
+    {
+      items: [
+        { word: 'SPRING', emoji: '🌱' },
+        { word: 'SUMMER', emoji: '☀️' },
+        { word: 'WINTER', emoji: '❄️' },
+        { word: 'CLOCK', emoji: '⏰' }
+      ],
+      oddWord: 'CLOCK',
+      explanation: 'Clock tells time, the rest are seasons!'
+    }
   ]
 };
 
@@ -798,6 +1096,54 @@ export const LETTER_PUZZLES_DATA = {
         { id: 'p2', type: 'diag-left', label: 'Skos Z' },
         { id: 'p3', type: 'h-bar', label: 'Dół Z' },
         { id: 'p4', type: 'dot-mark', label: 'Kropka Ż' }
+      ]
+    }
+  ],
+  en: [
+    {
+      letter: 'T',
+      word: 'Tiger',
+      emoji: '🐯',
+      parts: [
+        { id: 'p1', type: 'h-bar', label: 'Top bar' },
+        { id: 'p2', type: 'v-bar', label: 'Stem' }
+      ]
+    },
+    {
+      letter: 'L',
+      word: 'Lion',
+      emoji: '🦁',
+      parts: [
+        { id: 'p1', type: 'v-bar', label: 'Tall bar' },
+        { id: 'p2', type: 'h-half-bar', label: 'Foot' }
+      ]
+    },
+    {
+      letter: 'A',
+      word: 'Apple',
+      emoji: '🍎',
+      parts: [
+        { id: 'p1', type: 'diag-left', label: 'Left slide' },
+        { id: 'p2', type: 'diag-right', label: 'Right slide' },
+        { id: 'p3', type: 'h-mid-bar', label: 'Cross bridge' }
+      ]
+    },
+    {
+      letter: 'O',
+      word: 'Orange',
+      emoji: '🍊',
+      parts: [
+        { id: 'p1', type: 'arc-left', label: 'Left curve' },
+        { id: 'p2', type: 'arc-right', label: 'Right curve' }
+      ]
+    },
+    {
+      letter: 'P',
+      word: 'Panda',
+      emoji: '🐼',
+      parts: [
+        { id: 'p1', type: 'v-bar', label: 'Straight stem' },
+        { id: 'p2', type: 'arc-top-right', label: 'Round loop' }
       ]
     }
   ]

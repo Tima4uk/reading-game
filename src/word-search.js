@@ -1,5 +1,4 @@
-// Игровой режим: Сетка-поиск (Word Search / Wykreślanka)
-import { WORDS_DATA, WORDS_DATA_HARD, POLISH_ALPHABET, RUSSIAN_ALPHABET, VOWELS } from './data.js';
+import { WORDS_DATA, WORDS_DATA_HARD, POLISH_ALPHABET, RUSSIAN_ALPHABET, ENGLISH_ALPHABET, VOWELS } from './data.js';
 import { sound } from './audio.js';
 
 export class WordSearchGame {
@@ -107,7 +106,9 @@ export class WordSearchGame {
     this.wordsToFind = placedWords;
 
     // Заполняем пустые клетки случайными буквами соответствующего алфавита
-    const alphabet = this.lang === 'ru' ? RUSSIAN_ALPHABET : POLISH_ALPHABET;
+    const alphabet = this.lang === 'ru' 
+      ? RUSSIAN_ALPHABET 
+      : (this.lang === 'pl' ? POLISH_ALPHABET : ENGLISH_ALPHABET);
     for (let r = 0; r < size; r++) {
       for (let c = 0; c < size; c++) {
         if (!this.grid[r][c].letter) {
@@ -182,7 +183,12 @@ export class WordSearchGame {
 
   render() {
     const isRu = this.lang === 'ru';
+    const isPl = this.lang === 'pl';
     const isHard = this.difficulty === 'hard';
+
+    const easyLabel = isRu ? 'Легкий 6×6' : (isPl ? 'Łatwy 6×6' : 'Easy 6×6');
+    const hardLabel = isRu ? 'Мастер 8×8' : (isPl ? 'Mistrz 8×8' : 'Master 8×8');
+    const soundTitle = isRu ? 'Послушать' : (isPl ? 'Posłuchaj' : 'Listen');
 
     this.container.innerHTML = `
       <div class="ws-game ${isHard ? 'ws-hard-mode' : ''}">
@@ -190,10 +196,10 @@ export class WordSearchGame {
         <div class="ws-toolbar">
           <div class="ws-diff-bar">
             <button class="ws-diff-btn ${!isHard ? 'active' : ''}" id="ws-diff-easy">
-              🐣 ${isRu ? 'Легкий 6×6' : 'Łatwy 6×6'}
+              🐣 ${easyLabel}
             </button>
             <button class="ws-diff-btn ${isHard ? 'active' : ''}" id="ws-diff-hard">
-              🚀 ${isRu ? 'Мастер 8×8' : 'Mistrz 8×8'}
+              🚀 ${hardLabel}
             </button>
           </div>
 
@@ -210,7 +216,7 @@ export class WordSearchGame {
                     <span class="ws-word-text">${item.word}</span>
                     ${item.hint ? `<span class="ws-word-subhint">(${item.hint})</span>` : ''}
                   </div>
-                  <span class="ws-sound-icon" title="${isRu ? 'Послушать' : 'Posłuchaj'}">🔊</span>
+                  <span class="ws-sound-icon" title="${soundTitle}">🔊</span>
                 </button>
               `;
             }).join('')}
@@ -462,7 +468,9 @@ export class WordSearchGame {
       sound.playError();
       const statusEl = this.container.querySelector('#ws-status');
       if (statusEl) {
-        statusEl.textContent = this.lang === 'ru' ? 'Попробуй еще раз!' : 'Spróbuj jeszcze raz!';
+        statusEl.textContent = this.lang === 'ru' 
+          ? 'Попробуй еще раз!' 
+          : (this.lang === 'pl' ? 'Spróbuj jeszcze raz!' : 'Try again!');
       }
       if (fromTap) {
         setTimeout(() => {

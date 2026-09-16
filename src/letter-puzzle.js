@@ -44,9 +44,15 @@ export class LetterPuzzleGame {
 
   render() {
     const isRu = this.lang === 'ru';
+    const isPl = this.lang === 'pl';
     const puzzle = this.getCurrentPuzzle();
     const totalParts = puzzle.parts.length;
     const placedCount = this.placedParts.size;
+
+    const instructionText = isRu ? 'Собери букву' : (isPl ? 'Złóż literę' : 'Build the letter');
+    const trayLabelText = this.isCompleted 
+      ? (isRu ? '🎉 Буква собрана!' : (isPl ? '🎉 Litera ułożona!' : '🎉 Letter built!')) 
+      : (isRu ? 'Нажимай на детали, чтобы собрать букву:' : (isPl ? 'Klikaj na części, aby złożyć literę:' : 'Tap parts to build the letter:'));
 
     this.container.innerHTML = `
       <div class="lp-wrapper">
@@ -57,7 +63,7 @@ export class LetterPuzzleGame {
             <span class="lp-target-word">${puzzle.word}</span>
           </div>
           <div class="lp-instruction">
-            ${isRu ? 'Собери букву' : 'Złóż literę'} 
+            ${instructionText} 
             <span class="lp-target-letter">${puzzle.letter}</span>
           </div>
         </div>
@@ -81,9 +87,7 @@ export class LetterPuzzleGame {
         <!-- Лоток с доступными деталями внизу -->
         <div class="lp-tray-panel">
           <div class="lp-tray-label">
-            ${this.isCompleted 
-              ? (isRu ? '🎉 Буква собрана!' : '🎉 Litera ułożona!') 
-              : (isRu ? 'Нажимай на детали, чтобы собрать букву:' : 'Klikaj na części, aby złożyć literę:')}
+            ${trayLabelText}
           </div>
           <div class="lp-parts-tray">
             ${puzzle.parts.map((part) => {
