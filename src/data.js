@@ -464,6 +464,71 @@ export const WORDS_DATA = {
       "word": "ЗАЙКА",
       "emoji": "🐰",
       "hint": "Прыг-скок с длинными ушками"
+    },
+    {
+      "word": "ЕСТ",
+      "emoji": "🍽️",
+      "hint": "Кушает вкусный обед"
+    },
+    {
+      "word": "СПИТ",
+      "emoji": "😴",
+      "hint": "Отдыхает с закрытыми глазками"
+    },
+    {
+      "word": "ПЬЕТ",
+      "emoji": "🧃",
+      "hint": "Пьет сок или воду"
+    },
+    {
+      "word": "ПОЕТ",
+      "emoji": "🎤",
+      "hint": "Поет красивую песенку"
+    },
+    {
+      "word": "ИДЕТ",
+      "emoji": "🚶",
+      "hint": "Шагает ножками по дорожке"
+    },
+    {
+      "word": "МОЕТ",
+      "emoji": "🧼",
+      "hint": "Моет ручки мылом до скрипа"
+    },
+    {
+      "word": "БЕЖИТ",
+      "emoji": "🏃",
+      "hint": "Быстро мчит наперегонки"
+    },
+    {
+      "word": "СИДИТ",
+      "emoji": "🪑",
+      "hint": "Сидит на стульчике"
+    },
+    {
+      "word": "ЛЕТИТ",
+      "emoji": "✈️",
+      "hint": "Летит высоко в небе как птица"
+    },
+    {
+      "word": "ПЛЫВЕТ",
+      "emoji": "🏊",
+      "hint": "Плывет в чистой воде"
+    },
+    {
+      "word": "ИГРАЕТ",
+      "emoji": "⚽",
+      "hint": "Весело играет в мяч"
+    },
+    {
+      "word": "ЧИТАЕТ",
+      "emoji": "📖",
+      "hint": "Читает интересную книжку"
+    },
+    {
+      "word": "ПРЫГАЕТ",
+      "emoji": "🦘",
+      "hint": "Прыгает высоко как зайка"
     }
   ],
   "pl": [
@@ -806,6 +871,56 @@ export const WORDS_DATA = {
       "word": "ZAJĄC",
       "emoji": "🐇",
       "hint": "Kica po zielonej trawie (litera Ą)"
+    },
+    {
+      "word": "ŚPI",
+      "emoji": "😴",
+      "hint": "Śpi słodko w ciepłym łóżeczku"
+    },
+    {
+      "word": "MYJE",
+      "emoji": "🧼",
+      "hint": "Myje rączki mydłem"
+    },
+    {
+      "word": "PIJE",
+      "emoji": "🧃",
+      "hint": "Pije pyszny sok lub wodę"
+    },
+    {
+      "word": "LECI",
+      "emoji": "✈️",
+      "hint": "Leci wysoko w niebie"
+    },
+    {
+      "word": "BIEGA",
+      "emoji": "🏃",
+      "hint": "Biega szybko po zielonej trawie"
+    },
+    {
+      "word": "CZYTA",
+      "emoji": "📖",
+      "hint": "Czyta piękną bajkę"
+    },
+    {
+      "word": "SKACZE",
+      "emoji": "🦘",
+      "hint": "Skacze wysoko jak zajączek"
+    },
+    {
+      "word": "PŁYWA",
+      "emoji": "🏊",
+      "hint": "Pływa wesoło w basenie"
+    },
+    {
+      "word": "ŚPIEWA",
+      "emoji": "🎤",
+      "hint": "Śpiewa wesołą piosenkę"
+    },
+    {
+      "word": "SIEDZI",
+      "emoji": "🪑",
+      "hint": "Siedzi wygodnie na fotelu"
     }
   ],
   "en": [
@@ -1163,11 +1278,80 @@ export const WORDS_DATA = {
       "word": "RABBIT",
       "emoji": "🐰",
       "hint": "Hops quickly with long ears"
+    },
+    {
+      "word": "RUN",
+      "emoji": "🏃",
+      "hint": "Runs fast on feet"
+    },
+    {
+      "word": "FLY",
+      "emoji": "✈️",
+      "hint": "Flies high in the sky"
+    },
+    {
+      "word": "EAT",
+      "emoji": "🍽️",
+      "hint": "Eats yummy food"
+    },
+    {
+      "word": "SIT",
+      "emoji": "🪑",
+      "hint": "Sits nicely on chair"
+    },
+    {
+      "word": "HOP",
+      "emoji": "🦘",
+      "hint": "Hops like a green frog"
+    },
+    {
+      "word": "WALK",
+      "emoji": "🚶",
+      "hint": "Walks with steps"
+    },
+    {
+      "word": "SING",
+      "emoji": "🎤",
+      "hint": "Sings a happy song"
+    },
+    {
+      "word": "SWIM",
+      "emoji": "🏊",
+      "hint": "Swims in the clear pool"
+    },
+    {
+      "word": "PLAY",
+      "emoji": "⚽",
+      "hint": "Plays with friends and toys"
+    },
+    {
+      "word": "JUMP",
+      "emoji": "🦘",
+      "hint": "Jumps high in the air"
+    },
+    {
+      "word": "READ",
+      "emoji": "📖",
+      "hint": "Reads a wonderful fairy tale"
+    },
+    {
+      "word": "WASH",
+      "emoji": "🧼",
+      "hint": "Washes face and hands"
+    },
+    {
+      "word": "SLEEP",
+      "emoji": "😴",
+      "hint": "Sleeps peacefully in bed"
+    },
+    {
+      "word": "DRINK",
+      "emoji": "🧃",
+      "hint": "Drinks water or fruit juice"
     }
   ]
 };
 
-// Сложные слова для продвинутого уровня (8x8)
 export const WORDS_DATA_HARD = {
   "pl": [
     {
@@ -1601,575 +1785,1585 @@ export const PRAISE_PHRASES = {
 // ДАННЫЕ ДЛЯ РЕЖИМА «НАЙДИ РИФМУ» (7 ЛЕТ)
 // ==========================================
 export const RHYMES_DATA = {
-  ru: [
+  "ru": [
     {
-      target: { word: 'КОТ', emoji: '🐱' },
-      correct: { word: 'РОТ', emoji: '👄' },
-      distractors: [
-        { word: 'ЛЕС', emoji: '🌲' },
-        { word: 'МЯЧ', emoji: '⚽' }
+      "target": {
+        "word": "КОТ",
+        "emoji": "🐱"
+      },
+      "correct": {
+        "word": "РОТ",
+        "emoji": "👄"
+      },
+      "distractors": [
+        {
+          "word": "ЛЕС",
+          "emoji": "🌲"
+        },
+        {
+          "word": "МЯЧ",
+          "emoji": "⚽"
+        }
       ]
     },
     {
-      target: { word: 'ДОМ', emoji: '🏠' },
-      correct: { word: 'СОМ', emoji: '🐟' },
-      distractors: [
-        { word: 'СЫР', emoji: '🧀' },
-        { word: 'ЖУК', emoji: '🪲' }
+      "target": {
+        "word": "ДОМ",
+        "emoji": "🏠"
+      },
+      "correct": {
+        "word": "СОМ",
+        "emoji": "🐟"
+      },
+      "distractors": [
+        {
+          "word": "СЫР",
+          "emoji": "🧀"
+        },
+        {
+          "word": "ЖУК",
+          "emoji": "🪲"
+        }
       ]
     },
     {
-      target: { word: 'МЫШКА', emoji: '🐭' },
-      correct: { word: 'КРЫШКА', emoji: '🫙' },
-      distractors: [
-        { word: 'ЛОДКА', emoji: '🛶' },
-        { word: 'РЫБА', emoji: '🐟' }
+      "target": {
+        "word": "МЫШКА",
+        "emoji": "🐭"
+      },
+      "correct": {
+        "word": "КРЫШКА",
+        "emoji": "🫙"
+      },
+      "distractors": [
+        {
+          "word": "ЛОДКА",
+          "emoji": "🛶"
+        },
+        {
+          "word": "РЫБА",
+          "emoji": "🐟"
+        }
       ]
     },
     {
-      target: { word: 'ЛУК', emoji: '🧅' },
-      correct: { word: 'ЖУК', emoji: '🪲' },
-      distractors: [
-        { word: 'НОС', emoji: '👃' },
-        { word: 'СЛОН', emoji: '🐘' }
+      "target": {
+        "word": "ЛУК",
+        "emoji": "🧅"
+      },
+      "correct": {
+        "word": "ЖУК",
+        "emoji": "🪲"
+      },
+      "distractors": [
+        {
+          "word": "НОС",
+          "emoji": "👃"
+        },
+        {
+          "word": "СЛОН",
+          "emoji": "🐘"
+        }
       ]
     },
     {
-      target: { word: 'ЛИМОН', emoji: '🍋' },
-      correct: { word: 'БАТОН', emoji: '🥖' },
-      distractors: [
-        { word: 'ВОЛК', emoji: '🐺' },
-        { word: 'ГРИБ', emoji: '🍄' }
+      "target": {
+        "word": "ЛИМОН",
+        "emoji": "🍋"
+      },
+      "correct": {
+        "word": "БАТОН",
+        "emoji": "🥖"
+      },
+      "distractors": [
+        {
+          "word": "ВОЛК",
+          "emoji": "🐺"
+        },
+        {
+          "word": "ГРИБ",
+          "emoji": "🍄"
+        }
       ]
     },
     {
-      target: { word: 'СНЕГ', emoji: '❄️' },
-      correct: { word: 'БЕГ', emoji: '🏃' },
-      distractors: [
-        { word: 'УТКА', emoji: '🦆' },
-        { word: 'ЧАЙ', emoji: '🍵' }
+      "target": {
+        "word": "СНЕГ",
+        "emoji": "❄️"
+      },
+      "correct": {
+        "word": "БЕГ",
+        "emoji": "🏃"
+      },
+      "distractors": [
+        {
+          "word": "УТКА",
+          "emoji": "🦆"
+        },
+        {
+          "word": "ЧАЙ",
+          "emoji": "🍵"
+        }
       ]
     },
     {
-      target: { word: 'КАША', emoji: '🥣' },
-      correct: { word: 'ДАША', emoji: '👧' },
-      distractors: [
-        { word: 'ЗИМА', emoji: '⛄' },
-        { word: 'НЕБО', emoji: '☁️' }
+      "target": {
+        "word": "КАША",
+        "emoji": "🥣"
+      },
+      "correct": {
+        "word": "ДАША",
+        "emoji": "👧"
+      },
+      "distractors": [
+        {
+          "word": "ЗИМА",
+          "emoji": "⛄"
+        },
+        {
+          "word": "НЕБО",
+          "emoji": "☁️"
+        }
       ]
     },
     {
-      target: { word: 'МАК', emoji: '🌺' },
-      correct: { word: 'РАК', emoji: '🦞' },
-      distractors: [
-        { word: 'КИТ', emoji: '🐋' },
-        { word: 'МЕД', emoji: '🍯' }
+      "target": {
+        "word": "МАК",
+        "emoji": "🌺"
+      },
+      "correct": {
+        "word": "РАК",
+        "emoji": "🦞"
+      },
+      "distractors": [
+        {
+          "word": "КИТ",
+          "emoji": "🐋"
+        },
+        {
+          "word": "МЕД",
+          "emoji": "🍯"
+        }
       ]
     },
     {
-      target: { word: 'ШАР', emoji: '🎈' },
-      correct: { word: 'ЖАР', emoji: '🔥' },
-      distractors: [
-        { word: 'ЛЕВ', emoji: '🦁' },
-        { word: 'СОК', emoji: '🧃' }
+      "target": {
+        "word": "ШАР",
+        "emoji": "🎈"
+      },
+      "correct": {
+        "word": "ЖАР",
+        "emoji": "🔥"
+      },
+      "distractors": [
+        {
+          "word": "ЛЕВ",
+          "emoji": "🦁"
+        },
+        {
+          "word": "СОК",
+          "emoji": "🧃"
+        }
+      ]
+    },
+    {
+      "target": {
+        "word": "БЕЖИТ",
+        "emoji": "🏃"
+      },
+      "correct": {
+        "word": "ЛЕЖИТ",
+        "emoji": "🛌"
+      },
+      "distractors": [
+        {
+          "word": "КОТ",
+          "emoji": "🐱"
+        },
+        {
+          "word": "ДОМ",
+          "emoji": "🏠"
+        }
+      ]
+    },
+    {
+      "target": {
+        "word": "ПОЕТ",
+        "emoji": "🎤"
+      },
+      "correct": {
+        "word": "ПЛЫВЕТ",
+        "emoji": "🏊"
+      },
+      "distractors": [
+        {
+          "word": "ЛЕС",
+          "emoji": "🌲"
+        },
+        {
+          "word": "МЯЧ",
+          "emoji": "⚽"
+        }
       ]
     }
   ],
-  pl: [
+  "pl": [
     {
-      target: { word: 'KOT', emoji: '🐱' },
-      correct: { word: 'PŁOT', emoji: '🪵' },
-      distractors: [
-        { word: 'LAS', emoji: '🌲' },
-        { word: 'SER', emoji: '🧀' }
+      "target": {
+        "word": "KOT",
+        "emoji": "🐱"
+      },
+      "correct": {
+        "word": "PŁOT",
+        "emoji": "🪵"
+      },
+      "distractors": [
+        {
+          "word": "LAS",
+          "emoji": "🌲"
+        },
+        {
+          "word": "SER",
+          "emoji": "🧀"
+        }
       ]
     },
     {
-      target: { word: 'DOM', emoji: '🏠' },
-      correct: { word: 'GROM', emoji: '⚡' },
-      distractors: [
-        { word: 'PIES', emoji: '🐶' },
-        { word: 'WODA', emoji: '💧' }
+      "target": {
+        "word": "DOM",
+        "emoji": "🏠"
+      },
+      "correct": {
+        "word": "GROM",
+        "emoji": "⚡"
+      },
+      "distractors": [
+        {
+          "word": "PIES",
+          "emoji": "🐶"
+        },
+        {
+          "word": "WODA",
+          "emoji": "💧"
+        }
       ]
     },
     {
-      target: { word: 'RYBA', emoji: '🐟' },
-      correct: { word: 'SZYBA', emoji: '🪟' },
-      distractors: [
-        { word: 'WILK', emoji: '🐺' },
-        { word: 'PTAK', emoji: '🐦' }
+      "target": {
+        "word": "RYBA",
+        "emoji": "🐟"
+      },
+      "correct": {
+        "word": "SZYBA",
+        "emoji": "🪟"
+      },
+      "distractors": [
+        {
+          "word": "WILK",
+          "emoji": "🐺"
+        },
+        {
+          "word": "PTAK",
+          "emoji": "🐦"
+        }
       ]
     },
     {
-      target: { word: 'DĄB', emoji: '🌳' },
-      correct: { word: 'ZĄB', emoji: '🦷' },
-      distractors: [
-        { word: 'KOT', emoji: '🐱' },
-        { word: 'KOŃ', emoji: '🐎' }
+      "target": {
+        "word": "DĄB",
+        "emoji": "🌳"
+      },
+      "correct": {
+        "word": "ZĄB",
+        "emoji": "🦷"
+      },
+      "distractors": [
+        {
+          "word": "KOT",
+          "emoji": "🐱"
+        },
+        {
+          "word": "KOŃ",
+          "emoji": "🐎"
+        }
       ]
     },
     {
-      target: { word: 'KROWA', emoji: '🐄' },
-      correct: { word: 'SOWA', emoji: '🦉' },
-      distractors: [
-        { word: 'LATO', emoji: '☀️' },
-        { word: 'ZIMA', emoji: '❄️' }
+      "target": {
+        "word": "KROWA",
+        "emoji": "🐄"
+      },
+      "correct": {
+        "word": "SOWA",
+        "emoji": "🦉"
+      },
+      "distractors": [
+        {
+          "word": "LATO",
+          "emoji": "☀️"
+        },
+        {
+          "word": "ZIMA",
+          "emoji": "❄️"
+        }
       ]
     },
     {
-      target: { word: 'LAS', emoji: '🌲' },
-      correct: { word: 'PAS', emoji: '🥋' },
-      distractors: [
-        { word: 'MIŚ', emoji: '🧸' },
-        { word: 'SOK', emoji: '🧃' }
+      "target": {
+        "word": "LAS",
+        "emoji": "🌲"
+      },
+      "correct": {
+        "word": "PAS",
+        "emoji": "🥋"
+      },
+      "distractors": [
+        {
+          "word": "MIŚ",
+          "emoji": "🧸"
+        },
+        {
+          "word": "SOK",
+          "emoji": "🧃"
+        }
       ]
     },
     {
-      target: { word: 'ŻABA', emoji: '🐸' },
-      correct: { word: 'BABA', emoji: '👵' },
-      distractors: [
-        { word: 'KOŁO', emoji: '🛞' },
-        { word: 'LIŚĆ', emoji: '🍂' }
+      "target": {
+        "word": "ŻABA",
+        "emoji": "🐸"
+      },
+      "correct": {
+        "word": "BABA",
+        "emoji": "👵"
+      },
+      "distractors": [
+        {
+          "word": "KOŁO",
+          "emoji": "🛞"
+        },
+        {
+          "word": "LIŚĆ",
+          "emoji": "🍂"
+        }
       ]
     },
     {
-      target: { word: 'RÓŻA', emoji: '🌹' },
-      correct: { word: 'BURZA', emoji: '⛈️' },
-      distractors: [
-        { word: 'GÓRA', emoji: '⛰️' },
-        { word: 'CHLEB', emoji: '🍞' }
+      "target": {
+        "word": "RÓŻA",
+        "emoji": "🌹"
+      },
+      "correct": {
+        "word": "BURZA",
+        "emoji": "⛈️"
+      },
+      "distractors": [
+        {
+          "word": "GÓRA",
+          "emoji": "⛰️"
+        },
+        {
+          "word": "CHLEB",
+          "emoji": "🍞"
+        }
       ]
     },
     {
-      target: { word: 'RAK', emoji: '🦞' },
-      correct: { word: 'MAK', emoji: '🌺' },
-      distractors: [
-        { word: 'KROK', emoji: '👣' },
-        { word: 'LIS', emoji: '🦊' }
+      "target": {
+        "word": "RAK",
+        "emoji": "🦞"
+      },
+      "correct": {
+        "word": "MAK",
+        "emoji": "🌺"
+      },
+      "distractors": [
+        {
+          "word": "KROK",
+          "emoji": "👣"
+        },
+        {
+          "word": "LIS",
+          "emoji": "🦊"
+        }
       ]
     },
     {
-      target: { word: 'KOSZ', emoji: '🧺' },
-      correct: { word: 'GROSZ', emoji: '🪙' },
-      distractors: [
-        { word: 'BUT', emoji: '👞' },
-        { word: 'SER', emoji: '🧀' }
+      "target": {
+        "word": "KOSZ",
+        "emoji": "🧺"
+      },
+      "correct": {
+        "word": "GROSZ",
+        "emoji": "🪙"
+      },
+      "distractors": [
+        {
+          "word": "BUT",
+          "emoji": "👞"
+        },
+        {
+          "word": "SER",
+          "emoji": "🧀"
+        }
       ]
     },
     {
-      target: { word: 'BĄK', emoji: '🐝' },
-      correct: { word: 'PĄK', emoji: '🌷' },
-      distractors: [
-        { word: 'PTAK', emoji: '🐦' },
-        { word: 'CHLEB', emoji: '🍞' }
+      "target": {
+        "word": "BĄK",
+        "emoji": "🐝"
+      },
+      "correct": {
+        "word": "PĄK",
+        "emoji": "🌷"
+      },
+      "distractors": [
+        {
+          "word": "PTAK",
+          "emoji": "🐦"
+        },
+        {
+          "word": "CHLEB",
+          "emoji": "🍞"
+        }
       ]
     },
     {
-      target: { word: 'KACZKA', emoji: '🦆' },
-      correct: { word: 'PACZKA', emoji: '📦' },
-      distractors: [
-        { word: 'JAJKO', emoji: '🥚' },
-        { word: 'WODA', emoji: '💧' }
+      "target": {
+        "word": "KACZKA",
+        "emoji": "🦆"
+      },
+      "correct": {
+        "word": "PACZKA",
+        "emoji": "📦"
+      },
+      "distractors": [
+        {
+          "word": "JAJKO",
+          "emoji": "🥚"
+        },
+        {
+          "word": "WODA",
+          "emoji": "💧"
+        }
       ]
     },
     {
-      target: { word: 'DZWON', emoji: '🔔' },
-      correct: { word: 'TRON', emoji: '👑' },
-      distractors: [
-        { word: 'DOM', emoji: '🏠' },
-        { word: 'KOT', emoji: '🐱' }
+      "target": {
+        "word": "DZWON",
+        "emoji": "🔔"
+      },
+      "correct": {
+        "word": "TRON",
+        "emoji": "👑"
+      },
+      "distractors": [
+        {
+          "word": "DOM",
+          "emoji": "🏠"
+        },
+        {
+          "word": "KOT",
+          "emoji": "🐱"
+        }
       ]
     },
     {
-      target: { word: 'KRET', emoji: '🦔' },
-      correct: { word: 'BERET', emoji: '🧢' },
-      distractors: [
-        { word: 'LAS', emoji: '🌲' },
-        { word: 'SER', emoji: '🧀' }
+      "target": {
+        "word": "KRET",
+        "emoji": "🦔"
+      },
+      "correct": {
+        "word": "BERET",
+        "emoji": "🧢"
+      },
+      "distractors": [
+        {
+          "word": "LAS",
+          "emoji": "🌲"
+        },
+        {
+          "word": "SER",
+          "emoji": "🧀"
+        }
       ]
     },
     {
-      target: { word: 'KOS', emoji: '🐦' },
-      correct: { word: 'NOS', emoji: '👃' },
-      distractors: [
-        { word: 'OKO', emoji: '👁️' },
-        { word: 'UCHO', emoji: '👂' }
+      "target": {
+        "word": "KOS",
+        "emoji": "🐦"
+      },
+      "correct": {
+        "word": "NOS",
+        "emoji": "👃"
+      },
+      "distractors": [
+        {
+          "word": "OKO",
+          "emoji": "👁️"
+        },
+        {
+          "word": "UCHO",
+          "emoji": "👂"
+        }
       ]
     },
     {
-      target: { word: 'BAL', emoji: '🎉' },
-      correct: { word: 'SZAL', emoji: '🧣' },
-      distractors: [
-        { word: 'TORT', emoji: '🎂' },
-        { word: 'MIŚ', emoji: '🧸' }
+      "target": {
+        "word": "BAL",
+        "emoji": "🎉"
+      },
+      "correct": {
+        "word": "SZAL",
+        "emoji": "🧣"
+      },
+      "distractors": [
+        {
+          "word": "TORT",
+          "emoji": "🎂"
+        },
+        {
+          "word": "MIŚ",
+          "emoji": "🧸"
+        }
+      ]
+    },
+    {
+      "target": {
+        "word": "LECI",
+        "emoji": "✈️"
+      },
+      "correct": {
+        "word": "ŚWIECI",
+        "emoji": "☀️"
+      },
+      "distractors": [
+        {
+          "word": "DOM",
+          "emoji": "🏠"
+        },
+        {
+          "word": "KOT",
+          "emoji": "🐱"
+        }
+      ]
+    },
+    {
+      "target": {
+        "word": "MYJE",
+        "emoji": "🧼"
+      },
+      "correct": {
+        "word": "PIJE",
+        "emoji": "🧃"
+      },
+      "distractors": [
+        {
+          "word": "LAS",
+          "emoji": "🌲"
+        },
+        {
+          "word": "SER",
+          "emoji": "🧀"
+        }
       ]
     }
   ],
-  en: [
+  "en": [
     {
-      target: { word: 'CAT', emoji: '🐱' },
-      correct: { word: 'HAT', emoji: '🎩' },
-      distractors: [
-        { word: 'DOG', emoji: '🐶' },
-        { word: 'PIG', emoji: '🐷' }
+      "target": {
+        "word": "CAT",
+        "emoji": "🐱"
+      },
+      "correct": {
+        "word": "HAT",
+        "emoji": "🎩"
+      },
+      "distractors": [
+        {
+          "word": "DOG",
+          "emoji": "🐶"
+        },
+        {
+          "word": "PIG",
+          "emoji": "🐷"
+        }
       ]
     },
     {
-      target: { word: 'DOG', emoji: '🐶' },
-      correct: { word: 'FROG', emoji: '🐸' },
-      distractors: [
-        { word: 'CAR', emoji: '🚗' },
-        { word: 'BEE', emoji: '🐝' }
+      "target": {
+        "word": "DOG",
+        "emoji": "🐶"
+      },
+      "correct": {
+        "word": "FROG",
+        "emoji": "🐸"
+      },
+      "distractors": [
+        {
+          "word": "CAR",
+          "emoji": "🚗"
+        },
+        {
+          "word": "BEE",
+          "emoji": "🐝"
+        }
       ]
     },
     {
-      target: { word: 'SUN', emoji: '☀️' },
-      correct: { word: 'RUN', emoji: '🏃' },
-      distractors: [
-        { word: 'FOX', emoji: '🦊' },
-        { word: 'HAT', emoji: '🎩' }
+      "target": {
+        "word": "SUN",
+        "emoji": "☀️"
+      },
+      "correct": {
+        "word": "RUN",
+        "emoji": "🏃"
+      },
+      "distractors": [
+        {
+          "word": "FOX",
+          "emoji": "🦊"
+        },
+        {
+          "word": "HAT",
+          "emoji": "🎩"
+        }
       ]
     },
     {
-      target: { word: 'FOX', emoji: '🦊' },
-      correct: { word: 'BOX', emoji: '📦' },
-      distractors: [
-        { word: 'FISH', emoji: '🐟' },
-        { word: 'BOOK', emoji: '📖' }
+      "target": {
+        "word": "FOX",
+        "emoji": "🦊"
+      },
+      "correct": {
+        "word": "BOX",
+        "emoji": "📦"
+      },
+      "distractors": [
+        {
+          "word": "FISH",
+          "emoji": "🐟"
+        },
+        {
+          "word": "BOOK",
+          "emoji": "📖"
+        }
       ]
     },
     {
-      target: { word: 'BEAR', emoji: '🐻' },
-      correct: { word: 'PEAR', emoji: '🍐' },
-      distractors: [
-        { word: 'WOLF', emoji: '🐺' },
-        { word: 'DUCK', emoji: '🦆' }
+      "target": {
+        "word": "BEAR",
+        "emoji": "🐻"
+      },
+      "correct": {
+        "word": "PEAR",
+        "emoji": "🍐"
+      },
+      "distractors": [
+        {
+          "word": "WOLF",
+          "emoji": "🐺"
+        },
+        {
+          "word": "DUCK",
+          "emoji": "🦆"
+        }
       ]
     },
     {
-      target: { word: 'STAR', emoji: '⭐' },
-      correct: { word: 'CAR', emoji: '🚗' },
-      distractors: [
-        { word: 'MOON', emoji: '🌙' },
-        { word: 'TREE', emoji: '🌳' }
+      "target": {
+        "word": "STAR",
+        "emoji": "⭐"
+      },
+      "correct": {
+        "word": "CAR",
+        "emoji": "🚗"
+      },
+      "distractors": [
+        {
+          "word": "MOON",
+          "emoji": "🌙"
+        },
+        {
+          "word": "TREE",
+          "emoji": "🌳"
+        }
       ]
     },
     {
-      target: { word: 'FISH', emoji: '🐟' },
-      correct: { word: 'DISH', emoji: '🍽️' },
-      distractors: [
-        { word: 'BOAT', emoji: '⛵' },
-        { word: 'BIRD', emoji: '🐦' }
+      "target": {
+        "word": "FISH",
+        "emoji": "🐟"
+      },
+      "correct": {
+        "word": "DISH",
+        "emoji": "🍽️"
+      },
+      "distractors": [
+        {
+          "word": "BOAT",
+          "emoji": "⛵"
+        },
+        {
+          "word": "BIRD",
+          "emoji": "🐦"
+        }
       ]
     },
     {
-      target: { word: 'BEE', emoji: '🐝' },
-      correct: { word: 'TREE', emoji: '🌳' },
-      distractors: [
-        { word: 'ANT', emoji: '🐜' },
-        { word: 'FROG', emoji: '🐸' }
+      "target": {
+        "word": "BEE",
+        "emoji": "🐝"
+      },
+      "correct": {
+        "word": "TREE",
+        "emoji": "🌳"
+      },
+      "distractors": [
+        {
+          "word": "ANT",
+          "emoji": "🐜"
+        },
+        {
+          "word": "FROG",
+          "emoji": "🐸"
+        }
       ]
     },
     {
-      target: { word: 'BOAT', emoji: '⛵' },
-      correct: { word: 'COAT', emoji: '🧥' },
-      distractors: [
-        { word: 'SHIP', emoji: '🚢' },
-        { word: 'BOOT', emoji: '🥾' }
+      "target": {
+        "word": "BOAT",
+        "emoji": "⛵"
+      },
+      "correct": {
+        "word": "COAT",
+        "emoji": "🧥"
+      },
+      "distractors": [
+        {
+          "word": "SHIP",
+          "emoji": "🚢"
+        },
+        {
+          "word": "BOOT",
+          "emoji": "🥾"
+        }
       ]
     },
     {
-      target: { word: 'DUCK', emoji: '🦆' },
-      correct: { word: 'TRUCK', emoji: '🚚' },
-      distractors: [
-        { word: 'BIRD', emoji: '🐦' },
-        { word: 'HORSE', emoji: '🐎' }
+      "target": {
+        "word": "DUCK",
+        "emoji": "🦆"
+      },
+      "correct": {
+        "word": "TRUCK",
+        "emoji": "🚚"
+      },
+      "distractors": [
+        {
+          "word": "BIRD",
+          "emoji": "🐦"
+        },
+        {
+          "word": "HORSE",
+          "emoji": "🐎"
+        }
       ]
     },
     {
-      target: { word: 'CAKE', emoji: '🎂' },
-      correct: { word: 'SNAKE', emoji: '🐍' },
-      distractors: [
-        { word: 'BALL', emoji: '⚽' },
-        { word: 'RING', emoji: '💍' }
+      "target": {
+        "word": "CAKE",
+        "emoji": "🎂"
+      },
+      "correct": {
+        "word": "SNAKE",
+        "emoji": "🐍"
+      },
+      "distractors": [
+        {
+          "word": "BALL",
+          "emoji": "⚽"
+        },
+        {
+          "word": "RING",
+          "emoji": "💍"
+        }
       ]
     },
     {
-      target: { word: 'RING', emoji: '💍' },
-      correct: { word: 'KING', emoji: '👑' },
-      distractors: [
-        { word: 'GOLD', emoji: '🪙' },
-        { word: 'CROWN', emoji: '👑' }
+      "target": {
+        "word": "RING",
+        "emoji": "💍"
+      },
+      "correct": {
+        "word": "KING",
+        "emoji": "👑"
+      },
+      "distractors": [
+        {
+          "word": "GOLD",
+          "emoji": "🪙"
+        },
+        {
+          "word": "CROWN",
+          "emoji": "👑"
+        }
+      ]
+    },
+    {
+      "target": {
+        "word": "RUN",
+        "emoji": "🏃"
+      },
+      "correct": {
+        "word": "SUN",
+        "emoji": "☀️"
+      },
+      "distractors": [
+        {
+          "word": "CAT",
+          "emoji": "🐱"
+        },
+        {
+          "word": "BED",
+          "emoji": "🛏️"
+        }
+      ]
+    },
+    {
+      "target": {
+        "word": "SING",
+        "emoji": "🎤"
+      },
+      "correct": {
+        "word": "RING",
+        "emoji": "💍"
+      },
+      "distractors": [
+        {
+          "word": "DOG",
+          "emoji": "🐶"
+        },
+        {
+          "word": "CUP",
+          "emoji": "☕"
+        }
+      ]
+    },
+    {
+      "target": {
+        "word": "FLY",
+        "emoji": "✈️"
+      },
+      "correct": {
+        "word": "SKY",
+        "emoji": "☁️"
+      },
+      "distractors": [
+        {
+          "word": "HAT",
+          "emoji": "🎩"
+        },
+        {
+          "word": "FOX",
+          "emoji": "🦊"
+        }
       ]
     }
   ]
 };
 
-// ==========================================
-// ДАННЫЕ ДЛЯ РЕЖИМА «ЛИШНЕЕ СЛОВО» (7 ЛЕТ)
-// ==========================================
 export const ODD_ONE_OUT_DATA = {
-  ru: [
+  "ru": [
     {
-      items: [
-        { word: 'ЯБЛОКО', emoji: '🍎' },
-        { word: 'БАНАН', emoji: '🍌' },
-        { word: 'ГРУША', emoji: '🍐' },
-        { word: 'МАШИНА', emoji: '🚗' }
+      "items": [
+        {
+          "word": "ЯБЛОКО",
+          "emoji": "🍎"
+        },
+        {
+          "word": "БАНАН",
+          "emoji": "🍌"
+        },
+        {
+          "word": "ГРУША",
+          "emoji": "🍐"
+        },
+        {
+          "word": "МАШИНА",
+          "emoji": "🚗"
+        }
       ],
-      oddWord: 'МАШИНА',
-      explanation: 'Машина — это транспорт, а остальные — фрукты!'
+      "oddWord": "МАШИНА",
+      "explanation": "Машина — это транспорт, а остальные — фрукты!"
     },
     {
-      items: [
-        { word: 'КОТ', emoji: '🐱' },
-        { word: 'СОБАКА', emoji: '🐶' },
-        { word: 'ЛИСА', emoji: '🦊' },
-        { word: 'САМОЛЕТ', emoji: '✈️' }
+      "items": [
+        {
+          "word": "КОТ",
+          "emoji": "🐱"
+        },
+        {
+          "word": "СОБАКА",
+          "emoji": "🐶"
+        },
+        {
+          "word": "ЛИСА",
+          "emoji": "🦊"
+        },
+        {
+          "word": "САМОЛЕТ",
+          "emoji": "✈️"
+        }
       ],
-      oddWord: 'САМОЛЕТ',
-      explanation: 'Самолет летает на моторе, а остальные — животные!'
+      "oddWord": "САМОЛЕТ",
+      "explanation": "Самолет летает на моторе, а остальные — животные!"
     },
     {
-      items: [
-        { word: 'ШАПКА', emoji: '🧢' },
-        { word: 'КУРТКА', emoji: '🧥' },
-        { word: 'БОТИНКИ', emoji: '👞' },
-        { word: 'ТАРЕЛКА', emoji: '🍽️' }
+      "items": [
+        {
+          "word": "ШАПКА",
+          "emoji": "🧢"
+        },
+        {
+          "word": "КУРТКА",
+          "emoji": "🧥"
+        },
+        {
+          "word": "БОТИНКИ",
+          "emoji": "👞"
+        },
+        {
+          "word": "ТАРЕЛКА",
+          "emoji": "🍽️"
+        }
       ],
-      oddWord: 'ТАРЕЛКА',
-      explanation: 'Тарелка — это посуда, а остальные — одежда!'
+      "oddWord": "ТАРЕЛКА",
+      "explanation": "Тарелка — это посуда, а остальные — одежда!"
     },
     {
-      items: [
-        { word: 'БЕРЕЗА', emoji: '🌳' },
-        { word: 'ЕЛЬ', emoji: '🌲' },
-        { word: 'ДУБ', emoji: '🪵' },
-        { word: 'МЯЧИК', emoji: '⚽' }
+      "items": [
+        {
+          "word": "БЕРЕЗА",
+          "emoji": "🌳"
+        },
+        {
+          "word": "ЕЛЬ",
+          "emoji": "🌲"
+        },
+        {
+          "word": "ДУБ",
+          "emoji": "🪵"
+        },
+        {
+          "word": "МЯЧИК",
+          "emoji": "⚽"
+        }
       ],
-      oddWord: 'МЯЧИК',
-      explanation: 'Мячик — это игрушка, а остальные — деревья!'
+      "oddWord": "МЯЧИК",
+      "explanation": "Мячик — это игрушка, а остальные — деревья!"
     },
     {
-      items: [
-        { word: 'МОРКОВЬ', emoji: '🥕' },
-        { word: 'ОГУРЕЦ', emoji: '🥒' },
-        { word: 'ПОМИДОР', emoji: '🍅' },
-        { word: 'МЕДВЕДЬ', emoji: '🐻' }
+      "items": [
+        {
+          "word": "МОРКОВЬ",
+          "emoji": "🥕"
+        },
+        {
+          "word": "ОГУРЕЦ",
+          "emoji": "🥒"
+        },
+        {
+          "word": "ПОМИДОР",
+          "emoji": "🍅"
+        },
+        {
+          "word": "МЕДВЕДЬ",
+          "emoji": "🐻"
+        }
       ],
-      oddWord: 'МЕДВЕДЬ',
-      explanation: 'Медведь — это зверь, а остальные — овощи!'
+      "oddWord": "МЕДВЕДЬ",
+      "explanation": "Медведь — это зверь, а остальные — овощи!"
+    },
+    {
+      "items": [
+        {
+          "word": "БЕЖИТ",
+          "emoji": "🏃"
+        },
+        {
+          "word": "СПИТ",
+          "emoji": "😴"
+        },
+        {
+          "word": "ПОЕТ",
+          "emoji": "🎤"
+        },
+        {
+          "word": "СТОЛ",
+          "emoji": "🪑"
+        }
+      ],
+      "oddWord": "СТОЛ",
+      "explanation": "Стол — это мебель, а остальные слова — это действия!"
+    },
+    {
+      "items": [
+        {
+          "word": "ЛОЖКА",
+          "emoji": "🥄"
+        },
+        {
+          "word": "ЧАШКА",
+          "emoji": "☕"
+        },
+        {
+          "word": "ТАРЕЛКА",
+          "emoji": "🍽️"
+        },
+        {
+          "word": "ПЛЫВЕТ",
+          "emoji": "🏊"
+        }
+      ],
+      "oddWord": "ПЛЫВЕТ",
+      "explanation": "Плывет — это действие, а остальные — посуда!"
     }
   ],
-  pl: [
+  "pl": [
     {
-      items: [
-        { word: 'JABŁKO', emoji: '🍎' },
-        { word: 'BANAN', emoji: '🍌' },
-        { word: 'GRUSZKA', emoji: '🍐' },
-        { word: 'SAMOCHÓD', emoji: '🚗' }
+      "items": [
+        {
+          "word": "JABŁKO",
+          "emoji": "🍎"
+        },
+        {
+          "word": "BANAN",
+          "emoji": "🍌"
+        },
+        {
+          "word": "GRUSZKA",
+          "emoji": "🍐"
+        },
+        {
+          "word": "SAMOCHÓD",
+          "emoji": "🚗"
+        }
       ],
-      oddWord: 'SAMOCHÓD',
-      explanation: 'Samochód to pojazd, a reszta to owoce!'
+      "oddWord": "SAMOCHÓD",
+      "explanation": "Samochód to pojazd, a reszta to owoce!"
     },
     {
-      items: [
-        { word: 'KOT', emoji: '🐱' },
-        { word: 'PIES', emoji: '🐶' },
-        { word: 'WILK', emoji: '🐺' },
-        { word: 'SAMOLOT', emoji: '✈️' }
+      "items": [
+        {
+          "word": "KOT",
+          "emoji": "🐱"
+        },
+        {
+          "word": "PIES",
+          "emoji": "🐶"
+        },
+        {
+          "word": "WILK",
+          "emoji": "🐺"
+        },
+        {
+          "word": "SAMOLOT",
+          "emoji": "✈️"
+        }
       ],
-      oddWord: 'SAMOLOT',
-      explanation: 'Samolot lata w powietrzu, a reszta to zwierzęta!'
+      "oddWord": "SAMOLOT",
+      "explanation": "Samolot lata w powietrzu, a reszta to zwierzęta!"
     },
     {
-      items: [
-        { word: 'CZAPKA', emoji: '🧢' },
-        { word: 'KURTKA', emoji: '🧥' },
-        { word: 'BUTY', emoji: '👞' },
-        { word: 'TALERZ', emoji: '🍽️' }
+      "items": [
+        {
+          "word": "CZAPKA",
+          "emoji": "🧢"
+        },
+        {
+          "word": "KURTKA",
+          "emoji": "🧥"
+        },
+        {
+          "word": "BUTY",
+          "emoji": "👞"
+        },
+        {
+          "word": "TALERZ",
+          "emoji": "🍽️"
+        }
       ],
-      oddWord: 'TALERZ',
-      explanation: 'Talerz to naczynie, a reszta to ubrania!'
+      "oddWord": "TALERZ",
+      "explanation": "Talerz to naczynie, a reszta to ubrania!"
     },
     {
-      items: [
-        { word: 'DĄB', emoji: '🌳' },
-        { word: 'SOSNA', emoji: '🌲' },
-        { word: 'BRZOZA', emoji: '🪵' },
-        { word: 'PIŁKA', emoji: '⚽' }
+      "items": [
+        {
+          "word": "DĄB",
+          "emoji": "🌳"
+        },
+        {
+          "word": "SOSNA",
+          "emoji": "🌲"
+        },
+        {
+          "word": "BRZOZA",
+          "emoji": "🪵"
+        },
+        {
+          "word": "PIŁKA",
+          "emoji": "⚽"
+        }
       ],
-      oddWord: 'PIŁKA',
-      explanation: 'Piłka to zabawka, a reszta to drzewa!'
+      "oddWord": "PIŁKA",
+      "explanation": "Piłka to zabawka, a reszta to drzewa!"
     },
     {
-      items: [
-        { word: 'MARCHEW', emoji: '🥕' },
-        { word: 'OGÓREK', emoji: '🥒' },
-        { word: 'POMIDOR', emoji: '🍅' },
-        { word: 'NIEDŹWIEDŹ', emoji: '🐻' }
+      "items": [
+        {
+          "word": "MARCHEW",
+          "emoji": "🥕"
+        },
+        {
+          "word": "OGÓREK",
+          "emoji": "🥒"
+        },
+        {
+          "word": "POMIDOR",
+          "emoji": "🍅"
+        },
+        {
+          "word": "NIEDŹWIEDŹ",
+          "emoji": "🐻"
+        }
       ],
-      oddWord: 'NIEDŹWIEDŹ',
-      explanation: 'Niedźwiedź to leśne zwierzę, a reszta to warzywa!'
+      "oddWord": "NIEDŹWIEDŹ",
+      "explanation": "Niedźwiedź to leśne zwierzę, a reszta to warzywa!"
     },
     {
-      items: [
-        { word: 'WRÓBEL', emoji: '🐦' },
-        { word: 'GOŁĄB', emoji: '🕊️' },
-        { word: 'BOCIAN', emoji: '🪶' },
-        { word: 'KROWA', emoji: '🐄' }
+      "items": [
+        {
+          "word": "WRÓBEL",
+          "emoji": "🐦"
+        },
+        {
+          "word": "GOŁĄB",
+          "emoji": "🕊️"
+        },
+        {
+          "word": "BOCIAN",
+          "emoji": "🪶"
+        },
+        {
+          "word": "KROWA",
+          "emoji": "🐄"
+        }
       ],
-      oddWord: 'KROWA',
-      explanation: 'Krowa to ssak, a reszta to ptaki!'
+      "oddWord": "KROWA",
+      "explanation": "Krowa to ssak, a reszta to ptaki!"
     },
     {
-      items: [
-        { word: 'STÓŁ', emoji: '🪑' },
-        { word: 'SZAFA', emoji: '🚪' },
-        { word: 'ŁÓŻKO', emoji: '🛏️' },
-        { word: 'BUŁKA', emoji: '🥐' }
+      "items": [
+        {
+          "word": "STÓŁ",
+          "emoji": "🪑"
+        },
+        {
+          "word": "SZAFA",
+          "emoji": "🚪"
+        },
+        {
+          "word": "ŁÓŻKO",
+          "emoji": "🛏️"
+        },
+        {
+          "word": "BUŁKA",
+          "emoji": "🥐"
+        }
       ],
-      oddWord: 'BUŁKA',
-      explanation: 'Bułka to pieczywo do jedzenia, a reszta to meble!'
+      "oddWord": "BUŁKA",
+      "explanation": "Bułka to pieczywo do jedzenia, a reszta to meble!"
     },
     {
-      items: [
-        { word: 'POCIĄG', emoji: '🚂' },
-        { word: 'STATEK', emoji: '🚢' },
-        { word: 'ROWER', emoji: '🚲' },
-        { word: 'ŻABA', emoji: '🐸' }
+      "items": [
+        {
+          "word": "POCIĄG",
+          "emoji": "🚂"
+        },
+        {
+          "word": "STATEK",
+          "emoji": "🚢"
+        },
+        {
+          "word": "ROWER",
+          "emoji": "🚲"
+        },
+        {
+          "word": "ŻABA",
+          "emoji": "🐸"
+        }
       ],
-      oddWord: 'ŻABA',
-      explanation: 'Żaba to małe zwierzątko, a reszta to pojazdy!'
+      "oddWord": "ŻABA",
+      "explanation": "Żaba to małe zwierzątko, a reszta to pojazdy!"
     },
     {
-      items: [
-        { word: 'GITARA', emoji: '🎸' },
-        { word: 'BĘBEN', emoji: '🥁' },
-        { word: 'TRĄBKA', emoji: '🎺' },
-        { word: 'ŁYŻKA', emoji: '🥄' }
+      "items": [
+        {
+          "word": "GITARA",
+          "emoji": "🎸"
+        },
+        {
+          "word": "BĘBEN",
+          "emoji": "🥁"
+        },
+        {
+          "word": "TRĄBKA",
+          "emoji": "🎺"
+        },
+        {
+          "word": "ŁYŻKA",
+          "emoji": "🥄"
+        }
       ],
-      oddWord: 'ŁYŻKA',
-      explanation: 'Łyżka to sztuciec do obiadu, a reszta to instrumenty!'
+      "oddWord": "ŁYŻKA",
+      "explanation": "Łyżka to sztuciec do obiadu, a reszta to instrumenty!"
     },
     {
-      items: [
-        { word: 'WIOSNA', emoji: '🌱' },
-        { word: 'LATO', emoji: '☀️' },
-        { word: 'ZIMA', emoji: '❄️' },
-        { word: 'ZEGAR', emoji: '⏰' }
+      "items": [
+        {
+          "word": "WIOSNA",
+          "emoji": "🌱"
+        },
+        {
+          "word": "LATO",
+          "emoji": "☀️"
+        },
+        {
+          "word": "ZIMA",
+          "emoji": "❄️"
+        },
+        {
+          "word": "ZEGAR",
+          "emoji": "⏰"
+        }
       ],
-      oddWord: 'ZEGAR',
-      explanation: 'Zegar odmierza czas, a reszta to pory roku!'
+      "oddWord": "ZEGAR",
+      "explanation": "Zegar odmierza czas, a reszta to pory roku!"
     },
     {
-      items: [
-        { word: 'OŁÓWEK', emoji: '✏️' },
-        { word: 'ZESZYT', emoji: '📓' },
-        { word: 'PIÓRNIK', emoji: '🎒' },
-        { word: 'OGÓREK', emoji: '🥒' }
+      "items": [
+        {
+          "word": "OŁÓWEK",
+          "emoji": "✏️"
+        },
+        {
+          "word": "ZESZYT",
+          "emoji": "📓"
+        },
+        {
+          "word": "PIÓRNIK",
+          "emoji": "🎒"
+        },
+        {
+          "word": "OGÓREK",
+          "emoji": "🥒"
+        }
       ],
-      oddWord: 'OGÓREK',
-      explanation: 'Ogórek to warzywo, a reszta to przybory szkolne!'
+      "oddWord": "OGÓREK",
+      "explanation": "Ogórek to warzywo, a reszta to przybory szkolne!"
     },
     {
-      items: [
-        { word: 'ŚNIEŻYNKA', emoji: '❄️' },
-        { word: 'SANKI', emoji: '🛷' },
-        { word: 'BAŁWAN', emoji: '⛄' },
-        { word: 'PALMA', emoji: '🌴' }
+      "items": [
+        {
+          "word": "ŚNIEŻYNKA",
+          "emoji": "❄️"
+        },
+        {
+          "word": "SANKI",
+          "emoji": "🛷"
+        },
+        {
+          "word": "BAŁWAN",
+          "emoji": "⛄"
+        },
+        {
+          "word": "PALMA",
+          "emoji": "🌴"
+        }
       ],
-      oddWord: 'PALMA',
-      explanation: 'Palma rośnie w ciepłych krajach, a reszta to zima!'
+      "oddWord": "PALMA",
+      "explanation": "Palma rośnie w ciepłych krajach, a reszta to zima!"
+    },
+    {
+      "items": [
+        {
+          "word": "BIEGA",
+          "emoji": "🏃"
+        },
+        {
+          "word": "ŚPI",
+          "emoji": "😴"
+        },
+        {
+          "word": "ŚPIEWA",
+          "emoji": "🎤"
+        },
+        {
+          "word": "STÓŁ",
+          "emoji": "🪑"
+        }
+      ],
+      "oddWord": "STÓŁ",
+      "explanation": "Stół to mebel, a pozostałe słowa to czynności!"
+    },
+    {
+      "items": [
+        {
+          "word": "ŁYŻKA",
+          "emoji": "🥄"
+        },
+        {
+          "word": "KUBEK",
+          "emoji": "🥛"
+        },
+        {
+          "word": "TALERZ",
+          "emoji": "🍽️"
+        },
+        {
+          "word": "PŁYWA",
+          "emoji": "🏊"
+        }
+      ],
+      "oddWord": "PŁYWA",
+      "explanation": "Pływa to czynność, a reszta to naczynia!"
     }
   ],
-  en: [
+  "en": [
     {
-      items: [
-        { word: 'APPLE', emoji: '🍎' },
-        { word: 'BANANA', emoji: '🍌' },
-        { word: 'ORANGE', emoji: '🍊' },
-        { word: 'CAR', emoji: '🚗' }
+      "items": [
+        {
+          "word": "APPLE",
+          "emoji": "🍎"
+        },
+        {
+          "word": "BANANA",
+          "emoji": "🍌"
+        },
+        {
+          "word": "ORANGE",
+          "emoji": "🍊"
+        },
+        {
+          "word": "CAR",
+          "emoji": "🚗"
+        }
       ],
-      oddWord: 'CAR',
-      explanation: 'Car is a vehicle, the rest are fruits!'
+      "oddWord": "CAR",
+      "explanation": "Car is a vehicle, the rest are fruits!"
     },
     {
-      items: [
-        { word: 'CAT', emoji: '🐱' },
-        { word: 'DOG', emoji: '🐶' },
-        { word: 'LION', emoji: '🦁' },
-        { word: 'AIRPLANE', emoji: '✈️' }
+      "items": [
+        {
+          "word": "CAT",
+          "emoji": "🐱"
+        },
+        {
+          "word": "DOG",
+          "emoji": "🐶"
+        },
+        {
+          "word": "LION",
+          "emoji": "🦁"
+        },
+        {
+          "word": "AIRPLANE",
+          "emoji": "✈️"
+        }
       ],
-      oddWord: 'AIRPLANE',
-      explanation: 'Airplane flies with wings, the rest are animals!'
+      "oddWord": "AIRPLANE",
+      "explanation": "Airplane flies with wings, the rest are animals!"
     },
     {
-      items: [
-        { word: 'HAT', emoji: '🧢' },
-        { word: 'SHIRT', emoji: '👕' },
-        { word: 'BOOTS', emoji: '👞' },
-        { word: 'PLATE', emoji: '🍽️' }
+      "items": [
+        {
+          "word": "HAT",
+          "emoji": "🧢"
+        },
+        {
+          "word": "SHIRT",
+          "emoji": "👕"
+        },
+        {
+          "word": "BOOTS",
+          "emoji": "👞"
+        },
+        {
+          "word": "PLATE",
+          "emoji": "🍽️"
+        }
       ],
-      oddWord: 'PLATE',
-      explanation: 'Plate is for food, the rest are clothes!'
+      "oddWord": "PLATE",
+      "explanation": "Plate is for food, the rest are clothes!"
     },
     {
-      items: [
-        { word: 'OAK', emoji: '🌳' },
-        { word: 'PINE', emoji: '🌲' },
-        { word: 'BIRCH', emoji: '🪵' },
-        { word: 'BALL', emoji: '⚽' }
+      "items": [
+        {
+          "word": "OAK",
+          "emoji": "🌳"
+        },
+        {
+          "word": "PINE",
+          "emoji": "🌲"
+        },
+        {
+          "word": "BIRCH",
+          "emoji": "🪵"
+        },
+        {
+          "word": "BALL",
+          "emoji": "⚽"
+        }
       ],
-      oddWord: 'BALL',
-      explanation: 'Ball is a toy, the rest are trees!'
+      "oddWord": "BALL",
+      "explanation": "Ball is a toy, the rest are trees!"
     },
     {
-      items: [
-        { word: 'CARROT', emoji: '🥕' },
-        { word: 'CUCUMBER', emoji: '🥒' },
-        { word: 'TOMATO', emoji: '🍅' },
-        { word: 'BEAR', emoji: '🐻' }
+      "items": [
+        {
+          "word": "CARROT",
+          "emoji": "🥕"
+        },
+        {
+          "word": "CUCUMBER",
+          "emoji": "🥒"
+        },
+        {
+          "word": "TOMATO",
+          "emoji": "🍅"
+        },
+        {
+          "word": "BEAR",
+          "emoji": "🐻"
+        }
       ],
-      oddWord: 'BEAR',
-      explanation: 'Bear is an animal, the rest are vegetables!'
+      "oddWord": "BEAR",
+      "explanation": "Bear is an animal, the rest are vegetables!"
     },
     {
-      items: [
-        { word: 'TABLE', emoji: '🪑' },
-        { word: 'CHAIR', emoji: '🪑' },
-        { word: 'BED', emoji: '🛏️' },
-        { word: 'BREAD', emoji: '🍞' }
+      "items": [
+        {
+          "word": "TABLE",
+          "emoji": "🪑"
+        },
+        {
+          "word": "CHAIR",
+          "emoji": "🪑"
+        },
+        {
+          "word": "BED",
+          "emoji": "🛏️"
+        },
+        {
+          "word": "BREAD",
+          "emoji": "🍞"
+        }
       ],
-      oddWord: 'BREAD',
-      explanation: 'Bread is food to eat, the rest are furniture!'
+      "oddWord": "BREAD",
+      "explanation": "Bread is food to eat, the rest are furniture!"
     },
     {
-      items: [
-        { word: 'GUITAR', emoji: '🎸' },
-        { word: 'DRUM', emoji: '🥁' },
-        { word: 'TRUMPET', emoji: '🎺' },
-        { word: 'SPOON', emoji: '🥄' }
+      "items": [
+        {
+          "word": "GUITAR",
+          "emoji": "🎸"
+        },
+        {
+          "word": "DRUM",
+          "emoji": "🥁"
+        },
+        {
+          "word": "TRUMPET",
+          "emoji": "🎺"
+        },
+        {
+          "word": "SPOON",
+          "emoji": "🥄"
+        }
       ],
-      oddWord: 'SPOON',
-      explanation: 'Spoon is cutlery, the rest are musical instruments!'
+      "oddWord": "SPOON",
+      "explanation": "Spoon is cutlery, the rest are musical instruments!"
     },
     {
-      items: [
-        { word: 'SPRING', emoji: '🌱' },
-        { word: 'SUMMER', emoji: '☀️' },
-        { word: 'WINTER', emoji: '❄️' },
-        { word: 'CLOCK', emoji: '⏰' }
+      "items": [
+        {
+          "word": "SPRING",
+          "emoji": "🌱"
+        },
+        {
+          "word": "SUMMER",
+          "emoji": "☀️"
+        },
+        {
+          "word": "WINTER",
+          "emoji": "❄️"
+        },
+        {
+          "word": "CLOCK",
+          "emoji": "⏰"
+        }
       ],
-      oddWord: 'CLOCK',
-      explanation: 'Clock tells time, the rest are seasons!'
+      "oddWord": "CLOCK",
+      "explanation": "Clock tells time, the rest are seasons!"
+    },
+    {
+      "items": [
+        {
+          "word": "RUN",
+          "emoji": "🏃"
+        },
+        {
+          "word": "SLEEP",
+          "emoji": "😴"
+        },
+        {
+          "word": "SING",
+          "emoji": "🎤"
+        },
+        {
+          "word": "DESK",
+          "emoji": "🪑"
+        }
+      ],
+      "oddWord": "DESK",
+      "explanation": "Desk is furniture, while the other words are actions!"
+    },
+    {
+      "items": [
+        {
+          "word": "SPOON",
+          "emoji": "🥄"
+        },
+        {
+          "word": "CUP",
+          "emoji": "☕"
+        },
+        {
+          "word": "PLATE",
+          "emoji": "🍽️"
+        },
+        {
+          "word": "SWIM",
+          "emoji": "🏊"
+        }
+      ],
+      "oddWord": "SWIM",
+      "explanation": "Swim is an action, while the other words are tableware!"
     }
   ]
 };
 
-// ==========================================
-// ДАННЫЕ ДЛЯ «КОНСТРУКТОРА БУКВ» (4.5 ГОДА)
-// ==========================================
 export const LETTER_PUZZLES_DATA = {
   ru: [
     {
