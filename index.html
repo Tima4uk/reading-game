@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#4A90E2">
+  <title>Словознайка / Słowotwórca — Учимся читать</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@600;700&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
+</head>
+<body>
+  <!-- Canvas для анимации конфетти -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <div class="app-wrapper">
+    <!-- Верхняя панель: Язык, Звезды, Настройки -->
+    <!-- Компактная верхняя панель: Бренд, Режимы, Язык и Управление -->
+    <header class="app-header">
+      <div class="header-left">
+        <h1 class="app-title" id="app-title">Словознайка</h1>
+        <!-- Счетчик звезд -->
+        <div class="star-badge" title="Собранные звездочки">
+          <span class="star-icon">⭐</span>
+          <span class="star-count" id="star-count">0</span>
+        </div>
+      </div>
+
+      <!-- Вкладки режимов игры -->
+      <nav class="mode-nav">
+        <button class="mode-tab active" id="tab-search" title="Сетка слов">
+          <span class="tab-icon">🔍</span>
+          <span class="tab-text">Сетка</span>
+        </button>
+        <button class="mode-tab" id="tab-builder" title="Собери слово">
+          <span class="tab-icon">🧩</span>
+          <span class="tab-text">Слово</span>
+        </button>
+        <button class="mode-tab" id="tab-logic" title="Умные слова">
+          <span class="tab-icon">🧠</span>
+          <span class="tab-text">Логика</span>
+        </button>
+        <button class="mode-tab" id="tab-alphabet" title="Азбука">
+          <span class="tab-icon">🔤</span>
+          <span class="tab-text">Азбука</span>
+        </button>
+      </nav>
+
+      <div class="header-right">
+        <!-- Переключатель языков: RU / PL -->
+        <div class="lang-selector">
+          <button class="lang-btn active" id="btn-lang-ru" title="Русский язык">
+            <span class="flag-icon">🇷🇺</span>
+            <span class="lang-text">RU</span>
+          </button>
+          <button class="lang-btn" id="btn-lang-pl" title="Język polski">
+            <span class="flag-icon">🇵🇱</span>
+            <span class="lang-text">PL</span>
+          </button>
+        </div>
+
+        <!-- Кнопка звука -->
+        <button class="icon-btn" id="btn-sound" title="Вкл / Выкл звук">🔊</button>
+
+        <!-- Кнопка на весь экран (удобно для планшета) -->
+        <button class="icon-btn" id="btn-fullscreen" title="На весь экран">⛶</button>
+      </div>
+    </header>
+
+    <!-- Игровая область -->
+    <main class="main-content">
+      <div id="game-area"></div>
+    </main>
+
+    <!-- Подсказка для ребенка внизу -->
+    <footer class="app-footer">
+      <span>Нажимай на слова, чтобы услышать, как они звучат! 🔊</span>
+    </footer>
+  </div>
+
+  <!-- Модальное окно победы в раунде -->
+  <div class="modal-overlay hidden" id="celebration-modal">
+    <div class="modal-card">
+      <div class="modal-trophy">🏆⭐🎉</div>
+      <h2 class="modal-title" id="modal-title">Ура! Все слова найдены!</h2>
+      <p class="modal-subtitle">+3 ⭐ в копилку!</p>
+      <button class="modal-btn" id="btn-next-round">Играть ещё! 🚀</button>
+    </div>
+  </div>
+
+  <script type="module" src="src/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+{
+  "name": "reading-game-ru-pl",
+  "version": "1.0.0",
+  "description": "Обучающая игра для чтения на русском и польском языках для детей",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "education",
+    "reading",
+    "kids",
+    "russian",
+    "polish"
+  ],
+  "author": "",
+  "license": "MIT"
+}
