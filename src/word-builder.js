@@ -100,6 +100,7 @@ export class WordBuilderGame {
     const listenText = isRu ? 'Послушать слово' : (isPl ? 'Posłuchaj słowa' : 'Listen to word');
     const hintLabel = isRu ? 'Подсказка' : (isPl ? 'Podpowiedź' : 'Hint');
     const clearLabel = isRu ? 'Стереть' : (isPl ? 'Wyczyść' : 'Clear');
+    const nextLabel = isRu ? 'Дальше' : (isPl ? 'Dalej' : 'Next');
 
     this.container.innerHTML = `
       <div class="wb-game ${isHard ? 'wb-hard-mode' : ''}">
@@ -131,7 +132,8 @@ export class WordBuilderGame {
             const isVowel = letter ? VOWELS[this.lang].has(letter) : false;
             return `
               <div class="wb-slot ${slot ? 'filled' : 'empty'} ${isCompleted ? 'success-anim' : ''} ${isVowel ? 'vowel' : 'consonant'}" 
-                   data-slot-index="${index}">
+                   data-slot-index="${index}"
+                   title="${isCompleted ? (isRu ? 'Нажми, чтобы послушать слово' : (isPl ? 'Kliknij, aby posłuchać' : 'Tap to listen')) : ''}">
                 ${letter}
               </div>
             `;
@@ -152,14 +154,20 @@ export class WordBuilderGame {
           }).join('')}
         </div>
 
-        <!-- Кнопки управления: Подсказка и Очистить -->
+        <!-- Кнопки управления: Подсказка и Очистить (или кнопка ДАЛЬШЕ при победе) -->
         <div class="wb-controls">
-          <button class="wb-ctrl-btn btn-hint" id="wb-hint-btn">
-            💡 ${hintLabel}
-          </button>
-          <button class="wb-ctrl-btn btn-clear" id="wb-clear-btn">
-            ↺ ${clearLabel}
-          </button>
+          ${isCompleted ? `
+            <button class="wb-ctrl-btn btn-next" id="wb-next-btn">
+              ${nextLabel} ➔
+            </button>
+          ` : `
+            <button class="wb-ctrl-btn btn-hint" id="wb-hint-btn">
+              💡 ${hintLabel}
+            </button>
+            <button class="wb-ctrl-btn btn-clear" id="wb-clear-btn">
+              ↺ ${clearLabel}
+            </button>
+          `}
         </div>
       </div>
     `;
@@ -184,11 +192,15 @@ export class WordBuilderGame {
       });
     });
 
-    // Клик на уже заполненный слот (возвращает букву обратно)
+    // Клик на уже заполненный слот (возвращает букву обратно, а при собранном слове — повторяет произношение)
     const slotEls = this.container.querySelectorAll('.wb-slot');
     slotEls.forEach(slotEl => {
       slotEl.addEventListener('click', () => {
-        if (this.isCompleted) return;
+        if (this.isCompleted) {
+          sound.playLetterClick();
+          sound.speakWord(this.targetWord, this.lang);
+          return;
+        }
         const slotIdx = parseInt(slotEl.dataset.slotIndex);
         this.removeTileFromSlot(slotIdx);
       });
@@ -219,6 +231,15 @@ export class WordBuilderGame {
         if (this.isCompleted) return;
         sound.playLetterClick();
         this.resetSlots();
+      });
+    }
+
+    // Кнопка перехода к следующему слову (появляется после успешной сборки)
+    const nextBtn = this.container.querySelector('#wb-next-btn');
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => {
+        sound.playLetterClick();
+        this.startNewWord();
       });
     }
   }
@@ -324,12 +345,9 @@ export class WordBuilderGame {
       setTimeout(() => {
         sound.speakWord(this.targetWord, this.lang);
         this.onWordCompleted(this.targetWord);
-      }, 500);
+      }, 400);
 
-      // Переход к следующему слову через 2.5 сек
-      setTimeout(() => {
-        this.startNewWord();
-      }, 2500);
+      // Не переключаем автоматически: ребенок может еще раз проверить слово и нажать "Дальше"
     } else {
       // Ошибка
       sound.playError();
