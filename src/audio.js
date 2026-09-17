@@ -80,7 +80,23 @@ class SoundEngine {
     if (!this.speechEnabled || !('speechSynthesis' in window)) return;
     window.speechSynthesis.cancel();
 
-    const utterance = new SpeechSynthesisUtterance(word.toLowerCase());
+    // Для фразовых глаголов и составных выражений в английском (написанных слитно в карточках/сетке)
+    const phrasalSpoken = {
+      'FINDOUT': 'find out',
+      'GIVEAWAY': 'give away',
+      'ENDUP': 'end up',
+      'PAYFOR': 'pay for',
+      'TURNINTO': 'turn into',
+      'GOON': 'go on',
+      'OHMYWORD': 'oh my word',
+      'ICECREAM': 'ice cream'
+    };
+    const upper = String(word).toUpperCase();
+    const spokenText = (lang === 'en' && phrasalSpoken[upper])
+      ? phrasalSpoken[upper]
+      : word.toLowerCase();
+
+    const utterance = new SpeechSynthesisUtterance(spokenText);
     utterance.lang = this.getLangTag(lang);
     utterance.rate = 0.8;
     utterance.pitch = 1.05;

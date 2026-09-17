@@ -1348,6 +1348,26 @@ export const WORDS_DATA = {
       "word": "DRINK",
       "emoji": "🧃",
       "hint": "Drinks water or fruit juice"
+    },
+    {
+      "word": "DYE",
+      "emoji": "🎨",
+      "hint": "dye — краситель, краска / красить"
+    },
+    {
+      "word": "CLUE",
+      "emoji": "🔎",
+      "hint": "clue — улика, зацепка"
+    },
+    {
+      "word": "SOLVE",
+      "emoji": "🧩",
+      "hint": "solve — решать загадку"
+    },
+    {
+      "word": "SEARCH",
+      "emoji": "🔍",
+      "hint": "search — искать, поиск"
     }
   ]
 };
@@ -1747,6 +1767,86 @@ export const WORDS_DATA_HARD = {
       "word": "ICECREAM",
       "emoji": "🍦",
       "hint": "мороженое"
+    },
+    {
+      "word": "DELIVER",
+      "emoji": "📦",
+      "hint": "to deliver — доставлять"
+    },
+    {
+      "word": "IMPRESS",
+      "emoji": "✨",
+      "hint": "to impress — впечатлять"
+    },
+    {
+      "word": "STUFF",
+      "emoji": "🎒",
+      "hint": "stuff — вещи, предметы"
+    },
+    {
+      "word": "OFFER",
+      "emoji": "🤝",
+      "hint": "a good offer — выгодное предложение"
+    },
+    {
+      "word": "FINDOUT",
+      "emoji": "🔍",
+      "hint": "to find out — выяснить, разузнать"
+    },
+    {
+      "word": "GIVEAWAY",
+      "emoji": "🎁",
+      "hint": "to give away — раздавать, дарить"
+    },
+    {
+      "word": "ENDUP",
+      "emoji": "🏁",
+      "hint": "to end up — оказаться в итоге"
+    },
+    {
+      "word": "PAYFOR",
+      "emoji": "💳",
+      "hint": "to pay for — платить за"
+    },
+    {
+      "word": "TURNINTO",
+      "emoji": "🪄",
+      "hint": "to turn into — превращаться в"
+    },
+    {
+      "word": "GOON",
+      "emoji": "⏩",
+      "hint": "to go on — продолжать"
+    },
+    {
+      "word": "OHMYWORD",
+      "emoji": "😲",
+      "hint": "oh my word! — вот это да! честное слово!"
+    },
+    {
+      "word": "SECRET",
+      "emoji": "🤫",
+      "hint": "secret — секрет, тайна"
+    },
+    {
+      "word": "EXPLORE",
+      "emoji": "🗺️",
+      "hint": "explore — исследовать, изучать"
+    },
+    {
+      "word": "DISCOVER",
+      "emoji": "🧭",
+      "hint": "discover — открывать новое"
+    },
+    {
+      "word": "MYSTERY",
+      "emoji": "🔮",
+      "hint": "mystery — тайна, загадка"
+    },
+    {
+      "word": "DETECT",
+      "emoji": "👀",
+      "hint": "detect — обнаружить, заметить"
     }
   ]
 };
@@ -2669,6 +2769,26 @@ export const RHYMES_DATA = {
           "emoji": "🦊"
         }
       ]
+    },
+    {
+      "target": {
+        "word": "CLUE",
+        "emoji": "🔎"
+      },
+      "correct": {
+        "word": "BLUE",
+        "emoji": "🔵"
+      },
+      "distractors": [
+        {
+          "word": "RED",
+          "emoji": "🔴"
+        },
+        {
+          "word": "DOG",
+          "emoji": "🐶"
+        }
+      ]
     }
   ]
 };
@@ -3360,6 +3480,28 @@ export const ODD_ONE_OUT_DATA = {
       ],
       "oddWord": "SWIM",
       "explanation": "Swim is an action, while the other words are tableware!"
+    },
+    {
+      "items": [
+        {
+          "word": "DELIVER",
+          "emoji": "📦"
+        },
+        {
+          "word": "EXPLORE",
+          "emoji": "🗺️"
+        },
+        {
+          "word": "DISCOVER",
+          "emoji": "🧭"
+        },
+        {
+          "word": "BANANA",
+          "emoji": "🍌"
+        }
+      ],
+      "oddWord": "BANANA",
+      "explanation": "Banana is a fruit, while the others are action verbs!"
     }
   ]
 };
