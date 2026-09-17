@@ -1454,135 +1454,40 @@ body {
   animation: bounceSuccess 0.6s ease;
 }
 
-/* Стили геометрии деталей конструктора */
-.lp-slot {
-  position: absolute;
-  border-radius: 12px;
-  transition: all 0.2s ease;
+/* Стили векторной сборки букв (SVG) */
+.lp-board-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
 }
 
-.lp-slot.ghost {
-  background: rgba(226, 232, 240, 0.4);
-  border: 3px dashed #94a3b8;
+.lp-part-slot.ghost {
   cursor: pointer;
 }
 
-.lp-slot.ghost:hover {
-  background: rgba(226, 232, 240, 0.7);
-  border-color: #64748b;
+.lp-part-slot.ghost .lp-ghost-path {
+  transition: stroke 0.2s ease, stroke-width 0.2s ease;
 }
 
-.lp-part-solid {
-  width: 100%;
-  height: 100%;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-  box-shadow: 0 4px 8px rgba(29, 78, 216, 0.3);
-  animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+.lp-part-slot.ghost:hover .lp-ghost-path {
+  stroke: #94a3b8;
+  stroke-width: 28;
 }
 
-/* Позиционирование типов деталей в контуре */
-.lp-slot.lp-part-v-bar {
-  width: 28px;
-  height: 170px;
-  top: 35px;
+.lp-solid-path {
+  animation: lpPopIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: center;
 }
 
-.lp-slot.lp-part-v-bar:first-child {
-  left: 45px;
-}
-
-.lp-slot.lp-part-v-bar:nth-child(2) {
-  right: 45px;
-}
-
-.lp-slot.lp-part-h-bar {
-  height: 28px;
-  width: 150px;
-  top: 35px;
-  left: 35px;
-}
-
-.lp-slot.lp-part-h-half-bar {
-  height: 28px;
-  width: 85px;
-  top: 35px;
-  left: 45px;
-}
-
-.lp-slot.lp-part-h-mid-bar {
-  height: 28px;
-  width: 110px;
-  top: 106px;
-  left: 55px;
-}
-
-.lp-slot.lp-part-diag-left {
-  width: 28px;
-  height: 180px;
-  top: 30px;
-  left: 65px;
-  transform: rotate(20deg);
-}
-
-.lp-slot.lp-part-diag-right {
-  width: 28px;
-  height: 180px;
-  top: 30px;
-  right: 65px;
-  transform: rotate(-20deg);
-}
-
-.lp-slot.lp-part-arc-left {
-  width: 70px;
-  height: 160px;
-  top: 40px;
-  left: 45px;
-  border-top-left-radius: 70px;
-  border-bottom-left-radius: 70px;
-}
-
-.lp-slot.lp-part-arc-right {
-  width: 70px;
-  height: 160px;
-  top: 40px;
-  right: 45px;
-  border-top-right-radius: 70px;
-  border-bottom-right-radius: 70px;
-}
-
-.lp-slot.lp-part-arc-top-right {
-  width: 85px;
-  height: 90px;
-  top: 35px;
-  left: 70px;
-  border-top-right-radius: 45px;
-  border-bottom-right-radius: 45px;
-}
-
-.lp-slot.lp-part-arc-bot-right {
-  width: 85px;
-  height: 90px;
-  top: 115px;
-  left: 70px;
-  border-top-right-radius: 45px;
-  border-bottom-right-radius: 45px;
-}
-
-.lp-slot.lp-part-cross-tick {
-  width: 45px;
-  height: 18px;
-  top: 115px;
-  left: 36px;
-  transform: rotate(35deg);
-}
-
-.lp-slot.lp-part-dot-mark {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  top: 10px;
-  left: 97px;
+@keyframes lpPopIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 /* Лоток деталей внизу */
@@ -1617,13 +1522,19 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 6px;
-  padding: 10px 14px;
+  padding: 8px 12px;
   background: #ffffff;
   border: 2px solid #cbd5e1;
   border-radius: 18px;
   cursor: pointer;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
   transition: all 0.15s ease;
+  min-width: 70px;
+}
+
+.lp-tray-item:hover {
+  border-color: #3b82f6;
+  transform: translateY(-2px);
 }
 
 .lp-tray-item:active {
@@ -1637,56 +1548,29 @@ body {
 }
 
 .lp-tray-preview {
-  background: #3b82f6;
-  border-radius: 6px;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f1f5f9;
+  border-radius: 12px;
+  padding: 4px;
+  transition: all 0.2s ease;
 }
 
-.lp-tray-preview.lp-part-v-bar {
-  width: 14px;
-  height: 40px;
+.lp-tray-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
 }
 
-.lp-tray-preview.lp-part-h-bar {
-  width: 40px;
-  height: 14px;
+.lp-tray-item:hover .lp-tray-preview {
+  background: #e0f2fe;
 }
 
-.lp-tray-preview.lp-part-h-half-bar {
-  width: 25px;
-  height: 14px;
-}
-
-.lp-tray-preview.lp-part-h-mid-bar {
-  width: 30px;
-  height: 14px;
-}
-
-.lp-tray-preview.lp-part-diag-left,
-.lp-tray-preview.lp-part-diag-right {
-  width: 14px;
-  height: 38px;
-  transform: rotate(20deg);
-}
-
-.lp-tray-preview.lp-part-arc-left,
-.lp-tray-preview.lp-part-arc-right,
-.lp-tray-preview.lp-part-arc-top-right,
-.lp-tray-preview.lp-part-arc-bot-right {
-  width: 24px;
-  height: 30px;
-  border-radius: 50%;
-}
-
-.lp-tray-preview.lp-part-cross-tick {
-  width: 20px;
-  height: 8px;
-  transform: rotate(30deg);
-}
-
-.lp-tray-preview.lp-part-dot-mark {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
+.lp-tray-item:hover .lp-tray-svg path {
+  stroke: #1d4ed8;
 }
 
 .lp-tray-item-label {

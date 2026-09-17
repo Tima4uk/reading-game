@@ -3513,8 +3513,8 @@ export const LETTER_PUZZLES_DATA = {
       word: 'Тигр',
       emoji: '🐯',
       parts: [
-        { id: 'p1', type: 'h-bar', label: 'Перекладина' },
-        { id: 'p2', type: 'v-bar', label: 'Ножка' }
+        { id: 'p1', label: 'Перекладина', path: 'M 45 45 L 195 45' },
+        { id: 'p2', label: 'Ножка', path: 'M 120 45 L 120 200' }
       ]
     },
     {
@@ -3522,8 +3522,8 @@ export const LETTER_PUZZLES_DATA = {
       word: 'Гриб',
       emoji: '🍄',
       parts: [
-        { id: 'p1', type: 'v-bar', label: 'Столбик' },
-        { id: 'p2', type: 'h-half-bar', label: 'Козырек' }
+        { id: 'p1', label: 'Столбик', path: 'M 75 45 L 75 200' },
+        { id: 'p2', label: 'Козырек', path: 'M 75 45 L 170 45' }
       ]
     },
     {
@@ -3531,9 +3531,9 @@ export const LETTER_PUZZLES_DATA = {
       word: 'Птица',
       emoji: '🐦',
       parts: [
-        { id: 'p1', type: 'v-bar', label: 'Левый столбик' },
-        { id: 'p2', type: 'v-bar', label: 'Правый столбик' },
-        { id: 'p3', type: 'h-bar', label: 'Крыша' }
+        { id: 'p1', label: 'Левый столбик', path: 'M 65 45 L 65 200' },
+        { id: 'p2', label: 'Правый столбик', path: 'M 175 45 L 175 200' },
+        { id: 'p3', label: 'Крыша', path: 'M 65 45 L 175 45' }
       ]
     },
     {
@@ -3541,9 +3541,9 @@ export const LETTER_PUZZLES_DATA = {
       word: 'Нос',
       emoji: '👃',
       parts: [
-        { id: 'p1', type: 'v-bar', label: 'Левый столбик' },
-        { id: 'p2', type: 'v-bar', label: 'Правый столбик' },
-        { id: 'p3', type: 'h-mid-bar', label: 'Поясок' }
+        { id: 'p1', label: 'Левый столбик', path: 'M 65 45 L 65 200' },
+        { id: 'p2', label: 'Правый столбик', path: 'M 175 45 L 175 200' },
+        { id: 'p3', label: 'Поясок', path: 'M 65 122 L 175 122' }
       ]
     },
     {
@@ -3551,9 +3551,9 @@ export const LETTER_PUZZLES_DATA = {
       word: 'Арбуз',
       emoji: '🍉',
       parts: [
-        { id: 'p1', type: 'diag-left', label: 'Левая горка' },
-        { id: 'p2', type: 'diag-right', label: 'Правая горка' },
-        { id: 'p3', type: 'h-mid-bar', label: 'Мостик' }
+        { id: 'p1', label: 'Левая горка', path: 'M 120 42 L 55 200' },
+        { id: 'p2', label: 'Правая горка', path: 'M 120 42 L 185 200' },
+        { id: 'p3', label: 'Мостик', path: 'M 80 142 L 160 142' }
       ]
     },
     {
@@ -3561,8 +3561,8 @@ export const LETTER_PUZZLES_DATA = {
       word: 'Остров',
       emoji: '🏝️',
       parts: [
-        { id: 'p1', type: 'arc-left', label: 'Левая дуга' },
-        { id: 'p2', type: 'arc-right', label: 'Правая дуга' }
+        { id: 'p1', label: 'Левая дуга', path: 'M 120 45 A 58 75 0 0 0 120 195' },
+        { id: 'p2', label: 'Правая дуга', path: 'M 120 45 A 58 75 0 0 1 120 195' }
       ]
     },
     {
@@ -3570,8 +3570,8 @@ export const LETTER_PUZZLES_DATA = {
       word: 'Рыба',
       emoji: '🐟',
       parts: [
-        { id: 'p1', type: 'v-bar', label: 'Столбик' },
-        { id: 'p2', type: 'arc-top-right', label: 'Кружочек' }
+        { id: 'p1', label: 'Столбик', path: 'M 70 42 L 70 200' },
+        { id: 'p2', label: 'Кружочек', path: 'M 70 42 L 125 42 A 40 40 0 0 1 125 122 L 70 122' }
       ]
     },
     {
@@ -3579,9 +3579,9 @@ export const LETTER_PUZZLES_DATA = {
       word: 'Волк',
       emoji: '🐺',
       parts: [
-        { id: 'p1', type: 'v-bar', label: 'Столбик' },
-        { id: 'p2', type: 'arc-top-right', label: 'Верхнее ушко' },
-        { id: 'p3', type: 'arc-bot-right', label: 'Нижнее ушко' }
+        { id: 'p1', label: 'Столбик', path: 'M 68 42 L 68 200' },
+        { id: 'p2', label: 'Верхнее ушко', path: 'M 68 42 L 122 42 A 38 38 0 0 1 122 118 L 68 118' },
+        { id: 'p3', label: 'Нижнее ушко', path: 'M 68 118 L 126 118 A 40 40 0 0 1 126 198 L 68 198' }
       ]
     }
   ],
@@ -3591,8 +3591,8 @@ export const LETTER_PUZZLES_DATA = {
       word: 'Tort',
       emoji: '🎂',
       parts: [
-        { id: 'p1', type: 'h-bar', label: 'Daszek' },
-        { id: 'p2', type: 'v-bar', label: 'Nóżka' }
+        { id: 'p1', label: 'Daszek', path: 'M 45 45 L 195 45' },
+        { id: 'p2', label: 'Nóżka', path: 'M 120 45 L 120 200' }
       ]
     },
     {
@@ -3600,8 +3600,8 @@ export const LETTER_PUZZLES_DATA = {
       word: 'Lis',
       emoji: '🦊',
       parts: [
-        { id: 'p1', type: 'v-bar', label: 'Słupek' },
-        { id: 'p2', type: 'h-half-bar', label: 'Podstawka' }
+        { id: 'p1', label: 'Słupek', path: 'M 75 42 L 75 198' },
+        { id: 'p2', label: 'Podstawka', path: 'M 75 198 L 170 198' }
       ]
     },
     {
@@ -3609,9 +3609,9 @@ export const LETTER_PUZZLES_DATA = {
       word: 'Łódź',
       emoji: '⛵',
       parts: [
-        { id: 'p1', type: 'v-bar', label: 'Słupek' },
-        { id: 'p2', type: 'h-half-bar', label: 'Podstawka' },
-        { id: 'p3', type: 'cross-tick', label: 'Kreska Ł' }
+        { id: 'p1', label: 'Słupek', path: 'M 75 42 L 75 198' },
+        { id: 'p2', label: 'Podstawka', path: 'M 75 198 L 170 198' },
+        { id: 'p3', label: 'Kreska Ł', path: 'M 50 130 L 105 105' }
       ]
     },
     {
@@ -3619,9 +3619,9 @@ export const LETTER_PUZZLES_DATA = {
       word: 'Arbuz',
       emoji: '🍉',
       parts: [
-        { id: 'p1', type: 'diag-left', label: 'Lewa rampa' },
-        { id: 'p2', type: 'diag-right', label: 'Prawa rampa' },
-        { id: 'p3', type: 'h-mid-bar', label: 'Mostek' }
+        { id: 'p1', label: 'Lewa rampa', path: 'M 120 42 L 55 200' },
+        { id: 'p2', label: 'Prawa rampa', path: 'M 120 42 L 185 200' },
+        { id: 'p3', label: 'Mostek', path: 'M 80 142 L 160 142' }
       ]
     },
     {
@@ -3629,8 +3629,8 @@ export const LETTER_PUZZLES_DATA = {
       word: 'Ogród',
       emoji: '🌻',
       parts: [
-        { id: 'p1', type: 'arc-left', label: 'Lewy łuk' },
-        { id: 'p2', type: 'arc-right', label: 'Prawy łuk' }
+        { id: 'p1', label: 'Lewy łuk', path: 'M 120 45 A 58 75 0 0 0 120 195' },
+        { id: 'p2', label: 'Prawy łuk', path: 'M 120 45 A 58 75 0 0 1 120 195' }
       ]
     },
     {
@@ -3638,8 +3638,8 @@ export const LETTER_PUZZLES_DATA = {
       word: 'Pies',
       emoji: '🐶',
       parts: [
-        { id: 'p1', type: 'v-bar', label: 'Słupek' },
-        { id: 'p2', type: 'arc-top-right', label: 'Kółeczko' }
+        { id: 'p1', label: 'Słupek', path: 'M 70 42 L 70 200' },
+        { id: 'p2', label: 'Kółeczko', path: 'M 70 42 L 125 42 A 40 40 0 0 1 125 122 L 70 122' }
       ]
     },
     {
@@ -3647,10 +3647,10 @@ export const LETTER_PUZZLES_DATA = {
       word: 'Żaba',
       emoji: '🐸',
       parts: [
-        { id: 'p1', type: 'h-bar', label: 'Góra Z' },
-        { id: 'p2', type: 'diag-left', label: 'Skos Z' },
-        { id: 'p3', type: 'h-bar', label: 'Dół Z' },
-        { id: 'p4', type: 'dot-mark', label: 'Kropka Ż' }
+        { id: 'p1', label: 'Góra Z', path: 'M 65 52 L 175 52' },
+        { id: 'p2', label: 'Skos Z', path: 'M 175 52 L 65 192' },
+        { id: 'p3', label: 'Dół Z', path: 'M 65 192 L 175 192' },
+        { id: 'p4', label: 'Kropka Ż', path: 'M 120 22 L 120 22.1' }
       ]
     }
   ],
@@ -3660,8 +3660,8 @@ export const LETTER_PUZZLES_DATA = {
       word: 'Tiger',
       emoji: '🐯',
       parts: [
-        { id: 'p1', type: 'h-bar', label: 'Top bar' },
-        { id: 'p2', type: 'v-bar', label: 'Stem' }
+        { id: 'p1', label: 'Top bar', path: 'M 45 45 L 195 45' },
+        { id: 'p2', label: 'Stem', path: 'M 120 45 L 120 200' }
       ]
     },
     {
@@ -3669,8 +3669,8 @@ export const LETTER_PUZZLES_DATA = {
       word: 'Lion',
       emoji: '🦁',
       parts: [
-        { id: 'p1', type: 'v-bar', label: 'Tall bar' },
-        { id: 'p2', type: 'h-half-bar', label: 'Foot' }
+        { id: 'p1', label: 'Tall bar', path: 'M 75 42 L 75 198' },
+        { id: 'p2', label: 'Foot', path: 'M 75 198 L 170 198' }
       ]
     },
     {
@@ -3678,9 +3678,9 @@ export const LETTER_PUZZLES_DATA = {
       word: 'Apple',
       emoji: '🍎',
       parts: [
-        { id: 'p1', type: 'diag-left', label: 'Left slide' },
-        { id: 'p2', type: 'diag-right', label: 'Right slide' },
-        { id: 'p3', type: 'h-mid-bar', label: 'Cross bridge' }
+        { id: 'p1', label: 'Left slide', path: 'M 120 42 L 55 200' },
+        { id: 'p2', label: 'Right slide', path: 'M 120 42 L 185 200' },
+        { id: 'p3', label: 'Cross bridge', path: 'M 80 142 L 160 142' }
       ]
     },
     {
@@ -3688,8 +3688,8 @@ export const LETTER_PUZZLES_DATA = {
       word: 'Orange',
       emoji: '🍊',
       parts: [
-        { id: 'p1', type: 'arc-left', label: 'Left curve' },
-        { id: 'p2', type: 'arc-right', label: 'Right curve' }
+        { id: 'p1', label: 'Left curve', path: 'M 120 45 A 58 75 0 0 0 120 195' },
+        { id: 'p2', label: 'Right curve', path: 'M 120 45 A 58 75 0 0 1 120 195' }
       ]
     },
     {
@@ -3697,8 +3697,18 @@ export const LETTER_PUZZLES_DATA = {
       word: 'Panda',
       emoji: '🐼',
       parts: [
-        { id: 'p1', type: 'v-bar', label: 'Straight stem' },
-        { id: 'p2', type: 'arc-top-right', label: 'Round loop' }
+        { id: 'p1', label: 'Straight stem', path: 'M 70 42 L 70 200' },
+        { id: 'p2', label: 'Round loop', path: 'M 70 42 L 125 42 A 40 40 0 0 1 125 122 L 70 122' }
+      ]
+    },
+    {
+      letter: 'H',
+      word: 'Horse',
+      emoji: '🐴',
+      parts: [
+        { id: 'p1', label: 'Left bar', path: 'M 65 45 L 65 200' },
+        { id: 'p2', label: 'Right bar', path: 'M 175 45 L 175 200' },
+        { id: 'p3', label: 'Middle bridge', path: 'M 65 122 L 175 122' }
       ]
     }
   ]
