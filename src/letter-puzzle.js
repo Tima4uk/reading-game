@@ -1,4 +1,4 @@
-// Модуль «Конструктор букв» для малышей 4.5 лет (Развивающий пазл букв)
+// Модуль «Конструктор букв» для малышей 4.5 лет (Развивающий пазл букв с Drag-and-Drop)
 import { LETTER_PUZZLES_DATA } from './data.js';
 import { sound } from './audio.js';
 
@@ -13,6 +13,9 @@ export class LetterPuzzleGame {
     this.puzzles = [];
     this.placedParts = new Set();
     this.isCompleted = false;
+
+    // Состояние перетаскивания (Drag-and-Drop)
+    this.dragState = null;
   }
 
   setLanguage(lang) {
@@ -28,6 +31,7 @@ export class LetterPuzzleGame {
   }
 
   loadPuzzle() {
+    this.cleanUpDrag();
     this.placedParts.clear();
     this.isCompleted = false;
     this.render();
@@ -46,13 +50,11 @@ export class LetterPuzzleGame {
     const isRu = this.lang === 'ru';
     const isPl = this.lang === 'pl';
     const puzzle = this.getCurrentPuzzle();
-    const totalParts = puzzle.parts.length;
-    const placedCount = this.placedParts.size;
 
     const instructionText = isRu ? 'Собери букву' : (isPl ? 'Złóż literę' : 'Build the letter');
     const trayLabelText = this.isCompleted 
       ? (isRu ? '🎉 Буква собрана!' : (isPl ? '🎉 Litera ułożona!' : '🎉 Letter built!')) 
-      : (isRu ? 'Нажимай на детали, чтобы собрать букву:' : (isPl ? 'Klikaj na części, aby złożyć literę:' : 'Tap parts to build the letter:'));
+      : (isRu ? '🖐️ Перетаскивай детали на поле:' : (isPl ? '🖐️ Przeciągaj części na pole:' : '🖐️ Drag parts to the board:'));
 
     this.container.innerHTML = `
       <div class="lp-wrapper">
@@ -89,7 +91,7 @@ export class LetterPuzzleGame {
                 const isPlaced = this.placedParts.has(part.id);
                 return `
                   <g class="lp-part-slot ${isPlaced ? 'placed' : 'ghost'}" data-part-id="${part.id}">
-                    <!-- Пунктирный контур для сборки -->
+                    <!-- Пунктирный контур-паз для сборки -->
                     <path class="lp-ghost-path" 
                           d="${part.path}" 
                           fill="none" 
@@ -133,15 +135,16 @@ export class LetterPuzzleGame {
           <div class="lp-parts-tray">
             ${puzzle.parts.map((part) => {
               const isUsed = this.placedParts.has(part.id);
+              const pPath = part.previewPath || 'M 10 30 L 50 30';
               return `
                 <button class="lp-tray-item ${isUsed ? 'used' : ''}" 
                         data-part-id="${part.id}" 
                         ${isUsed ? 'disabled' : ''}>
                   <div class="lp-tray-preview">
-                    <svg viewBox="0 0 240 240" class="lp-tray-svg">
-                      <path d="${part.path}" 
+                    <svg viewBox="0 0 60 60" class="lp-tray-svg">
+                      <path d="${pPath}" 
                             stroke="${isUsed ? '#94a3b8' : '#2563eb'}" 
-                            stroke-width="32" 
+                            stroke-width="12" 
                             stroke-linecap="round" 
                             stroke-linejoin="round" 
                             fill="none" />
@@ -157,6 +160,24 @@ export class LetterPuzzleGame {
     `;
 
     this.attachEvents();
+  }
+
+  cleanUpDrag() {
+    if (this.dragState) {
+      if (this.dragState.avatar && this.dragState.avatar.parentNode) {
+        this.dragState.avatar.remove();
+      }
+      if (this.dragState.btn) {
+        this.dragState.btn.classList.remove('is-dragging');
+      }
+      this.clearDropHighlights();
+      this.dragState = null;
+    }
+  }
+
+  clearDropHighlights() {
+    const slots = this.container.querySelectorAll('.lp-part-slot.drag-hover');
+    slots.forEach(s => s.classList.remove('drag-hover'));
   }
 
   placePart(partId) {
@@ -189,16 +210,180 @@ export class LetterPuzzleGame {
     }
   }
 
+  findMatchingSlot(clientX, clientY, draggedPart) {
+    const boardEl = this.container.querySelector('#lp-board');
+    if (!boardEl) return null;
+
+    const boardRect = boardEl.getBoundingClientRect();
+    // Проверяем, находится ли указатель в пределах или вблизи игрового поля
+    if (
+      clientX < boardRect.left - 40 ||
+      clientX > boardRect.right + 40 ||
+      clientY < boardRect.top - 40 ||
+      clientY > boardRect.bottom + 40
+    ) {
+      return null;
+    }
+
+    const scaleX = 240 / boardRect.width;
+    const scaleY = 240 / boardRect.height;
+    const boardX = (clientX - boardRect.left) * scaleX;
+    const boardY = (clientY - boardRect.top) * scaleY;
+
+    const puzzle = this.getCurrentPuzzle();
+    const unplaced = puzzle.parts.filter(p => !this.placedParts.has(p.id));
+
+    // 1. Приоритет: точный слот той же детали
+    if (!this.placedParts.has(draggedPart.id)) {
+      const dist = Math.hypot(boardX - draggedPart.center.x, boardY - draggedPart.center.y);
+      if (dist < 80) {
+        return draggedPart.id;
+      }
+    }
+
+    // 2. Если деталь взаимозаменяема по форме (например, два столбика в П или Н)
+    for (const slotPart of unplaced) {
+      const isSameShape = (slotPart.previewPath === draggedPart.previewPath);
+      if (isSameShape) {
+        const dist = Math.hypot(boardX - slotPart.center.x, boardY - slotPart.center.y);
+        if (dist < 80) {
+          return slotPart.id;
+        }
+      }
+    }
+
+    // 3. Если остался всего один незанятый слот и указатель над игровым полем
+    if (unplaced.length === 1 && unplaced[0].id === draggedPart.id) {
+      if (
+        clientX >= boardRect.left && clientX <= boardRect.right &&
+        clientY >= boardRect.top && clientY <= boardRect.bottom
+      ) {
+        return unplaced[0].id;
+      }
+    }
+
+    return null;
+  }
+
   attachEvents() {
+    const puzzle = this.getCurrentPuzzle();
     const trayItems = this.container.querySelectorAll('.lp-tray-item');
+
     trayItems.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const partId = btn.dataset.partId;
-        this.placePart(partId);
+      const partId = btn.dataset.partId;
+      const part = puzzle.parts.find(p => p.id === partId);
+      if (!part) return;
+
+      btn.addEventListener('pointerdown', (e) => {
+        if (this.isCompleted || this.placedParts.has(partId)) return;
+        if (e.button !== undefined && e.button !== 0) return;
+
+        e.preventDefault();
+        try {
+          btn.setPointerCapture(e.pointerId);
+        } catch (_) {}
+
+        this.dragState = {
+          partId,
+          part,
+          btn,
+          pointerId: e.pointerId,
+          startX: e.clientX,
+          startY: e.clientY,
+          hasMoved: false,
+          avatar: null,
+          targetSlotId: null
+        };
       });
+
+      btn.addEventListener('pointermove', (e) => {
+        if (!this.dragState || this.dragState.pointerId !== e.pointerId) return;
+
+        const dx = e.clientX - this.dragState.startX;
+        const dy = e.clientY - this.dragState.startY;
+
+        if (!this.dragState.hasMoved && Math.hypot(dx, dy) >= 8) {
+          this.dragState.hasMoved = true;
+          btn.classList.add('is-dragging');
+
+          // Создаем визуальный аватар для перетаскивания
+          const avatar = document.createElement('div');
+          avatar.className = 'lp-drag-avatar';
+          const pPath = part.previewPath || 'M 10 30 L 50 30';
+          avatar.innerHTML = `
+            <svg viewBox="0 0 60 60" class="lp-drag-svg">
+              <path d="${pPath}" 
+                    stroke="#1d4ed8" 
+                    stroke-width="13" 
+                    stroke-linecap="round" 
+                    stroke-linejoin="round" 
+                    fill="none" />
+            </svg>
+          `;
+          document.body.appendChild(avatar);
+          this.dragState.avatar = avatar;
+        }
+
+        if (this.dragState.hasMoved && this.dragState.avatar) {
+          this.dragState.avatar.style.left = `${e.clientX - 34}px`;
+          this.dragState.avatar.style.top = `${e.clientY - 34}px`;
+
+          // Поиск целевого слота для подсветки
+          const matchSlotId = this.findMatchingSlot(e.clientX, e.clientY, part);
+          this.clearDropHighlights();
+          if (matchSlotId) {
+            this.dragState.targetSlotId = matchSlotId;
+            const slotEl = this.container.querySelector(`.lp-part-slot[data-part-id="${matchSlotId}"]`);
+            if (slotEl) slotEl.classList.add('drag-hover');
+          } else {
+            this.dragState.targetSlotId = null;
+          }
+        }
+      });
+
+      const handlePointerEnd = (e) => {
+        if (!this.dragState || this.dragState.pointerId !== e.pointerId) return;
+
+        try {
+          btn.releasePointerCapture(e.pointerId);
+        } catch (_) {}
+
+        const { partId, hasMoved, avatar, targetSlotId, btn: dragBtn } = this.dragState;
+
+        if (!hasMoved) {
+          // Быстрый клик/тап (без перетаскивания) — сохраняем доступность для самых маленьких
+          this.cleanUpDrag();
+          this.placePart(partId);
+          return;
+        }
+
+        if (targetSlotId) {
+          // Успешный drop в подсвеченный слот!
+          this.cleanUpDrag();
+          this.placePart(targetSlotId);
+        } else {
+          // Промах: плавная анимация возврата в лоток
+          if (avatar) {
+            const btnRect = dragBtn.getBoundingClientRect();
+            avatar.style.transition = 'all 0.22s cubic-bezier(0.2, 0.8, 0.2, 1)';
+            avatar.style.left = `${btnRect.left + (btnRect.width - 68) / 2}px`;
+            avatar.style.top = `${btnRect.top + (btnRect.height - 68) / 2}px`;
+            avatar.style.opacity = '0.3';
+            avatar.style.transform = 'scale(0.8)';
+            setTimeout(() => {
+              this.cleanUpDrag();
+            }, 220);
+          } else {
+            this.cleanUpDrag();
+          }
+        }
+      };
+
+      btn.addEventListener('pointerup', handlePointerEnd);
+      btn.addEventListener('pointercancel', handlePointerEnd);
     });
 
-    // Также можно кликать прямо по контурным слотам на доске
+    // Дополнительно: можно кликать прямо по контурным слотам на доске
     const slots = this.container.querySelectorAll('.lp-part-slot.ghost');
     slots.forEach(slot => {
       slot.addEventListener('click', () => {

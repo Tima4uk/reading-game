@@ -1474,6 +1474,26 @@ body {
   stroke-width: 28;
 }
 
+/* Подсветка паза при поднесении детали (магнитный эффект) */
+.lp-part-slot.drag-hover .lp-ghost-path {
+  stroke: #2563eb;
+  stroke-width: 28;
+  stroke-dasharray: 4 4;
+  filter: drop-shadow(0 0 10px rgba(37, 99, 235, 0.65));
+  animation: slotPulse 0.7s ease-in-out infinite alternate;
+}
+
+@keyframes slotPulse {
+  0% {
+    stroke: #2563eb;
+    stroke-width: 26;
+  }
+  100% {
+    stroke: #60a5fa;
+    stroke-width: 30;
+  }
+}
+
 .lp-solid-path {
   animation: lpPopIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
   transform-origin: center;
@@ -1526,10 +1546,13 @@ body {
   background: #ffffff;
   border: 2px solid #cbd5e1;
   border-radius: 18px;
-  cursor: pointer;
+  cursor: grab;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
   transition: all 0.15s ease;
   min-width: 70px;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .lp-tray-item:hover {
@@ -1538,7 +1561,15 @@ body {
 }
 
 .lp-tray-item:active {
+  cursor: grabbing;
+  transform: scale(0.96);
+}
+
+.lp-tray-item.is-dragging {
+  opacity: 0.35;
   transform: scale(0.95);
+  border-style: dashed;
+  box-shadow: none;
 }
 
 .lp-tray-item.used {
@@ -1548,14 +1579,15 @@ body {
 }
 
 .lp-tray-preview {
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f1f5f9;
-  border-radius: 12px;
-  padding: 4px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 5px;
   transition: all 0.2s ease;
 }
 
@@ -1567,6 +1599,7 @@ body {
 
 .lp-tray-item:hover .lp-tray-preview {
   background: #e0f2fe;
+  border-color: #bfdbfe;
 }
 
 .lp-tray-item:hover .lp-tray-svg path {
@@ -1577,6 +1610,31 @@ body {
   font-size: 0.85rem;
   font-weight: 700;
   color: #334155;
+  pointer-events: none;
+}
+
+/* Летающий аватар детали при Drag-and-Drop */
+.lp-drag-avatar {
+  position: fixed;
+  width: 68px;
+  height: 68px;
+  pointer-events: none;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.96);
+  border: 2px solid #2563eb;
+  border-radius: 20px;
+  box-shadow: 0 14px 28px rgba(29, 78, 216, 0.35), 0 4px 10px rgba(0, 0, 0, 0.1);
+  transform: scale(1.12);
+  touch-action: none;
+}
+
+.lp-drag-svg {
+  width: 52px;
+  height: 52px;
+  overflow: visible;
 }
 
 /* ========================================================
