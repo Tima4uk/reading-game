@@ -210,16 +210,16 @@ export class WordTranslateGame {
       if (this.matchedPairsCount === this.totalPairsCount) {
         this.isLocked = true;
         setTimeout(() => {
-          sound.playFanfare();
+          sound.playVictory();
           this.onStarEarned(3);
           this.onWinEffect();
           this.render();
 
-          // Автоматический запуск следующего раунда через 2 секунды
+          // Автоматический запуск следующего раунда через 3 секунды
           this.autoNextTimeout = setTimeout(() => {
             this.startPairsRound();
-          }, 2000);
-        }, 500);
+          }, 3000);
+        }, 300);
       }
     } else {
       // ОШИБКА: карточки не совпадают
@@ -377,19 +377,7 @@ export class WordTranslateGame {
     const isRu = this.lang === 'ru';
     const isPl = this.lang === 'pl';
     const nextRoundLabel = isRu ? 'Следующий раунд ➔' : (isPl ? 'Następna runda ➔' : 'Next Round ➔');
-
-    if (isRoundWon) {
-      return `
-        <div class="wt-win-card">
-          <div class="wt-win-icon">🎉</div>
-          <h2 class="wt-win-title">${isRu ? 'Все пары найдены!' : (isPl ? 'Wszystkie pary dopasowane!' : 'All pairs matched!')}</h2>
-          <p class="wt-win-sub">${isRu ? 'Отличная память и знание слов! +3 ⭐' : (isPl ? 'Świetna robota! +3 ⭐' : 'Great job! +3 ⭐')}</p>
-          <button class="wb-ctrl-btn btn-next" id="wt-next-round-btn">
-            ${nextRoundLabel}
-          </button>
-        </div>
-      `;
-    }
+    const winTitle = isRu ? 'Все пары найдены! +3 ⭐' : (isPl ? 'Wszystkie pary dopasowane! +3 ⭐' : 'All pairs matched! +3 ⭐');
 
     return `
       <div class="wt-cards-grid ${this.difficulty === 'hard' ? 'grid-hard' : ''}">
@@ -404,6 +392,15 @@ export class WordTranslateGame {
           `;
         }).join('')}
       </div>
+
+      ${isRoundWon ? `
+        <div class="wt-round-completed">
+          <div class="wt-completed-banner">🎉 ${winTitle}</div>
+          <button class="wb-ctrl-btn btn-next" id="wt-next-round-btn">
+            ${nextRoundLabel}
+          </button>
+        </div>
+      ` : ''}
     `;
   }
 

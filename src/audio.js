@@ -283,6 +283,10 @@ class SoundEngine {
   }
 
   // Победный фанфар при завершении раунда
+  playFanfare() {
+    this.playVictory();
+  }
+
   playVictory() {
     if (!this.soundEnabled) return;
     const ctx = this.ensureContext();
