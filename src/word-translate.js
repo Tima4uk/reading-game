@@ -363,7 +363,6 @@ export class WordTranslateGame {
                     data-card-id="${card.id}" 
                     ${card.matched ? 'disabled' : ''}>
               <div class="wt-card-badge">${card.tag}</div>
-              <div class="wt-card-emoji">${card.emoji}</div>
               <div class="wt-card-text">${card.text}</div>
             </button>
           `;
