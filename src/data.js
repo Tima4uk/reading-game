@@ -1368,6 +1368,26 @@ export const WORDS_DATA = {
       "word": "SEARCH",
       "emoji": "🔍",
       "hint": "search — искать, поиск"
+    },
+    {
+      "word": "ROLL",
+      "emoji": "🔄",
+      "hint": "to roll — катить, катиться, сворачивать"
+    },
+    {
+      "word": "PROP",
+      "emoji": "🎭",
+      "hint": "prop — реквизит, бутафория"
+    },
+    {
+      "word": "BURY",
+      "emoji": "⛏️",
+      "hint": "to bury — закапывать, прятать в землю"
+    },
+    {
+      "word": "HIDE",
+      "emoji": "🙈",
+      "hint": "to hide — прятать, прятаться"
     }
   ]
 };
@@ -1847,6 +1867,66 @@ export const WORDS_DATA_HARD = {
       "word": "DETECT",
       "emoji": "👀",
       "hint": "detect — обнаружить, заметить"
+    },
+    {
+      "word": "ENORMOUS",
+      "emoji": "🦖",
+      "hint": "enormous — огромный, громадный"
+    },
+    {
+      "word": "ANCESTOR",
+      "emoji": "📜",
+      "hint": "ancestor — предок, прародитель"
+    },
+    {
+      "word": "PUSHOVER",
+      "emoji": "💥",
+      "hint": "to push over — опрокинуть, свалить"
+    },
+    {
+      "word": "RESTORE",
+      "emoji": "🛠️",
+      "hint": "to restore — восстанавливать, реставрировать"
+    },
+    {
+      "word": "REPLICA",
+      "emoji": "🗿",
+      "hint": "replica — точная копия, реплика"
+    },
+    {
+      "word": "PEACEFUL",
+      "emoji": "🕊️",
+      "hint": "peaceful — мирный, спокойный"
+    },
+    {
+      "word": "COMMERCIAL",
+      "emoji": "📺",
+      "hint": "commercial — рекламный ролик / коммерческий"
+    },
+    {
+      "word": "SETOFF",
+      "emoji": "🚀",
+      "hint": "to set off — отправиться в путь / запустить"
+    },
+    {
+      "word": "BREATHTAKING",
+      "emoji": "🌄",
+      "hint": "breathtaking — захватывающий дух, потрясающий"
+    },
+    {
+      "word": "UNDERNEATH",
+      "emoji": "⬇️",
+      "hint": "underneath — под, внизу, снизу"
+    },
+    {
+      "word": "MANAGE",
+      "emoji": "💼",
+      "hint": "to manage — суметь, справиться, руководить"
+    },
+    {
+      "word": "REMOVE",
+      "emoji": "🧹",
+      "hint": "to remove — удалять, убирать, снимать"
     }
   ]
 };
@@ -2789,6 +2869,46 @@ export const RHYMES_DATA = {
           "emoji": "🐶"
         }
       ]
+    },
+    {
+      "target": {
+        "word": "HIDE",
+        "emoji": "🙈"
+      },
+      "correct": {
+        "word": "RIDE",
+        "emoji": "🚲"
+      },
+      "distractors": [
+        {
+          "word": "CAT",
+          "emoji": "🐱"
+        },
+        {
+          "word": "DOG",
+          "emoji": "🐶"
+        }
+      ]
+    },
+    {
+      "target": {
+        "word": "ROLL",
+        "emoji": "🔄"
+      },
+      "correct": {
+        "word": "BOWL",
+        "emoji": "🥣"
+      },
+      "distractors": [
+        {
+          "word": "CAR",
+          "emoji": "🚗"
+        },
+        {
+          "word": "SUN",
+          "emoji": "☀️"
+        }
+      ]
     }
   ]
 };
@@ -3502,6 +3622,28 @@ export const ODD_ONE_OUT_DATA = {
       ],
       "oddWord": "BANANA",
       "explanation": "Banana is a fruit, while the others are action verbs!"
+    },
+    {
+      "items": [
+        {
+          "word": "ENORMOUS",
+          "emoji": "🦖"
+        },
+        {
+          "word": "BREATHTAKING",
+          "emoji": "🌄"
+        },
+        {
+          "word": "PEACEFUL",
+          "emoji": "🕊️"
+        },
+        {
+          "word": "PROP",
+          "emoji": "🎭"
+        }
+      ],
+      "oddWord": "PROP",
+      "explanation": "Prop is an object/noun, while the others are descriptive adjectives!"
     }
   ]
 };

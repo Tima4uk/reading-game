@@ -89,7 +89,9 @@ class SoundEngine {
       'TURNINTO': 'turn into',
       'GOON': 'go on',
       'OHMYWORD': 'oh my word',
-      'ICECREAM': 'ice cream'
+      'ICECREAM': 'ice cream',
+      'PUSHOVER': 'push over',
+      'SETOFF': 'set off'
     };
     const upper = String(word).toUpperCase();
     const spokenText = (lang === 'en' && phrasalSpoken[upper])

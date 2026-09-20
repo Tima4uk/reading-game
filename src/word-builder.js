@@ -93,9 +93,10 @@ export class WordBuilderGame {
     const isRu = this.lang === 'ru';
     const isPl = this.lang === 'pl';
     const isHard = this.difficulty === 'hard';
+    const isExtraLong = this.targetWord && this.targetWord.length >= 10;
 
     const easyLabel = isRu ? 'Легкий (3-4 буквы)' : (isPl ? 'Łatwy (3-4 litery)' : 'Easy (3-4 letters)');
-    const hardLabel = isRu ? 'Мастер (5-9 букв)' : (isPl ? 'Mistrz (5-9 liter)' : 'Master (5-9 letters)');
+    const hardLabel = isRu ? 'Мастер (5-12 букв)' : (isPl ? 'Mistrz (5-12 liter)' : 'Master (5-12 letters)');
     const listenTitle = isRu ? 'Послушать' : (isPl ? 'Posłuchaj' : 'Listen');
     const listenText = isRu ? 'Послушать слово' : (isPl ? 'Posłuchaj słowa' : 'Listen to word');
     const hintLabel = isRu ? 'Подсказка' : (isPl ? 'Podpowiedź' : 'Hint');
@@ -103,7 +104,7 @@ export class WordBuilderGame {
     const nextLabel = isRu ? 'Дальше' : (isPl ? 'Dalej' : 'Next');
 
     this.container.innerHTML = `
-      <div class="wb-game ${isHard ? 'wb-hard-mode' : ''}">
+      <div class="wb-game ${isHard ? 'wb-hard-mode' : ''} ${isExtraLong ? 'wb-extra-long' : ''}">
         <!-- Переключатель сложности -->
         <div class="ws-diff-bar">
           <button class="ws-diff-btn ${!isHard ? 'active' : ''}" id="wb-diff-easy">
