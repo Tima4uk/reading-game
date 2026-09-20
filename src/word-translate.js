@@ -37,11 +37,15 @@ export class WordTranslateGame {
   getAvailableDirections() {
     if (this.lang === 'pl') {
       return [
+        { id: 'pl-en', label: '🇵🇱 ➔ 🇬🇧 PL → EN' },
+        { id: 'en-pl', label: '🇬🇧 ➔ 🇵🇱 EN → PL' },
         { id: 'pl-ru', label: '🇵🇱 ➔ 🇷🇺 PL → RU' },
         { id: 'ru-pl', label: '🇷🇺 ➔ 🇵🇱 RU → PL' }
       ];
     } else if (this.lang === 'en') {
       return [
+        { id: 'en-pl', label: '🇬🇧 ➔ 🇵🇱 EN → PL' },
+        { id: 'pl-en', label: '🇵🇱 ➔ 🇬🇧 PL → EN' },
         { id: 'en-ru', label: '🇬🇧 ➔ 🇷🇺 EN → RU' },
         { id: 'ru-en', label: '🇷🇺 ➔ 🇬🇧 RU → EN' }
       ];
@@ -51,7 +55,9 @@ export class WordTranslateGame {
         { id: 'en-ru', label: '🇬🇧 ➔ 🇷🇺 EN → RU' },
         { id: 'ru-en', label: '🇷🇺 ➔ 🇬🇧 RU → EN' },
         { id: 'pl-ru', label: '🇵🇱 ➔ 🇷🇺 PL → RU' },
-        { id: 'ru-pl', label: '🇷🇺 ➔ 🇵🇱 RU → PL' }
+        { id: 'ru-pl', label: '🇷🇺 ➔ 🇵🇱 RU → PL' },
+        { id: 'pl-en', label: '🇵🇱 ➔ 🇬🇧 PL → EN' },
+        { id: 'en-pl', label: '🇬🇧 ➔ 🇵🇱 EN → PL' }
       ];
     }
   }
@@ -81,6 +87,8 @@ export class WordTranslateGame {
       case 'pl-ru': return { from: 'pl', to: 'ru', fromTag: 'PL', toTag: 'RU', fromFlag: '🇵🇱', toFlag: '🇷🇺' };
       case 'ru-en': return { from: 'ru', to: 'en', fromTag: 'RU', toTag: 'EN', fromFlag: '🇷🇺', toFlag: '🇬🇧' };
       case 'ru-pl': return { from: 'ru', to: 'pl', fromTag: 'RU', toTag: 'PL', fromFlag: '🇷🇺', toFlag: '🇵🇱' };
+      case 'pl-en': return { from: 'pl', to: 'en', fromTag: 'PL', toTag: 'EN', fromFlag: '🇵🇱', toFlag: '🇬🇧' };
+      case 'en-pl': return { from: 'en', to: 'pl', fromTag: 'EN', toTag: 'PL', fromFlag: '🇬🇧', toFlag: '🇵🇱' };
       default: return { from: 'en', to: 'ru', fromTag: 'EN', toTag: 'RU', fromFlag: '🇬🇧', toFlag: '🇷🇺' };
     }
   }
