@@ -135,6 +135,11 @@ body {
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
   white-space: nowrap;
+  touch-action: manipulation;
+}
+
+.mode-tab * {
+  pointer-events: none;
 }
 
 .mode-tab.active {

@@ -35,7 +35,7 @@ export class WordTranslateGame {
 
   setLanguage(lang) {
     this.lang = lang;
-    this.render();
+    this.start();
   }
 
   start() {
@@ -95,7 +95,7 @@ export class WordTranslateGame {
         emoji: item.emoji,
         lang: from,
         tag: fromTag,
-        type: 'from',
+        type: 'source',
         matched: false
       });
       // Карточка перевода
@@ -106,7 +106,7 @@ export class WordTranslateGame {
         emoji: item.emoji,
         lang: to,
         tag: toTag,
-        type: 'to',
+        type: 'target',
         matched: false
       });
     });
