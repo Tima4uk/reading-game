@@ -3,6 +3,7 @@ import { WordSearchGame } from './word-search.js';
 import { WordBuilderGame } from './word-builder.js';
 import { WordLogicGame } from './word-logic.js';
 import { AlphabetGame } from './alphabet.js';
+import { WordTranslateGame } from './word-translate.js';
 import { sound } from './audio.js';
 import { PRAISE_PHRASES } from './data.js';
 
@@ -29,6 +30,7 @@ class App {
     this.btnModeBuilder = document.getElementById('tab-builder');
     this.btnModeLogic = document.getElementById('tab-logic');
     this.btnModeAlphabet = document.getElementById('tab-alphabet');
+    this.btnModeTranslate = document.getElementById('tab-translate');
     this.btnSound = document.getElementById('btn-sound');
     this.btnFullscreen = document.getElementById('btn-fullscreen');
     this.celebrationModal = document.getElementById('celebration-modal');
@@ -86,6 +88,18 @@ class App {
         this.launchMiniConfetti();
       }
     });
+
+    // Режим Перевод слов (Пары карточек и Викторина 1 из 3)
+    this.wordTranslate = new WordTranslateGame({
+      container: this.gameContainer,
+      lang: this.currentLang,
+      onStarEarned: (count) => {
+        this.addStars(count);
+      },
+      onWinEffect: () => {
+        this.launchMiniConfetti();
+      }
+    });
   }
 
   attachGlobalEvents() {
@@ -104,6 +118,9 @@ class App {
     }
     if (this.btnModeAlphabet) {
       this.btnModeAlphabet.addEventListener('click', () => this.switchMode('alphabet'));
+    }
+    if (this.btnModeTranslate) {
+      this.btnModeTranslate.addEventListener('click', () => this.switchMode('translate'));
     }
 
     // Звук вкл/выкл
@@ -137,6 +154,8 @@ class App {
           this.wordLogic.start();
         } else if (this.currentMode === 'alphabet') {
           this.alphabetGame.start();
+        } else if (this.currentMode === 'translate') {
+          this.wordTranslate.start();
         }
       });
     }
@@ -159,6 +178,9 @@ class App {
     this.wordBuilder.lang = lang;
     this.wordLogic.lang = lang;
     this.alphabetGame.lang = lang;
+    if (this.wordTranslate) {
+      this.wordTranslate.lang = lang;
+    }
 
     if (this.currentMode === 'search') {
       this.wordSearch.setLanguage(lang);
@@ -168,6 +190,8 @@ class App {
       this.wordLogic.setLanguage(lang);
     } else if (this.currentMode === 'alphabet') {
       this.alphabetGame.setLanguage(lang);
+    } else if (this.currentMode === 'translate') {
+      this.wordTranslate.setLanguage(lang);
     }
   }
 
@@ -183,6 +207,9 @@ class App {
     if (this.btnModeAlphabet) {
       this.btnModeAlphabet.classList.toggle('active', mode === 'alphabet');
     }
+    if (this.btnModeTranslate) {
+      this.btnModeTranslate.classList.toggle('active', mode === 'translate');
+    }
 
     if (mode === 'search') {
       this.wordSearch.setLanguage(this.currentLang);
@@ -192,6 +219,8 @@ class App {
       this.wordLogic.setLanguage(this.currentLang);
     } else if (mode === 'alphabet') {
       this.alphabetGame.setLanguage(this.currentLang);
+    } else if (mode === 'translate') {
+      this.wordTranslate.setLanguage(this.currentLang);
     }
   }
 
@@ -222,6 +251,11 @@ class App {
       this.btnModeAlphabet.querySelector('.tab-text').textContent = isRu 
         ? 'Азбука' 
         : (isPl ? 'Alfabet' : 'ABC');
+    }
+    if (this.btnModeTranslate) {
+      this.btnModeTranslate.querySelector('.tab-text').textContent = isRu 
+        ? 'Перевод' 
+        : (isPl ? 'Tłumacz' : 'Translate');
     }
 
     const modalTitle = document.getElementById('modal-title');

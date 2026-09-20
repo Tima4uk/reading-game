@@ -1677,3 +1677,354 @@ body {
     display: none;
   }
 }
+
+/* ========================================================
+   РЕЖИМ 5: ПЕРЕВОД СЛОВ (WORD TRANSLATE)
+   ======================================================== */
+.wt-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  flex: 1;
+}
+
+.wt-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.wt-submode-tabs {
+  display: flex;
+  background: rgba(241, 245, 249, 0.9);
+  padding: 4px;
+  border-radius: 14px;
+  gap: 6px;
+}
+
+.wt-submode-btn {
+  padding: 7px 14px;
+  border: none;
+  background: transparent;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.wt-submode-btn.active {
+  background: #ffffff;
+  color: #0284c7;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.2);
+  transform: translateY(-1px);
+}
+
+.wt-direction-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.wt-dir-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 13px;
+  border: 2px solid #e2e8f0;
+  border-radius: 14px;
+  background: #ffffff;
+  font-family: inherit;
+  font-size: 0.86rem;
+  font-weight: 800;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+}
+
+.wt-dir-btn:hover {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+}
+
+.wt-dir-btn.active {
+  border-color: #0284c7;
+  background: #f0f9ff;
+  color: #0369a1;
+  box-shadow: 0 3px 8px rgba(2, 132, 199, 0.18);
+  transform: translateY(-2px);
+}
+
+.wt-content-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  width: 100%;
+}
+
+/* Сетка карточек для режима «Пары карточек» */
+.wt-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  width: 100%;
+  max-width: 680px;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+.wt-cards-grid.grid-hard {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+@media (max-width: 640px) {
+  .wt-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .wt-cards-grid.grid-hard {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.wt-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 8px 12px;
+  background: #ffffff;
+  border: 2.5px solid #e2e8f0;
+  border-radius: 20px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  min-height: 105px;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.wt-card:active {
+  transform: scale(0.95);
+}
+
+.wt-card.selected {
+  border-color: #0284c7;
+  background: #f0f9ff;
+  box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.2), 0 6px 16px rgba(2, 132, 199, 0.25);
+  transform: translateY(-3px) scale(1.03);
+}
+
+.wt-card.matched {
+  background: #ecfdf5;
+  border-color: #10b981;
+  opacity: 0.65;
+  pointer-events: none;
+  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.15);
+  transform: scale(0.96);
+}
+
+.wt-card.wrong {
+  border-color: #ef4444;
+  background: #fef2f2;
+}
+
+.wt-card-badge {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  font-size: 0.65rem;
+  font-weight: 900;
+  color: #64748b;
+  background: #f1f5f9;
+  padding: 2px 6px;
+  border-radius: 6px;
+  text-transform: uppercase;
+}
+
+.wt-card.source .wt-card-badge {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.wt-card.target .wt-card-badge {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.wt-card-emoji {
+  font-size: clamp(1.8rem, 4.2vw, 2.4rem);
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+
+.wt-card-text {
+  font-size: clamp(1.05rem, 2.8vw, 1.3rem);
+  font-weight: 800;
+  color: #1e293b;
+  text-align: center;
+  word-break: break-word;
+}
+
+/* Карточка победы в раунде пар */
+.wt-win-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border-radius: 28px;
+  padding: 36px 24px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+  border: 3px solid #bbf7d0;
+  max-width: 440px;
+  width: 100%;
+  text-align: center;
+  animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.wt-win-icon {
+  font-size: 4rem;
+  margin-bottom: 12px;
+}
+
+.wt-win-title {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #15803d;
+  margin: 0 0 8px;
+}
+
+.wt-win-sub {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #475569;
+  margin: 0 0 20px;
+}
+
+/* Викторина (Word Quiz) */
+.wt-quiz-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  width: 100%;
+  max-width: 500px;
+}
+
+.wt-quiz-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border-radius: 28px;
+  padding: 24px 20px;
+  width: 100%;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+  border: 3px solid #e0f2fe;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.wt-quiz-hint {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #64748b;
+  margin-bottom: 8px;
+}
+
+.wt-quiz-emoji {
+  font-size: clamp(3.6rem, 8vw, 4.6rem);
+  line-height: 1.1;
+  margin-bottom: 8px;
+}
+
+.wt-quiz-source {
+  font-size: clamp(1.8rem, 5vw, 2.4rem);
+  font-weight: 900;
+  color: #0f172a;
+  letter-spacing: -0.5px;
+  margin-bottom: 12px;
+}
+
+.wt-quiz-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.wt-quiz-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 20px;
+  background: #ffffff;
+  border: 2.5px solid #e2e8f0;
+  border-radius: 20px;
+  font-family: inherit;
+  font-size: clamp(1.15rem, 3.2vw, 1.45rem);
+  font-weight: 800;
+  color: #1e293b;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  text-align: center;
+  touch-action: manipulation;
+}
+
+.wt-quiz-btn:hover {
+  border-color: #93c5fd;
+  background: #f8fafc;
+  transform: translateY(-2px);
+}
+
+.wt-quiz-btn:active {
+  transform: scale(0.97);
+}
+
+.wt-quiz-btn.correct {
+  background: #dcfce7;
+  border-color: #22c55e;
+  color: #15803d;
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.25), 0 8px 18px rgba(34, 197, 94, 0.3);
+  transform: scale(1.04);
+}
+
+.wt-quiz-btn.wrong {
+  background: #fee2e2;
+  border-color: #ef4444;
+  color: #b91c1c;
+}
+
+@media (max-width: 480px) {
+  .mode-tab {
+    padding: 6px 4px;
+    font-size: 0.8rem;
+    gap: 3px;
+  }
+  .tab-icon {
+    font-size: 1rem;
+  }
+  .wt-dir-btn {
+    padding: 5px 9px;
+    font-size: 0.78rem;
+  }
+}
