@@ -31,14 +31,42 @@ export class WordTranslateGame {
     this.quizOptions = [];
     this.quizAnswered = false;
     this.usedQuizIndexes = new Set();
+    this.autoNextTimeout = null;
+  }
+
+  getAvailableDirections() {
+    if (this.lang === 'pl') {
+      return [
+        { id: 'pl-ru', label: '🇵🇱 ➔ 🇷🇺 PL → RU' },
+        { id: 'ru-pl', label: '🇷🇺 ➔ 🇵🇱 RU → PL' }
+      ];
+    } else if (this.lang === 'en') {
+      return [
+        { id: 'en-ru', label: '🇬🇧 ➔ 🇷🇺 EN → RU' },
+        { id: 'ru-en', label: '🇷🇺 ➔ 🇬🇧 RU → EN' }
+      ];
+    } else {
+      // 'ru'
+      return [
+        { id: 'en-ru', label: '🇬🇧 ➔ 🇷🇺 EN → RU' },
+        { id: 'ru-en', label: '🇷🇺 ➔ 🇬🇧 RU → EN' },
+        { id: 'pl-ru', label: '🇵🇱 ➔ 🇷🇺 PL → RU' },
+        { id: 'ru-pl', label: '🇷🇺 ➔ 🇵🇱 RU → PL' }
+      ];
+    }
   }
 
   setLanguage(lang) {
     this.lang = lang;
+    const availableDirs = this.getAvailableDirections().map(d => d.id);
+    if (!availableDirs.includes(this.direction)) {
+      this.direction = availableDirs[0];
+    }
     this.start();
   }
 
   start() {
+    clearTimeout(this.autoNextTimeout);
     if (this.subMode === 'pairs') {
       this.startPairsRound();
     } else {
@@ -71,6 +99,7 @@ export class WordTranslateGame {
   // ЛОГИКА РЕЖИМА 1: ПАРЫ КАРТОЧЕК (MATCH PAIRS)
   // ========================================================
   startPairsRound() {
+    clearTimeout(this.autoNextTimeout);
     this.firstSelectedCard = null;
     this.matchedPairsCount = 0;
     this.isLocked = false;
@@ -143,7 +172,7 @@ export class WordTranslateGame {
 
     const firstCardEl = this.container.querySelector(`.wt-card[data-card-id="${this.firstSelectedCard.id}"]`);
 
-    // Проверяем совпадение: одинаковый pairId и разные типы (from + to)
+    // Проверяем совпадение: одинаковый pairId и разные типы (source + target)
     const isMatch = (card.pairId === this.firstSelectedCard.pairId && card.type !== this.firstSelectedCard.type);
 
     if (isMatch) {
@@ -171,11 +200,17 @@ export class WordTranslateGame {
 
       // Проверяем победу в раунде
       if (this.matchedPairsCount === this.totalPairsCount) {
+        this.isLocked = true;
         setTimeout(() => {
           sound.playFanfare();
           this.onStarEarned(3);
           this.onWinEffect();
           this.render();
+
+          // Автоматический запуск следующего раунда через 2 секунды
+          this.autoNextTimeout = setTimeout(() => {
+            this.startPairsRound();
+          }, 2000);
         }, 500);
       }
     } else {
@@ -313,18 +348,11 @@ export class WordTranslateGame {
 
         <!-- Полоса выбора языкового направления -->
         <div class="wt-direction-bar">
-          <button class="wt-dir-btn ${this.direction === 'en-ru' ? 'active' : ''}" data-dir="en-ru">
-            🇬🇧 ➔ 🇷🇺 EN → RU
-          </button>
-          <button class="wt-dir-btn ${this.direction === 'pl-ru' ? 'active' : ''}" data-dir="pl-ru">
-            🇵🇱 ➔ 🇷🇺 PL → RU
-          </button>
-          <button class="wt-dir-btn ${this.direction === 'ru-en' ? 'active' : ''}" data-dir="ru-en">
-            🇷🇺 ➔ 🇬🇧 RU → EN
-          </button>
-          <button class="wt-dir-btn ${this.direction === 'ru-pl' ? 'active' : ''}" data-dir="ru-pl">
-            🇷🇺 ➔ 🇵🇱 RU → PL
-          </button>
+          ${this.getAvailableDirections().map(dir => `
+            <button class="wt-dir-btn ${this.direction === dir.id ? 'active' : ''}" data-dir="${dir.id}">
+              ${dir.label}
+            </button>
+          `).join('')}
         </div>
 
         <!-- Основная игровая зона -->
@@ -384,7 +412,6 @@ export class WordTranslateGame {
         <!-- Карточка со словом вопроса -->
         <div class="wt-quiz-card">
           <div class="wt-quiz-hint">${questionHint}</div>
-          <div class="wt-quiz-emoji">${this.quizQuestion.emoji}</div>
           <div class="wt-quiz-source">${this.quizQuestion.sourceWord}</div>
           <button class="wb-listen-btn" id="wt-listen-btn" title="${listenTitle}">
             🔊 ${listenTitle}
@@ -471,6 +498,7 @@ export class WordTranslateGame {
       const nextRoundBtn = this.container.querySelector('#wt-next-round-btn');
       if (nextRoundBtn) {
         nextRoundBtn.addEventListener('click', () => {
+          clearTimeout(this.autoNextTimeout);
           sound.playLetterClick();
           this.startPairsRound();
         });
