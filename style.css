@@ -1893,6 +1893,35 @@ body {
   width: 100%;
 }
 
+.wt-controls-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 18px;
+  width: 100%;
+}
+
+.btn-refresh {
+  background: #ffffff;
+  color: #2563eb;
+  border: 2.5px solid #bfdbfe;
+  font-size: 1.15rem;
+  padding: 12px 28px;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.12);
+}
+
+.btn-refresh:hover {
+  background: #eff6ff;
+  border-color: #3b82f6;
+  transform: translateY(-2px);
+}
+
+.wt-pulse-btn {
+  animation: pulseBtnNext 1.4s infinite ease-in-out !important;
+}
+
 .wt-completed-banner {
   font-size: clamp(1.1rem, 2.8vw, 1.35rem);
   font-weight: 800;

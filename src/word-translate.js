@@ -208,18 +208,21 @@ export class WordTranslateGame {
 
       // Проверяем победу в раунде
       if (this.matchedPairsCount === this.totalPairsCount) {
-        this.isLocked = true;
-        setTimeout(() => {
+        this.firstSelectedCard = null;
+        try {
           sound.playVictory();
+        } catch (e) {
+          console.warn(e);
+        }
+        try {
           this.onStarEarned(3);
+        } catch (e) {}
+        try {
           this.onWinEffect();
-          this.render();
+        } catch (e) {}
 
-          // Автоматический запуск следующего раунда через 3 секунды
-          this.autoNextTimeout = setTimeout(() => {
-            this.startPairsRound();
-          }, 3000);
-        }, 300);
+        // Немедленно обновляем интерфейс для отображения кнопки "Следующий раунд"
+        this.render();
       }
     } else {
       // ОШИБКА: карточки не совпадают
@@ -377,6 +380,7 @@ export class WordTranslateGame {
     const isRu = this.lang === 'ru';
     const isPl = this.lang === 'pl';
     const nextRoundLabel = isRu ? 'Следующий раунд ➔' : (isPl ? 'Następna runda ➔' : 'Next Round ➔');
+    const newCardsLabel = isRu ? 'Новые карточки 🔄' : (isPl ? 'Nowe karty 🔄' : 'New cards 🔄');
     const winTitle = isRu ? 'Все пары найдены! +3 ⭐' : (isPl ? 'Wszystkie pary dopasowane! +3 ⭐' : 'All pairs matched! +3 ⭐');
 
     return `
@@ -393,14 +397,18 @@ export class WordTranslateGame {
         }).join('')}
       </div>
 
-      ${isRoundWon ? `
-        <div class="wt-round-completed">
+      <div class="wt-controls-bar">
+        ${isRoundWon ? `
           <div class="wt-completed-banner">🎉 ${winTitle}</div>
-          <button class="wb-ctrl-btn btn-next" id="wt-next-round-btn">
+          <button class="wb-ctrl-btn btn-next wt-pulse-btn" id="wt-next-round-btn">
             ${nextRoundLabel}
           </button>
-        </div>
-      ` : ''}
+        ` : `
+          <button class="wb-ctrl-btn btn-refresh" id="wt-next-round-btn">
+            ${newCardsLabel}
+          </button>
+        `}
+      </div>
     `;
   }
 
