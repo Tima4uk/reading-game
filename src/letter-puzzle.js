@@ -54,7 +54,7 @@ export class LetterPuzzleGame {
     const instructionText = isRu ? 'Собери букву' : (isPl ? 'Złóż literę' : 'Build the letter');
     const trayLabelText = this.isCompleted 
       ? (isRu ? '🎉 Буква собрана!' : (isPl ? '🎉 Litera ułożona!' : '🎉 Letter built!')) 
-      : (isRu ? '🖐️ Перетаскивай детали на поле:' : (isPl ? '🖐️ Przeciągaj części na pole:' : '🖐️ Drag parts to the board:'));
+      : (isRu ? '🖐️ Перетаскивай детали на букву:' : (isPl ? '🖐️ Przeciągaj części na literę:' : '🖐️ Drag parts onto the letter:'));
 
     this.container.innerHTML = `
       <div class="lp-wrapper">
@@ -74,19 +74,6 @@ export class LetterPuzzleGame {
         <div class="lp-board-container">
           <div class="lp-letter-board ${this.isCompleted ? 'completed' : ''}" id="lp-board">
             <svg class="lp-board-svg" viewBox="0 0 240 240">
-              <defs>
-                <linearGradient id="lp-grad-blue" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#38bdf8" />
-                  <stop offset="100%" stop-color="#1d4ed8" />
-                </linearGradient>
-                <linearGradient id="lp-grad-gold" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#fde047" />
-                  <stop offset="100%" stop-color="#f59e0b" />
-                </linearGradient>
-                <filter id="lp-shadow" x="-20%" y="-20%" width="140%" height="140%">
-                  <feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#1e3a8a" flood-opacity="0.25"/>
-                </filter>
-              </defs>
               ${puzzle.parts.map((part) => {
                 const isPlaced = this.placedParts.has(part.id);
                 return `
@@ -105,21 +92,11 @@ export class LetterPuzzleGame {
                       <path class="lp-solid-path" 
                             d="${part.path}" 
                             fill="none" 
-                            stroke="${this.isCompleted ? 'url(#lp-grad-gold)' : 'url(#lp-grad-blue)'}" 
+                            stroke="${this.isCompleted ? '#f59e0b' : '#2563eb'}" 
                             stroke-width="24" 
                             stroke-linecap="round" 
-                            stroke-linejoin="round" 
-                            filter="url(#lp-shadow)" />
-                    ` : `
-                      <!-- Прозрачная широкая область нажатия для легкого тапа пальцем на планшете -->
-                      <path class="lp-hit-path" 
-                            d="${part.path}" 
-                            fill="none" 
-                            stroke="transparent" 
-                            stroke-width="46" 
-                            stroke-linecap="round" 
                             stroke-linejoin="round" />
-                    `}
+                    ` : ''}
                   </g>
                 `;
               }).join('')}
@@ -215,54 +192,71 @@ export class LetterPuzzleGame {
     if (!boardEl) return null;
 
     const boardRect = boardEl.getBoundingClientRect();
-    // Проверяем, находится ли указатель в пределах или вблизи игрового поля
+    // Проверяем, находится ли указатель в пределах или вблизи игрового поля (щедрая зона захвата для детей)
+    const margin = 50;
     if (
-      clientX < boardRect.left - 40 ||
-      clientX > boardRect.right + 40 ||
-      clientY < boardRect.top - 40 ||
-      clientY > boardRect.bottom + 40
+      clientX < boardRect.left - margin ||
+      clientX > boardRect.right + margin ||
+      clientY < boardRect.top - margin ||
+      clientY > boardRect.bottom + margin
     ) {
       return null;
     }
 
     const scaleX = 240 / boardRect.width;
     const scaleY = 240 / boardRect.height;
-    const boardX = (clientX - boardRect.left) * scaleX;
-    const boardY = (clientY - boardRect.top) * scaleY;
+    // Координаты в системе viewBox (0..240)
+    const boardX = Math.max(0, Math.min(240, (clientX - boardRect.left) * scaleX));
+    const boardY = Math.max(0, Math.min(240, (clientY - boardRect.top) * scaleY));
 
     const puzzle = this.getCurrentPuzzle();
     const unplaced = puzzle.parts.filter(p => !this.placedParts.has(p.id));
+    if (unplaced.length === 0) return null;
 
-    // 1. Приоритет: точный слот той же детали
-    if (!this.placedParts.has(draggedPart.id)) {
-      const dist = Math.hypot(boardX - draggedPart.center.x, boardY - draggedPart.center.y);
-      if (dist < 80) {
-        return draggedPart.id;
+    // Ищем незанятые слоты, совместимые с перетаскиваемой деталью:
+    // 1. Точно этот слот
+    // 2. Либо слот такой же формы (например, два одинаковых столбика в П/Н или две перекладины в Ż)
+    const compatibleSlots = unplaced.filter(slot => 
+      slot.id === draggedPart.id || slot.previewPath === draggedPart.previewPath
+    );
+
+    if (compatibleSlots.length === 0) {
+      // Если остался ровно один незанятый слот и эта деталь еще не выставлена
+      if (unplaced.length === 1 && !this.placedParts.has(draggedPart.id)) {
+        return unplaced[0].id;
       }
+      return null;
     }
 
-    // 2. Если деталь взаимозаменяема по форме (например, два столбика в П или Н)
-    for (const slotPart of unplaced) {
-      const isSameShape = (slotPart.previewPath === draggedPart.previewPath);
-      if (isSameShape) {
-        const dist = Math.hypot(boardX - slotPart.center.x, boardY - slotPart.center.y);
-        if (dist < 80) {
-          return slotPart.id;
+    // Если точный слот еще не занят и расстояние к нему меньше 110px — отдаем приоритет ему
+    if (!this.placedParts.has(draggedPart.id)) {
+      const exactSlot = compatibleSlots.find(s => s.id === draggedPart.id);
+      if (exactSlot) {
+        const dist = Math.hypot(boardX - exactSlot.center.x, boardY - exactSlot.center.y);
+        if (dist < 110) {
+          return exactSlot.id;
         }
       }
     }
 
-    // 3. Если остался всего один незанятый слот и указатель над игровым полем
-    if (unplaced.length === 1 && unplaced[0].id === draggedPart.id) {
-      if (
-        clientX >= boardRect.left && clientX <= boardRect.right &&
-        clientY >= boardRect.top && clientY <= boardRect.bottom
-      ) {
-        return unplaced[0].id;
+    if (compatibleSlots.length === 1) {
+      return compatibleSlots[0].id;
+    }
+
+    // Если есть несколько подходящих слотов (например, левый и правый столбик):
+    // выбираем тот, к которому ближе всего палец ребенка
+    let closestSlot = compatibleSlots[0];
+    let minDistance = Infinity;
+
+    for (const slot of compatibleSlots) {
+      const dist = Math.hypot(boardX - slot.center.x, boardY - slot.center.y);
+      if (dist < minDistance) {
+        minDistance = dist;
+        closestSlot = slot;
       }
     }
 
-    return null;
+    return closestSlot.id;
   }
 
   attachEvents() {
@@ -279,6 +273,8 @@ export class LetterPuzzleGame {
         if (e.button !== undefined && e.button !== 0) return;
 
         e.preventDefault();
+        this.cleanUpDrag();
+
         try {
           btn.setPointerCapture(e.pointerId);
         } catch (_) {}
@@ -328,7 +324,7 @@ export class LetterPuzzleGame {
           this.dragState.avatar.style.left = `${e.clientX - 34}px`;
           this.dragState.avatar.style.top = `${e.clientY - 34}px`;
 
-          // Поиск целевого слота для подсветки
+          // Поиск целевого слота для динамической подсветки
           const matchSlotId = this.findMatchingSlot(e.clientX, e.clientY, part);
           this.clearDropHighlights();
           if (matchSlotId) {
@@ -350,19 +346,22 @@ export class LetterPuzzleGame {
 
         const { partId, hasMoved, avatar, targetSlotId, btn: dragBtn } = this.dragState;
 
+        // ВАЖНО: добавление через тап полностью отключено!
+        // Деталь ставится ТОЛЬКО перетаскиванием (drag-and-drop)
         if (!hasMoved) {
-          // Быстрый клик/тап (без перетаскивания) — сохраняем доступность для самых маленьких
           this.cleanUpDrag();
-          this.placePart(partId);
           return;
         }
 
-        if (targetSlotId) {
-          // Успешный drop в подсвеченный слот!
+        // Проверяем слот прямо в момент отпускания пальца
+        const finalSlotId = this.findMatchingSlot(e.clientX, e.clientY, part) || targetSlotId;
+
+        if (finalSlotId) {
+          // Успешный drop в слот буквы!
           this.cleanUpDrag();
-          this.placePart(targetSlotId);
+          this.placePart(finalSlotId);
         } else {
-          // Промах: плавная анимация возврата в лоток
+          // Промах: анимация возврата в лоток
           if (avatar) {
             const btnRect = dragBtn.getBoundingClientRect();
             avatar.style.transition = 'all 0.22s cubic-bezier(0.2, 0.8, 0.2, 1)';
@@ -383,13 +382,10 @@ export class LetterPuzzleGame {
       btn.addEventListener('pointercancel', handlePointerEnd);
     });
 
-    // Дополнительно: можно кликать прямо по контурным слотам на доске
-    const slots = this.container.querySelectorAll('.lp-part-slot.ghost');
-    slots.forEach(slot => {
-      slot.addEventListener('click', () => {
-        const partId = slot.dataset.partId;
-        this.placePart(partId);
-      });
-    });
+    // Клики по контурным слотам отключены — только Drag and Drop
+  }
+
+  destroy() {
+    this.cleanUpDrag();
   }
 }
