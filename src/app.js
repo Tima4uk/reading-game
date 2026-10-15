@@ -1,11 +1,12 @@
 // Главный модуль приложения: Управление режимами, языками, звездами и конфетти
-import { WordSearchGame } from './word-search.js?v=8';
-import { WordBuilderGame } from './word-builder.js?v=8';
-import { WordLogicGame } from './word-logic.js?v=8';
-import { AlphabetGame } from './alphabet.js?v=8';
-import { WordTranslateGame } from './word-translate.js?v=8';
-import { sound } from './audio.js?v=8';
-import { PRAISE_PHRASES } from './data.js?v=8';
+import { WordSearchGame } from './word-search.js?v=10';
+import { WordBuilderGame } from './word-builder.js?v=10';
+import { WordLogicGame } from './word-logic.js?v=10';
+import { AlphabetGame } from './alphabet.js?v=10';
+import { WordTranslateGame } from './word-translate.js?v=10';
+import { sound } from './audio.js?v=10';
+import { PRAISE_PHRASES } from './data.js?v=10';
+import { StickersAlbum } from './stickers.js?v=10';
 
 class App {
   constructor() {
@@ -18,14 +19,15 @@ class App {
     this.attachGlobalEvents();
     this.updateLanguageUI();
     this.updateProfilesUI();
+    this.updateAlbumBadge();
     this.switchMode('search');
   }
 
   initProfiles() {
     const legacyStars = parseInt(localStorage.getItem('reading_game_stars') || '0', 10);
     const defaultProfiles = {
-      player1: { id: 'player1', name: 'Игрок 1', avatar: '👦', stars: legacyStars },
-      player2: { id: 'player2', name: 'Игрок 2', avatar: '👧', stars: 0 }
+      player1: { id: 'player1', name: 'Игрок 1', avatar: '👦', stars: legacyStars, stickers: [] },
+      player2: { id: 'player2', name: 'Игрок 2', avatar: '👧', stars: 0, stickers: [] }
     };
 
     let p1 = null;
@@ -41,6 +43,9 @@ class App {
       player1: p1 || defaultProfiles.player1,
       player2: p2 || defaultProfiles.player2
     };
+
+    if (!Array.isArray(this.profiles.player1.stickers)) this.profiles.player1.stickers = [];
+    if (!Array.isArray(this.profiles.player2.stickers)) this.profiles.player2.stickers = [];
 
     this.activePlayerId = localStorage.getItem('reading_game_active_player') || 'player1';
     if (!this.profiles[this.activePlayerId]) {
@@ -69,6 +74,14 @@ class App {
     sound.playLetterClick();
     this.updateProfilesUI();
     this.updateStarsDisplay();
+    this.updateAlbumBadge();
+  }
+
+  updateAlbumBadge() {
+    const countEl = document.getElementById('header-album-text');
+    if (countEl && this.stickersAlbum) {
+      countEl.textContent = `${this.stickersAlbum.getUnlockedCount()}/${this.stickersAlbum.getTotalCount()}`;
+    }
   }
 
   updateProfilesUI() {
@@ -111,6 +124,8 @@ class App {
     avatarBtns.forEach(btn => {
       btn.classList.toggle('active', btn.dataset.avatar === current.avatar);
     });
+
+    this.updateAlbumBadge();
   }
 
   initDOM() {
@@ -130,6 +145,14 @@ class App {
     this.btnSound = document.getElementById('btn-sound');
     this.btnFullscreen = document.getElementById('btn-fullscreen');
     this.celebrationModal = document.getElementById('celebration-modal');
+
+    this.albumModal = document.getElementById('album-modal');
+    if (this.albumModal) {
+      this.stickersAlbum = new StickersAlbum({
+        app: this,
+        modalEl: this.albumModal
+      });
+    }
 
     this.updateStarsDisplay();
   }
@@ -316,6 +339,16 @@ class App {
         }
       });
     });
+
+    // Кнопка альбома наклеек в шапке
+    const btnAlbum = document.getElementById('btn-album');
+    if (btnAlbum) {
+      btnAlbum.addEventListener('click', () => {
+        if (this.stickersAlbum) {
+          this.stickersAlbum.open();
+        }
+      });
+    }
   }
 
   setLanguage(lang) {
@@ -330,6 +363,10 @@ class App {
     }
 
     this.updateLanguageUI();
+
+    if (this.stickersAlbum && this.albumModal && !this.albumModal.classList.contains('hidden')) {
+      this.stickersAlbum.render();
+    }
 
     this.wordSearch.lang = lang;
     this.wordBuilder.lang = lang;
