@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@600;700&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=8">
+  <link rel="stylesheet" href="style.css?v=9">
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
 </head>
@@ -22,6 +22,11 @@
     <header class="app-header">
       <div class="header-left">
         <h1 class="app-title" id="app-title">Словознайка</h1>
+        <!-- Профиль игрока -->
+        <button class="profile-badge" id="btn-profile" title="Сменить игрока">
+          <span class="profile-avatar" id="header-profile-avatar">👦</span>
+          <span class="profile-name" id="header-profile-name">Игрок 1</span>
+        </button>
         <!-- Счетчик звезд -->
         <div class="star-badge" title="Собранные звездочки">
           <span class="star-icon">⭐</span>
@@ -99,6 +104,58 @@
     </div>
   </div>
 
-  <script type="module" src="src/app.js?v=8"></script>
+  <!-- Модальное окно выбора/настройки профиля игрока -->
+  <div class="modal-overlay hidden" id="profile-modal">
+    <div class="modal-card profile-modal-card">
+      <button class="modal-close-icon" id="btn-close-profile" title="Закрыть">✖</button>
+      <h2 class="modal-title" id="profile-modal-title">Кто сейчас играет?</h2>
+      
+      <div class="profiles-list">
+        <div class="player-card" id="card-player1">
+          <div class="player-avatar" id="avatar-player1">👦</div>
+          <div class="player-info">
+            <div class="player-name" id="name-player1">Игрок 1</div>
+            <div class="player-stars">⭐ <span id="stars-player1">0</span></div>
+          </div>
+          <button class="player-select-btn" id="select-player1">Выбрать</button>
+        </div>
+
+        <div class="player-card" id="card-player2">
+          <div class="player-avatar" id="avatar-player2">👧</div>
+          <div class="player-info">
+            <div class="player-name" id="name-player2">Игрок 2</div>
+            <div class="player-stars">⭐ <span id="stars-player2">0</span></div>
+          </div>
+          <button class="player-select-btn" id="select-player2">Выбрать</button>
+        </div>
+      </div>
+
+      <!-- Настройка активного профиля -->
+      <div class="profile-edit-section">
+        <div class="profile-edit-title" id="profile-edit-title">Настроить профиль:</div>
+        <div class="profile-input-row">
+          <input type="text" id="profile-name-input" class="profile-name-input" maxlength="12" placeholder="Имя игрока" />
+          <button class="profile-save-btn" id="btn-save-name">Сохранить</button>
+        </div>
+        <div class="profile-avatars-label" id="profile-avatars-label">Выбери значок:</div>
+        <div class="profile-avatars-grid">
+          <button class="avatar-pick-btn" data-avatar="👦">👦</button>
+          <button class="avatar-pick-btn" data-avatar="👧">👧</button>
+          <button class="avatar-pick-btn" data-avatar="🦁">🦁</button>
+          <button class="avatar-pick-btn" data-avatar="🐱">🐱</button>
+          <button class="avatar-pick-btn" data-avatar="🐶">🐶</button>
+          <button class="avatar-pick-btn" data-avatar="🦊">🦊</button>
+          <button class="avatar-pick-btn" data-avatar="🐼">🐼</button>
+          <button class="avatar-pick-btn" data-avatar="🐰">🐰</button>
+          <button class="avatar-pick-btn" data-avatar="🐯">🐯</button>
+          <button class="avatar-pick-btn" data-avatar="🚀">🚀</button>
+          <button class="avatar-pick-btn" data-avatar="🦖">🦖</button>
+          <button class="avatar-pick-btn" data-avatar="🦄">🦄</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="src/app.js?v=9"></script>
 </body>
 </html>

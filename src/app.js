@@ -11,18 +11,114 @@ class App {
   constructor() {
     this.currentMode = 'search'; // 'search' | 'builder' | 'logic' | 'alphabet'
     this.currentLang = 'ru'; // 'ru' | 'pl'
-    this.stars = parseInt(localStorage.getItem('reading_game_stars') || '0', 10);
-
+    
+    this.initProfiles();
     this.initDOM();
     this.initGames();
     this.attachGlobalEvents();
     this.updateLanguageUI();
+    this.updateProfilesUI();
     this.switchMode('search');
+  }
+
+  initProfiles() {
+    const legacyStars = parseInt(localStorage.getItem('reading_game_stars') || '0', 10);
+    const defaultProfiles = {
+      player1: { id: 'player1', name: 'Игрок 1', avatar: '👦', stars: legacyStars },
+      player2: { id: 'player2', name: 'Игрок 2', avatar: '👧', stars: 0 }
+    };
+
+    let p1 = null;
+    let p2 = null;
+    try {
+      p1 = JSON.parse(localStorage.getItem('reading_game_profile_player1'));
+    } catch (_) {}
+    try {
+      p2 = JSON.parse(localStorage.getItem('reading_game_profile_player2'));
+    } catch (_) {}
+
+    this.profiles = {
+      player1: p1 || defaultProfiles.player1,
+      player2: p2 || defaultProfiles.player2
+    };
+
+    this.activePlayerId = localStorage.getItem('reading_game_active_player') || 'player1';
+    if (!this.profiles[this.activePlayerId]) {
+      this.activePlayerId = 'player1';
+    }
+
+    this.stars = this.profiles[this.activePlayerId].stars || 0;
+    this.saveProfile(this.activePlayerId);
+  }
+
+  saveProfile(playerId) {
+    if (!this.profiles[playerId]) return;
+    localStorage.setItem(`reading_game_profile_${playerId}`, JSON.stringify(this.profiles[playerId]));
+    localStorage.setItem('reading_game_active_player', this.activePlayerId);
+    if (this.activePlayerId === playerId) {
+      localStorage.setItem('reading_game_stars', this.profiles[playerId].stars.toString());
+    }
+  }
+
+  switchPlayer(playerId) {
+    if (!this.profiles[playerId] || this.activePlayerId === playerId) return;
+    this.activePlayerId = playerId;
+    this.stars = this.profiles[playerId].stars;
+    this.saveProfile(this.activePlayerId);
+
+    sound.playLetterClick();
+    this.updateProfilesUI();
+    this.updateStarsDisplay();
+  }
+
+  updateProfilesUI() {
+    const current = this.profiles[this.activePlayerId];
+    const headerAvatar = document.getElementById('header-profile-avatar');
+    const headerName = document.getElementById('header-profile-name');
+    if (headerAvatar) headerAvatar.textContent = current.avatar;
+    if (headerName) headerName.textContent = current.name;
+
+    // Карточки внутри модалки
+    ['player1', 'player2'].forEach(id => {
+      const p = this.profiles[id];
+      const card = document.getElementById(`card-${id}`);
+      const av = document.getElementById(`avatar-${id}`);
+      const nm = document.getElementById(`name-${id}`);
+      const st = document.getElementById(`stars-${id}`);
+      const btn = document.getElementById(`select-${id}`);
+
+      if (av) av.textContent = p.avatar;
+      if (nm) nm.textContent = p.name;
+      if (st) st.textContent = p.stars;
+
+      const isActive = (this.activePlayerId === id);
+      if (card) card.classList.toggle('active', isActive);
+      if (btn) {
+        btn.textContent = isActive 
+          ? (this.currentLang === 'ru' ? 'Активен ✓' : (this.currentLang === 'pl' ? 'Aktywny ✓' : 'Active ✓'))
+          : (this.currentLang === 'ru' ? 'Выбрать' : (this.currentLang === 'pl' ? 'Wybierz' : 'Select'));
+      }
+    });
+
+    // Поле ввода имени активного игрока
+    const nameInput = document.getElementById('profile-name-input');
+    if (nameInput && document.activeElement !== nameInput) {
+      nameInput.value = current.name;
+    }
+
+    // Подсветка активной аватарки в сетке выбора
+    const avatarBtns = document.querySelectorAll('.avatar-pick-btn');
+    avatarBtns.forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.avatar === current.avatar);
+    });
   }
 
   initDOM() {
     this.gameContainer = document.getElementById('game-area');
     this.starCountEl = document.getElementById('star-count');
+    this.btnProfile = document.getElementById('btn-profile');
+    this.profileModal = document.getElementById('profile-modal');
+    this.btnCloseProfile = document.getElementById('btn-close-profile');
     this.btnLangRu = document.getElementById('btn-lang-ru');
     this.btnLangPl = document.getElementById('btn-lang-pl');
     this.btnLangEn = document.getElementById('btn-lang-en');
@@ -159,6 +255,67 @@ class App {
         }
       });
     }
+
+    // Профиль игрока
+    if (this.btnProfile && this.profileModal) {
+      this.btnProfile.addEventListener('click', () => {
+        sound.playLetterClick();
+        this.updateProfilesUI();
+        this.profileModal.classList.remove('hidden');
+      });
+    }
+
+    if (this.btnCloseProfile && this.profileModal) {
+      this.btnCloseProfile.addEventListener('click', () => {
+        this.profileModal.classList.add('hidden');
+      });
+    }
+
+    // Кнопки выбора профиля
+    const btnSelectP1 = document.getElementById('select-player1');
+    const btnSelectP2 = document.getElementById('select-player2');
+    if (btnSelectP1) btnSelectP1.addEventListener('click', () => {
+      this.switchPlayer('player1');
+      setTimeout(() => this.profileModal.classList.add('hidden'), 200);
+    });
+    if (btnSelectP2) btnSelectP2.addEventListener('click', () => {
+      this.switchPlayer('player2');
+      setTimeout(() => this.profileModal.classList.add('hidden'), 200);
+    });
+
+    // Сохранение имени игрока
+    const btnSaveName = document.getElementById('btn-save-name');
+    const nameInput = document.getElementById('profile-name-input');
+    const saveNameAction = () => {
+      if (!nameInput) return;
+      const val = nameInput.value.trim();
+      if (val) {
+        this.profiles[this.activePlayerId].name = val;
+        this.saveProfile(this.activePlayerId);
+        this.updateProfilesUI();
+        sound.playSuccess();
+      }
+    };
+    if (btnSaveName) btnSaveName.addEventListener('click', saveNameAction);
+    if (nameInput) {
+      nameInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') saveNameAction();
+      });
+    }
+
+    // Выбор аватарки игрока
+    const avatarPickBtns = document.querySelectorAll('.avatar-pick-btn');
+    avatarPickBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const av = btn.dataset.avatar;
+        if (av) {
+          this.profiles[this.activePlayerId].avatar = av;
+          this.saveProfile(this.activePlayerId);
+          this.updateProfilesUI();
+          sound.playLetterClick();
+        }
+      });
+    });
   }
 
   setLanguage(lang) {
@@ -283,11 +440,47 @@ class App {
         ? 'Нажимай на слова, чтобы услышать, как они звучат! 🔊' 
         : (isPl ? 'Dotknij słowa, aby usłyszeć jak brzmi! 🔊' : 'Tap on words to hear how they sound! 🔊');
     }
+
+    const modalProfileTitle = document.getElementById('profile-modal-title');
+    if (modalProfileTitle) {
+      modalProfileTitle.textContent = isRu 
+        ? 'Кто сейчас играет?' 
+        : (isPl ? 'Kto teraz gra?' : 'Who is playing?');
+    }
+    const editTitle = document.getElementById('profile-edit-title');
+    if (editTitle) {
+      editTitle.textContent = isRu 
+        ? 'Настроить профиль:' 
+        : (isPl ? 'Ustawienia profilu:' : 'Customize profile:');
+    }
+    const avLabel = document.getElementById('profile-avatars-label');
+    if (avLabel) {
+      avLabel.textContent = isRu 
+        ? 'Выбери значок:' 
+        : (isPl ? 'Wybierz ikonkę:' : 'Choose icon:');
+    }
+    const saveNameBtn = document.getElementById('btn-save-name');
+    if (saveNameBtn) {
+      saveNameBtn.textContent = isRu ? 'Сохранить' : (isPl ? 'Zapisz' : 'Save');
+    }
+    const nameInput = document.getElementById('profile-name-input');
+    if (nameInput) {
+      nameInput.placeholder = isRu ? 'Имя игрока' : (isPl ? 'Imię gracza' : 'Player name');
+    }
+    if (this.profiles) {
+      this.updateProfilesUI();
+    }
   }
 
   addStars(count) {
     this.stars += count;
-    localStorage.setItem('reading_game_stars', this.stars.toString());
+    if (this.profiles && this.profiles[this.activePlayerId]) {
+      this.profiles[this.activePlayerId].stars = this.stars;
+      this.saveProfile(this.activePlayerId);
+      this.updateProfilesUI();
+    } else {
+      localStorage.setItem('reading_game_stars', this.stars.toString());
+    }
     this.updateStarsDisplay();
 
     // Анимация подпрыгивания счетчика звезд
