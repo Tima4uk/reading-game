@@ -1,5 +1,5 @@
-// Модуль «Умные слова» для 7 лет: «Найди рифму» и «Лишнее слово»
-import { RHYMES_DATA, ODD_ONE_OUT_DATA } from './data.js';
+// Модуль «Умные слова»: «Найди рифму», «Лишнее слово» и «Прочитай сам (Слово ➔ Картинка)»
+import { RHYMES_DATA, ODD_ONE_OUT_DATA, WORDS_DATA } from './data.js';
 import { sound } from './audio.js';
 
 export class WordLogicGame {
@@ -9,12 +9,15 @@ export class WordLogicGame {
     this.onStarEarned = options.onStarEarned || (() => {});
     this.onWinEffect = options.onWinEffect || (() => {});
 
-    this.subMode = 'rhyme'; // 'rhyme' | 'odd'
+    this.subMode = 'rhyme'; // 'rhyme' | 'odd' | 'read'
     this.currentRhymeIndex = 0;
     this.currentOddIndex = 0;
+    this.currentReadIndex = 0;
 
     this.shuffledRhymes = [];
     this.shuffledOdds = [];
+    this.shuffledReadPool = [];
+    this.currentReadRound = null;
     this.roundAnswered = false;
   }
 
@@ -27,8 +30,11 @@ export class WordLogicGame {
     this.roundAnswered = false;
     this.shuffledRhymes = [...RHYMES_DATA[this.lang]].sort(() => 0.5 - Math.random());
     this.shuffledOdds = [...ODD_ONE_OUT_DATA[this.lang]].sort(() => 0.5 - Math.random());
+    this.shuffledReadPool = [...this.getReadPool()].sort(() => 0.5 - Math.random());
     this.currentRhymeIndex = 0;
     this.currentOddIndex = 0;
+    this.currentReadIndex = 0;
+    this.currentReadRound = null;
     this.render();
   }
 
@@ -45,6 +51,7 @@ export class WordLogicGame {
 
     const rhymeTab = isRu ? 'Найди рифму' : (isPl ? 'Znajdź rym' : 'Find Rhyme');
     const oddTab = isRu ? 'Лишнее слово' : (isPl ? 'Co nie pasuje?' : 'Odd One Out');
+    const readTab = isRu ? 'Прочитай сам' : (isPl ? 'Czytam sam' : 'Read & Match');
 
     this.container.innerHTML = `
       <div class="wl-wrapper">
@@ -56,10 +63,15 @@ export class WordLogicGame {
           <button class="wl-subnav-btn ${this.subMode === 'odd' ? 'active' : ''}" id="wl-btn-odd">
             🧠 ${oddTab}
           </button>
+          <button class="wl-subnav-btn ${this.subMode === 'read' ? 'active' : ''}" id="wl-btn-read">
+            👁️ ${readTab}
+          </button>
         </div>
 
         <div class="wl-content">
-          ${this.subMode === 'rhyme' ? this.renderRhymeHTML() : this.renderOddHTML()}
+          ${this.subMode === 'rhyme' 
+            ? this.renderRhymeHTML() 
+            : (this.subMode === 'odd' ? this.renderOddHTML() : this.renderReadHTML())}
         </div>
       </div>
     `;
@@ -238,12 +250,136 @@ export class WordLogicGame {
     }
   }
 
+  // ==========================================
+  // РЕЖИМ: ПРОЧИТАЙ САМ (СЛОВО ➔ КАРТИНКА)
+  // ==========================================
+  getReadPool() {
+    const list = WORDS_DATA[this.lang] || WORDS_DATA['ru'] || [];
+    const seenEmojis = new Set();
+    const pool = [];
+    for (const item of list) {
+      if (item.word && item.emoji && !seenEmojis.has(item.emoji)) {
+        seenEmojis.add(item.emoji);
+        pool.push(item);
+      }
+    }
+    return pool;
+  }
+
+  getReadRound() {
+    if (!this.shuffledReadPool || this.shuffledReadPool.length === 0) {
+      this.shuffledReadPool = [...this.getReadPool()].sort(() => 0.5 - Math.random());
+    }
+
+    const pool = this.shuffledReadPool;
+    const targetIdx = this.currentReadIndex % pool.length;
+    const target = pool[targetIdx];
+
+    // 3 случайных дистрактора с другими эмодзи
+    const otherItems = pool.filter((_, idx) => idx !== targetIdx).sort(() => 0.5 - Math.random());
+    const distractors = otherItems.slice(0, 3);
+
+    const options = [target, ...distractors].sort(() => 0.5 - Math.random());
+
+    this.currentReadRound = { target, options };
+    return this.currentReadRound;
+  }
+
+  renderReadHTML() {
+    const isRu = this.lang === 'ru';
+    const isPl = this.lang === 'pl';
+
+    const round = this.getReadRound();
+
+    const promptText = isRu 
+      ? 'Прочитай слово и выбери картинку:' 
+      : (isPl ? 'Przeczytaj słowo i wybierz obrazek:' : 'Read the word and pick the picture:');
+
+    const readSelfBadge = isRu ? 'Читай сам 👁️' : (isPl ? 'Czytaj sam 👁️' : 'Read yourself 👁️');
+    const feedbackPrompt = isRu 
+      ? 'Какая картинка подходит к слову?' 
+      : (isPl ? 'Który obrazek pasuje do słowa?' : 'Which picture matches the word?');
+
+    return `
+      <div class="wl-box">
+        <div class="wl-prompt">
+          ${promptText}
+        </div>
+
+        <div class="wl-read-card">
+          <span class="wl-read-word">${round.target.word}</span>
+          <span class="wl-read-badge">${readSelfBadge}</span>
+        </div>
+
+        <div class="wl-read-grid">
+          ${round.options.map(opt => `
+            <button class="wl-read-btn" data-word="${opt.word}" data-is-correct="${opt.word === round.target.word}" title="${round.target.word}">
+              <span class="wl-read-emoji">${opt.emoji}</span>
+            </button>
+          `).join('')}
+        </div>
+
+        <div class="wl-feedback" id="wl-feedback">
+          ${feedbackPrompt}
+        </div>
+      </div>
+    `;
+  }
+
+  handleReadChoice(btn, isCorrect, chosenWord) {
+    if (this.roundAnswered) return;
+
+    const isRu = this.lang === 'ru';
+    const isPl = this.lang === 'pl';
+    const round = this.currentReadRound;
+    const feedbackEl = this.container.querySelector('#wl-feedback');
+
+    if (isCorrect) {
+      this.roundAnswered = true;
+      btn.classList.add('correct');
+      sound.playSuccess();
+      // Озвучиваем слово в награду! Ребёнок услышит правильное произношение
+      sound.speakWord(round.target.word, this.lang);
+
+      if (feedbackEl) {
+        const correctPraise = isRu ? 'Правильно!' : (isPl ? 'Wspaniale!' : 'Correct!');
+        feedbackEl.innerHTML = `⭐ <strong>${correctPraise} «${round.target.word}» ${round.target.emoji}</strong>`;
+        feedbackEl.style.color = '#10b981';
+      }
+
+      this.onStarEarned(1);
+      this.onWinEffect();
+
+      setTimeout(() => {
+        this.currentReadIndex++;
+        this.currentReadRound = null;
+        this.roundAnswered = false;
+        this.render();
+      }, 1500);
+
+    } else {
+      btn.classList.add('wrong');
+      sound.playError();
+
+      if (feedbackEl) {
+        feedbackEl.textContent = isRu 
+          ? 'Попробуй еще раз! Прочитай слово внимательно.' 
+          : (isPl 
+              ? 'Spróbuj jeszcze raz! Przeczytaj słowo uważnie.' 
+              : 'Try again! Read the word carefully.');
+        feedbackEl.style.color = '#ef4444';
+      }
+    }
+  }
+
   attachEvents() {
     const btnRhyme = this.container.querySelector('#wl-btn-rhyme');
     const btnOdd = this.container.querySelector('#wl-btn-odd');
+    const btnRead = this.container.querySelector('#wl-btn-read');
 
     if (btnRhyme) btnRhyme.addEventListener('click', () => this.switchSubMode('rhyme'));
     if (btnOdd) btnOdd.addEventListener('click', () => this.switchSubMode('odd'));
+    if (btnRead) btnRead.addEventListener('click', () => this.switchSubMode('read'));
 
     if (this.subMode === 'rhyme') {
       const targetCard = this.container.querySelector('#wl-target-rhyme');
@@ -265,7 +401,7 @@ export class WordLogicGame {
         });
       });
 
-    } else {
+    } else if (this.subMode === 'odd') {
       // Режим «Лишнее слово»
       const oddBtns = this.container.querySelectorAll('.wl-odd-btn');
       oddBtns.forEach(btn => {
@@ -273,6 +409,16 @@ export class WordLogicGame {
           const isOdd = btn.dataset.isOdd === 'true';
           const word = btn.dataset.word;
           this.handleOddChoice(btn, isOdd, word);
+        });
+      });
+    } else if (this.subMode === 'read') {
+      // Режим «Прочитай сам (Слово ➔ Картинка)»
+      const readBtns = this.container.querySelectorAll('.wl-read-btn');
+      readBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const isCorrect = btn.dataset.isCorrect === 'true';
+          const word = btn.dataset.word;
+          this.handleReadChoice(btn, isCorrect, word);
         });
       });
     }

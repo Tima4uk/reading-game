@@ -1223,20 +1223,22 @@ body {
 .wl-subnav {
   display: flex;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .wl-subnav-btn {
-  padding: 10px 20px;
+  padding: 8px 16px;
   border-radius: 16px;
   border: 2px solid #cbd5e1;
   background: var(--card-bg);
   font-family: inherit;
-  font-size: 1.05rem;
+  font-size: 1rem;
   font-weight: 700;
   color: #475569;
   cursor: pointer;
   transition: all 0.2s ease;
+  white-space: nowrap;
 }
 
 .wl-subnav-btn.active {
@@ -1400,6 +1402,96 @@ body {
   font-size: 1.15rem;
   font-weight: 900;
   color: #1e293b;
+}
+
+/* ========================================================
+   ПОДРЕЖИМ: ПРОЧИТАЙ САМ (СЛОВО ➔ КАРТИНКА)
+   ======================================================== */
+.wl-read-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border: 3.5px solid #38bdf8;
+  border-radius: 28px;
+  padding: 22px 36px;
+  box-shadow: 0 10px 25px rgba(56, 189, 248, 0.16);
+  min-width: 240px;
+  text-align: center;
+}
+
+.wl-read-word {
+  font-size: clamp(2.4rem, 6vw, 3.4rem);
+  font-weight: 900;
+  color: #0369a1;
+  letter-spacing: 2px;
+  line-height: 1.1;
+}
+
+.wl-read-badge {
+  margin-top: 8px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #0284c7;
+  background: #e0f2fe;
+  padding: 4px 14px;
+  border-radius: 14px;
+  letter-spacing: 0.5px;
+}
+
+.wl-read-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  width: 100%;
+  max-width: 480px;
+}
+
+@media (min-width: 520px) {
+  .wl-read-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.wl-read-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 10px;
+  background: #ffffff;
+  border: 3px solid #cbd5e1;
+  border-radius: 24px;
+  cursor: pointer;
+  box-shadow: 0 7px 0px #94a3b8, 0 10px 18px rgba(0, 0, 0, 0.08);
+  transition: all 0.15s ease;
+  min-height: 100px;
+}
+
+.wl-read-btn:active {
+  transform: translateY(6px);
+  box-shadow: 0 1px 0px #94a3b8;
+}
+
+.wl-read-emoji {
+  font-size: clamp(3rem, 7vw, 4rem);
+  line-height: 1;
+}
+
+.wl-read-btn.correct {
+  background: #dcfce7 !important;
+  border-color: #22c55e !important;
+  box-shadow: 0 7px 0px #16a34a, 0 10px 20px rgba(34, 197, 94, 0.3) !important;
+  animation: bounceSuccess 0.5s ease;
+}
+
+.wl-read-btn.wrong {
+  opacity: 0.35;
+  pointer-events: none;
+  transform: translateY(6px);
+  box-shadow: none;
+  animation: shakeAnim 0.4s ease;
+  border-color: #ef4444 !important;
 }
 
 /* ========================================================
