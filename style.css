@@ -2055,6 +2055,21 @@ body {
   margin-top: 4px;
 }
 
+.footer-license-link {
+  color: #94a3b8;
+  text-decoration: none;
+  font-size: 0.75rem;
+  margin-left: 10px;
+  transition: color 0.2s ease;
+  opacity: 0.8;
+}
+
+.footer-license-link:hover {
+  color: #2563eb;
+  text-decoration: underline;
+  opacity: 1;
+}
+
 @media (max-height: 700px) {
   .app-footer {
     display: none;
