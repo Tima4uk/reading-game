@@ -6,6 +6,7 @@ export class WordSearchGame {
     this.container = options.container;
     this.lang = options.lang || 'ru';
     this.difficulty = localStorage.getItem('ws_difficulty') || 'easy'; // 'easy' (6x6) | 'hard' (8x8)
+    this.hideIcons = localStorage.getItem('ws_hide_icons') === 'true';
     this.gridSize = this.difficulty === 'hard' ? 8 : 6;
     this.onWordFound = options.onWordFound || (() => { });
     this.onGameComplete = options.onGameComplete || (() => { });
@@ -42,6 +43,13 @@ export class WordSearchGame {
     localStorage.setItem('ws_difficulty', diff);
     sound.playLetterClick();
     this.startNewGame();
+  }
+
+  toggleIcons() {
+    this.hideIcons = !this.hideIcons;
+    localStorage.setItem('ws_hide_icons', this.hideIcons ? 'true' : 'false');
+    sound.playLetterClick();
+    this.render();
   }
 
   startNewGame() {
@@ -188,6 +196,7 @@ export class WordSearchGame {
 
     const easyLabel = isRu ? 'Легкий 6×6' : (isPl ? 'Łatwy 6×6' : 'Easy 6×6');
     const hardLabel = isRu ? 'Мастер 8×8' : (isPl ? 'Mistrz 8×8' : 'Master 8×8');
+    const noIconsLabel = isRu ? 'Без картинок' : (isPl ? 'Bez obrazków' : 'No icons');
     const soundTitle = isRu ? 'Послушать' : (isPl ? 'Posłuchaj' : 'Listen');
 
     this.container.innerHTML = `
@@ -201,17 +210,21 @@ export class WordSearchGame {
             <button class="ws-diff-btn ${isHard ? 'active' : ''}" id="ws-diff-hard">
               🚀 ${hardLabel}
             </button>
+            <button class="ws-diff-btn ws-toggle-icons-btn ${this.hideIcons ? 'active' : ''}" id="ws-toggle-icons">
+              ${this.hideIcons ? '🙈' : '🖼️'} ${noIconsLabel}
+            </button>
           </div>
 
           <div class="ws-words-list">
             ${this.wordsToFind.map((item, idx) => {
               const isFound = this.foundWords.has(item.word);
+              const showEmoji = !this.hideIcons || isFound;
               const color = isFound ? this.colors[idx % this.colors.length] : 'transparent';
               return `
                 <button class="ws-word-badge ${isFound ? 'found' : ''}" 
                         data-word="${item.word}"
                         style="${isFound ? `background-color: ${color}; border-color: ${color};` : ''}">
-                  <span class="ws-word-emoji">${item.emoji}</span>
+                  ${showEmoji ? `<span class="ws-word-emoji">${item.emoji}</span>` : ''}
                   <div class="ws-word-text-group">
                     <span class="ws-word-text">${item.word}</span>
                     ${item.hint ? `<span class="ws-word-subhint">(${item.hint})</span>` : ''}
@@ -249,11 +262,13 @@ export class WordSearchGame {
   }
 
   attachEvents() {
-    // Переключение уровня сложности
+    // Переключение уровня сложности и отображения картинок
     const btnEasy = this.container.querySelector('#ws-diff-easy');
     const btnHard = this.container.querySelector('#ws-diff-hard');
+    const btnToggleIcons = this.container.querySelector('#ws-toggle-icons');
     if (btnEasy) btnEasy.addEventListener('click', () => this.setDifficulty('easy'));
     if (btnHard) btnHard.addEventListener('click', () => this.setDifficulty('hard'));
+    if (btnToggleIcons) btnToggleIcons.addEventListener('click', () => this.toggleIcons());
 
     const gridEl = this.container.querySelector('#ws-grid-board');
     const wordBadges = this.container.querySelectorAll('.ws-word-badge');

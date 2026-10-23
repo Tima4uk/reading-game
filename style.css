@@ -388,8 +388,10 @@ body {
 .ws-diff-bar {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
 
 .ws-diff-btn {
@@ -418,6 +420,13 @@ body {
   color: #854d0e;
   box-shadow: 0 2px 8px rgba(234, 179, 8, 0.25);
   transform: translateY(-1px);
+}
+
+.ws-toggle-icons-btn.active {
+  background: #e0f2fe;
+  border-color: #38bdf8;
+  color: #0369a1;
+  box-shadow: 0 2px 8px rgba(56, 189, 248, 0.25);
 }
 
 .ws-words-list {
