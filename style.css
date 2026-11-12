@@ -2763,6 +2763,10 @@ body {
   background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
 }
 
+.ab-modal-box.primer-modal-box.no-pop {
+  animation: none !important;
+}
+
 .primer-header {
   display: flex;
   align-items: center;

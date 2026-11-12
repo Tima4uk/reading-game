@@ -353,22 +353,25 @@ export class AlphabetGame {
 
     const modal = this.container.querySelector('#ab-modal');
     if (modal) {
+      const wasOpen = !modal.classList.contains('hidden');
       modal.innerHTML = this.renderLetterModalContent(this.selectedLetterItem);
+      if (wasOpen) {
+        const box = modal.querySelector('.primer-modal-box');
+        if (box) box.classList.add('no-pop');
+      }
       modal.classList.remove('hidden');
       this.attachModalEvents();
     }
   }
 
-  refreshModalUI() {
-    const modal = this.container.querySelector('#ab-modal');
-    if (modal && this.selectedLetterItem) {
-      const box = modal.querySelector('.primer-modal-box');
-      const scrollTop = box ? box.scrollTop : 0;
-      modal.innerHTML = this.renderLetterModalContent(this.selectedLetterItem);
-      const newBox = modal.querySelector('.primer-modal-box');
-      if (newBox) newBox.scrollTop = scrollTop;
-      this.attachModalEvents();
-    }
+  highlightLetterInWord(word, targetLetter, isFound) {
+    if (!isFound) return word;
+    return word
+      .split('')
+      .map(ch => ch.toUpperCase() === targetLetter.toUpperCase()
+        ? `<span class="primer-word-hl">${ch}</span>`
+        : ch)
+      .join('');
   }
 
   closeLetterModal() {
@@ -447,15 +450,35 @@ export class AlphabetGame {
         this.lessonState.activeSyllableIdx = idx;
         this.lessonState.readSyllables.add(idx);
 
+        // Обновляем кочки на месте без перерисовки модалки
+        syllableStones.forEach(s => {
+          const sIdx = parseInt(s.dataset.idx, 10);
+          const isRead = this.lessonState.readSyllables.has(sIdx);
+          const isWalker = this.lessonState.activeSyllableIdx === sIdx;
+          s.classList.toggle('read', isRead);
+          s.classList.toggle('active-walker', isWalker);
+          const iconEl = s.querySelector('.primer-walker-icon');
+          if (iconEl) {
+            iconEl.textContent = isWalker ? '🐾' : (isRead ? '✓' : '•');
+          }
+        });
+
         if (!this.lessonState.syllablesRewarded &&
             this.lessonState.readSyllables.size >= this.currentLesson.syllables.length) {
           this.lessonState.syllablesRewarded = true;
           sound.playSuccess();
           this.onStarEarned(1);
           this.onWinEffect();
-        }
 
-        this.refreshModalUI();
+          const sec = this.container.querySelector('.primer-syllables-section');
+          if (sec) {
+            sec.classList.add('section-completed');
+            const titleEl = sec.querySelector('.primer-section-title');
+            if (titleEl && !titleEl.querySelector('.primer-done-badge')) {
+              titleEl.insertAdjacentHTML('beforeend', '<span class="primer-done-badge">⭐ +1</span>');
+            }
+          }
+        }
       });
     });
 
@@ -475,16 +498,37 @@ export class AlphabetGame {
 
         if (isTarget) {
           this.lessonState.foundBubbles.add(bId);
+          btn.classList.add('found');
           sound.playSuccess();
           sound.speakLetter(clickedLetter, this.lang);
+
+          const isRu = this.lang === 'ru';
+          const isPl = this.lang === 'pl';
+          const lesson = this.currentLesson;
+          const titleSpan = this.container.querySelector('#primer-detective-title');
+          if (titleSpan) {
+            titleSpan.textContent = isRu
+              ? `🔎 Сыщик: найди все буквы «${lesson.letter}» (${this.lessonState.foundBubbles.size}/${lesson.targetBubblesCount})`
+              : (isPl
+                ? `🔎 Detektyw: znajdź wszystkie litery «${lesson.letter}» (${this.lessonState.foundBubbles.size}/${lesson.targetBubblesCount})`
+                : `🔎 Detective: find all "${lesson.letter}" letters (${this.lessonState.foundBubbles.size}/${lesson.targetBubblesCount})`);
+          }
 
           if (!this.lessonState.bubblesRewarded &&
               this.lessonState.foundBubbles.size >= this.currentLesson.targetBubblesCount) {
             this.lessonState.bubblesRewarded = true;
             this.onStarEarned(1);
             this.onWinEffect();
+
+            const sec = this.container.querySelector('.primer-detective-section');
+            if (sec) {
+              sec.classList.add('section-completed');
+              const titleEl = sec.querySelector('.primer-section-title');
+              if (titleEl && !titleEl.querySelector('.primer-done-badge')) {
+                titleEl.insertAdjacentHTML('beforeend', '<span class="primer-done-badge">⭐ +1</span>');
+              }
+            }
           }
-          this.refreshModalUI();
         } else {
           btn.classList.add('wrong');
           sound.playError();
@@ -510,16 +554,42 @@ export class AlphabetGame {
 
         if (hasLetter) {
           this.lessonState.foundWords.add(idx);
+          card.classList.add('found');
+          const labelEl = card.querySelector('.primer-word-label');
+          if (labelEl) {
+            labelEl.innerHTML = this.highlightLetterInWord(word, this.currentLesson.letter, true);
+          }
+
           sound.playSuccess();
           sound.speakWord(word, this.lang);
+
+          const isRu = this.lang === 'ru';
+          const isPl = this.lang === 'pl';
+          const lesson = this.currentLesson;
+          const titleSpan = this.container.querySelector('#primer-words-title');
+          if (titleSpan) {
+            titleSpan.textContent = isRu
+              ? `🎯 В каких словах спряталась буква «${lesson.letter}»? (${this.lessonState.foundWords.size}/${lesson.targetWordsCount})`
+              : (isPl
+                ? `🎯 W których słowach kryje się litera «${lesson.letter}»? (${this.lessonState.foundWords.size}/${lesson.targetWordsCount})`
+                : `🎯 Which words have the letter "${lesson.letter}"? (${this.lessonState.foundWords.size}/${lesson.targetWordsCount})`);
+          }
 
           if (!this.lessonState.wordsRewarded &&
               this.lessonState.foundWords.size >= this.currentLesson.targetWordsCount) {
             this.lessonState.wordsRewarded = true;
             this.onStarEarned(1);
             this.onWinEffect();
+
+            const sec = this.container.querySelector('.primer-words-section');
+            if (sec) {
+              sec.classList.add('section-completed');
+              const titleEl = sec.querySelector('.primer-section-title');
+              if (titleEl && !titleEl.querySelector('.primer-done-badge')) {
+                titleEl.insertAdjacentHTML('beforeend', '<span class="primer-done-badge">⭐ +1</span>');
+              }
+            }
           }
-          this.refreshModalUI();
         } else {
           card.classList.add('wrong');
           sound.playError();
