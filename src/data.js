@@ -44,7 +44,7 @@ export const ALPHABET_DATA = {
     { letter: 'Ц', emoji: '🌸', word: 'Цветок' },
     { letter: 'Ч', emoji: '🐢', word: 'Черепаха' },
     { letter: 'Ш', emoji: '🎈', word: 'Шарик' },
-    { letter: 'Щ', emoji: '🪥', word: 'Щетка' },
+    { letter: 'Щ', emoji: '🪥', word: 'Щётка' },
     { letter: 'Ъ', emoji: '🏢', word: 'Подъезд' },
     { letter: 'Ы', emoji: '🧀', word: 'Сыр' },
     { letter: 'Ь', emoji: '🐴', word: 'Конь' },
@@ -110,7 +110,7 @@ export const ALPHABET_DATA = {
     { letter: 'U', emoji: '☂️', word: 'Umbrella' },
     { letter: 'V', emoji: '🎻', word: 'Violin' },
     { letter: 'W', emoji: '🐺', word: 'Wolf' },
-    { letter: 'X', emoji: '📦', word: 'Fox / Box' },
+    { letter: 'X', emoji: '📦', word: 'Box' },
     { letter: 'Y', emoji: '🪀', word: 'Yo-yo' },
     { letter: 'Z', emoji: '🦓', word: 'Zebra' }
   ]
@@ -1352,42 +1352,42 @@ export const WORDS_DATA = {
     {
       "word": "DYE",
       "emoji": "🎨",
-      "hint": "dye — краситель, краска / красить"
+      "hint": "краситель, краска / красить"
     },
     {
       "word": "CLUE",
       "emoji": "🔎",
-      "hint": "clue — улика, зацепка"
+      "hint": "улика, зацепка"
     },
     {
       "word": "SOLVE",
       "emoji": "🧩",
-      "hint": "solve — решать загадку"
+      "hint": "решать загадку"
     },
     {
       "word": "SEARCH",
       "emoji": "🔍",
-      "hint": "search — искать, поиск"
+      "hint": "искать, поиск"
     },
     {
       "word": "ROLL",
       "emoji": "🔄",
-      "hint": "to roll — катить, катиться, сворачивать"
+      "hint": "катить, катиться, сворачивать"
     },
     {
       "word": "PROP",
       "emoji": "🎭",
-      "hint": "prop — реквизит, бутафория"
+      "hint": "реквизит, бутафория"
     },
     {
       "word": "BURY",
       "emoji": "⛏️",
-      "hint": "to bury — закапывать, прятать в землю"
+      "hint": "закапывать, прятать в землю"
     },
     {
       "word": "HIDE",
       "emoji": "🙈",
-      "hint": "to hide — прятать, прятаться"
+      "hint": "прятать, прятаться"
     }
   ]
 };
@@ -1791,142 +1791,142 @@ export const WORDS_DATA_HARD = {
     {
       "word": "DELIVER",
       "emoji": "📦",
-      "hint": "to deliver — доставлять"
+      "hint": "доставлять"
     },
     {
       "word": "IMPRESS",
       "emoji": "✨",
-      "hint": "to impress — впечатлять"
+      "hint": "впечатлять"
     },
     {
       "word": "STUFF",
       "emoji": "🎒",
-      "hint": "stuff — вещи, предметы"
+      "hint": "вещи, предметы"
     },
     {
       "word": "OFFER",
       "emoji": "🤝",
-      "hint": "a good offer — выгодное предложение"
+      "hint": "выгодное предложение"
     },
     {
       "word": "FINDOUT",
       "emoji": "🔍",
-      "hint": "to find out — выяснить, разузнать"
+      "hint": "выяснить, разузнать"
     },
     {
       "word": "GIVEAWAY",
       "emoji": "🎁",
-      "hint": "to give away — раздавать, дарить"
+      "hint": "раздавать, дарить"
     },
     {
       "word": "ENDUP",
       "emoji": "🏁",
-      "hint": "to end up — оказаться в итоге"
+      "hint": "оказаться в итоге"
     },
     {
       "word": "PAYFOR",
       "emoji": "💳",
-      "hint": "to pay for — платить за"
+      "hint": "платить за"
     },
     {
       "word": "TURNINTO",
       "emoji": "🪄",
-      "hint": "to turn into — превращаться в"
+      "hint": "превращаться в"
     },
     {
       "word": "GOON",
       "emoji": "⏩",
-      "hint": "to go on — продолжать"
+      "hint": "продолжать"
     },
     {
       "word": "OHMYWORD",
       "emoji": "😲",
-      "hint": "oh my word! — вот это да! честное слово!"
+      "hint": "вот это да! честное слово!"
     },
     {
       "word": "SECRET",
       "emoji": "🤫",
-      "hint": "secret — секрет, тайна"
+      "hint": "секрет, тайна"
     },
     {
       "word": "EXPLORE",
       "emoji": "🗺️",
-      "hint": "explore — исследовать, изучать"
+      "hint": "исследовать, изучать"
     },
     {
       "word": "DISCOVER",
       "emoji": "🧭",
-      "hint": "discover — открывать новое"
+      "hint": "открывать новое"
     },
     {
       "word": "MYSTERY",
       "emoji": "🔮",
-      "hint": "mystery — тайна, загадка"
+      "hint": "тайна, загадка"
     },
     {
       "word": "DETECT",
       "emoji": "👀",
-      "hint": "detect — обнаружить, заметить"
+      "hint": "обнаружить, заметить"
     },
     {
       "word": "ENORMOUS",
       "emoji": "🦖",
-      "hint": "enormous — огромный, громадный"
+      "hint": "огромный, громадный"
     },
     {
       "word": "ANCESTOR",
       "emoji": "📜",
-      "hint": "ancestor — предок, прародитель"
+      "hint": "предок, прародитель"
     },
     {
       "word": "PUSHOVER",
       "emoji": "💥",
-      "hint": "to push over — опрокинуть, свалить"
+      "hint": "опрокинуть, свалить"
     },
     {
       "word": "RESTORE",
       "emoji": "🛠️",
-      "hint": "to restore — восстанавливать, реставрировать"
+      "hint": "восстанавливать, реставрировать"
     },
     {
       "word": "REPLICA",
       "emoji": "🗿",
-      "hint": "replica — точная копия, реплика"
+      "hint": "точная копия, реплика"
     },
     {
       "word": "PEACEFUL",
       "emoji": "🕊️",
-      "hint": "peaceful — мирный, спокойный"
+      "hint": "мирный, спокойный"
     },
     {
       "word": "COMMERCIAL",
       "emoji": "📺",
-      "hint": "commercial — рекламный ролик / коммерческий"
+      "hint": "рекламный ролик / коммерческий"
     },
     {
       "word": "SETOFF",
       "emoji": "🚀",
-      "hint": "to set off — отправиться в путь / запустить"
+      "hint": "отправиться в путь / запустить"
     },
     {
       "word": "BREATHTAKING",
       "emoji": "🌄",
-      "hint": "breathtaking — захватывающий дух, потрясающий"
+      "hint": "захватывающий дух, потрясающий"
     },
     {
       "word": "UNDERNEATH",
       "emoji": "⬇️",
-      "hint": "underneath — под, внизу, снизу"
+      "hint": "под, внизу, снизу"
     },
     {
       "word": "MANAGE",
       "emoji": "💼",
-      "hint": "to manage — суметь, справиться, руководить"
+      "hint": "суметь, справиться, руководить"
     },
     {
       "word": "REMOVE",
       "emoji": "🧹",
-      "hint": "to remove — удалять, убирать, снимать"
+      "hint": "удалять, убирать, снимать"
     }
   ]
 };
@@ -3896,7 +3896,7 @@ export const TRANSLATIONS_DATA = [
 
   // --- СЛОЖНЫЙ УРОВЕНЬ: Детектив и продвинутая лексика (Hard) ---
   { emoji: '📦', ru: 'ДОСТАВЛЯТЬ', en: 'DELIVER', pl: 'DOSTARCZAĆ', level: 'hard' },
-  { emoji: '✨', ru: 'ВПЕЧАТЛЯТЬ', en: 'IMPRESS', pl: 'IMPOONOWAĆ', level: 'hard' },
+  { emoji: '✨', ru: 'ВПЕЧАТЛЯТЬ', en: 'IMPRESS', pl: 'IMPONOWAĆ', level: 'hard' },
   { emoji: '🎒', ru: 'ВЕЩИ', en: 'STUFF', pl: 'RZECZY', level: 'hard' },
   { emoji: '🤝', ru: 'ПРЕДЛОЖЕНИЕ', en: 'OFFER', pl: 'OFERTA', level: 'hard' },
   { emoji: '🔍', ru: 'ВЫЯСНИТЬ', en: 'FIND OUT', pl: 'DOWIEDZIEĆ SIĘ', level: 'hard' },

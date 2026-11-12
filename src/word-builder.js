@@ -15,6 +15,14 @@ export class WordBuilderGame {
     this.availableTiles = []; // Буквы для выбора: [ { id, letter, used } ]
     this.isCompleted = false;
     this.usedWordIndexes = new Set();
+    this.speakTimer = null;
+  }
+
+  stop() {
+    if (this.speakTimer) {
+      clearTimeout(this.speakTimer);
+      this.speakTimer = null;
+    }
   }
 
   setLanguage(lang) {
@@ -33,6 +41,7 @@ export class WordBuilderGame {
   }
 
   startNewWord() {
+    this.stop();
     this.isCompleted = false;
     
     let words = [];
@@ -83,9 +92,12 @@ export class WordBuilderGame {
     this.render();
 
     // Озвучиваем подсказку при старте нового слова
-    setTimeout(() => {
-      sound.speakWord(this.targetWord, this.lang);
-    }, 400);
+    const wordToSpeak = this.targetWord;
+    const langToSpeak = this.lang;
+    this.speakTimer = setTimeout(() => {
+      this.speakTimer = null;
+      sound.speakWord(wordToSpeak, langToSpeak);
+    }, 350);
   }
 
   render() {
@@ -258,13 +270,13 @@ export class WordBuilderGame {
     this.slots[emptySlotIdx] = { letter: tile.letter, tileId: tile.id };
 
     sound.playLetterClick();
-    sound.speakLetter(tile.letter, this.lang);
-
-    this.render();
 
     // Проверяем, заполнено ли всё слово
     if (!this.slots.includes(null)) {
-      this.checkWord();
+      this.checkWord(tile.letter);
+    } else {
+      sound.speakLetter(tile.letter, this.lang);
+      this.render();
     }
   }
 
@@ -325,17 +337,19 @@ export class WordBuilderGame {
     if (candidateTile) {
       candidateTile.used = true;
       this.slots[targetIdx] = { letter: candidateTile.letter, tileId: candidateTile.id };
-      sound.playSuccess();
-      sound.speakLetter(candidateTile.letter, this.lang);
-      this.render();
 
       if (!this.slots.includes(null)) {
-        this.checkWord();
+        this.checkWord(candidateTile.letter);
+      } else {
+        sound.playSuccess();
+        sound.speakLetter(candidateTile.letter, this.lang);
+        this.render();
       }
     }
   }
 
-  checkWord() {
+  checkWord(lastLetter = '') {
+    this.stop();
     const currentWord = this.slots.map(s => s.letter).join('');
     if (currentWord === this.targetWord) {
       // Победа!
@@ -343,15 +357,17 @@ export class WordBuilderGame {
       this.render();
 
       sound.playSuccess();
-      setTimeout(() => {
-        sound.speakWord(this.targetWord, this.lang);
-        this.onWordCompleted(this.targetWord);
-      }, 400);
+      sound.speakWord(this.targetWord, this.lang);
+      this.onWordCompleted(this.targetWord);
 
       // Не переключаем автоматически: ребенок может еще раз проверить слово и нажать "Дальше"
     } else {
       // Ошибка
+      this.render();
       sound.playError();
+      if (lastLetter) {
+        sound.speakLetter(lastLetter, this.lang);
+      }
       const slotsContainer = this.container.querySelector('.wb-slots-container');
       if (slotsContainer) {
         slotsContainer.classList.add('shake');

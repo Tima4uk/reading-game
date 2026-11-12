@@ -32,6 +32,18 @@ export class WordTranslateGame {
     this.quizAnswered = false;
     this.usedQuizIndexes = new Set();
     this.autoNextTimeout = null;
+    this.speakTimeout = null;
+  }
+
+  stop() {
+    if (this.autoNextTimeout) {
+      clearTimeout(this.autoNextTimeout);
+      this.autoNextTimeout = null;
+    }
+    if (this.speakTimeout) {
+      clearTimeout(this.speakTimeout);
+      this.speakTimeout = null;
+    }
   }
 
   getAvailableDirections() {
@@ -72,7 +84,7 @@ export class WordTranslateGame {
   }
 
   start() {
-    clearTimeout(this.autoNextTimeout);
+    this.stop();
     if (this.subMode === 'pairs') {
       this.startPairsRound();
     } else {
@@ -107,7 +119,7 @@ export class WordTranslateGame {
   // ЛОГИКА РЕЖИМА 1: ПАРЫ КАРТОЧЕК (MATCH PAIRS)
   // ========================================================
   startPairsRound() {
-    clearTimeout(this.autoNextTimeout);
+    this.stop();
     this.firstSelectedCard = null;
     this.matchedPairsCount = 0;
     this.isLocked = false;
@@ -198,10 +210,6 @@ export class WordTranslateGame {
       }
 
       sound.playSuccess();
-      // Озвучиваем перевод
-      setTimeout(() => {
-        sound.speakWord(card.text, card.lang);
-      }, 250);
 
       this.firstSelectedCard = null;
       this.matchedPairsCount++;
@@ -245,6 +253,7 @@ export class WordTranslateGame {
   // ЛОГИКА РЕЖИМА 2: ВИКТОРИНА 1 ИЗ 3 (WORD QUIZ)
   // ========================================================
   startNewQuiz() {
+    this.stop();
     this.quizAnswered = false;
     const pool = this.getPool();
     const { from, to } = this.getLanguages();
@@ -285,8 +294,11 @@ export class WordTranslateGame {
     this.render();
 
     // Озвучиваем слово вопроса
-    setTimeout(() => {
-      sound.speakWord(this.quizQuestion.sourceWord, this.quizQuestion.fromLang);
+    const wordToSpeak = this.quizQuestion.sourceWord;
+    const langToSpeak = this.quizQuestion.fromLang;
+    this.speakTimeout = setTimeout(() => {
+      this.speakTimeout = null;
+      sound.speakWord(wordToSpeak, langToSpeak);
     }, 300);
   }
 
@@ -295,6 +307,7 @@ export class WordTranslateGame {
 
     if (selectedOption === this.quizQuestion.targetWord) {
       // ПРАВИЛЬНЫЙ ОТВЕТ!
+      this.stop();
       this.quizAnswered = true;
       btnEl.classList.add('correct');
       sound.playSuccess();
@@ -304,9 +317,10 @@ export class WordTranslateGame {
       this.onWinEffect();
 
       // Через небольшую паузу переходим к следующему слову
-      setTimeout(() => {
+      this.autoNextTimeout = setTimeout(() => {
+        this.autoNextTimeout = null;
         this.startNewQuiz();
-      }, 1500);
+      }, 1700);
     } else {
       // НЕВЕРНЫЙ ВАРИАНТ
       btnEl.classList.add('shake', 'wrong');

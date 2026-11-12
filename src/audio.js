@@ -1,11 +1,73 @@
 // Модуль аудио: Синтез звуковых эффектов (Web Audio API) и озвучивание речи (SpeechSynthesis API)
 
+// Словарь точного фонетического произношения для русских слов (исправление Е -> Ё и ударений для TTS)
+const RU_SPOKEN_OVERRIDES = {
+  'МЕД': 'мёд',
+  'МЁД': 'мёд',
+  'ПЬЕТ': 'пьёт',
+  'ПЬЁТ': 'пьёт',
+  'ПОЕТ': 'поёт',
+  'ПОЁТ': 'поёт',
+  'ИДЕТ': 'идёт',
+  'ИДЁТ': 'идёт',
+  'ПЛЫВЕТ': 'плывёт',
+  'ПЛЫВЁТ': 'плывёт',
+  'ВЕРТОЛЕТ': 'вертолёт',
+  'ВЕРТОЛЁТ': 'вертолёт',
+  'САМОЛЕТ': 'самолёт',
+  'САМОЛЁТ': 'самолёт',
+  'БЕРЕЗА': 'берёза',
+  'БЕРЁЗА': 'берёза',
+  'ЩЕТКА': 'щётка',
+  'ЩЁТКА': 'щётка',
+  'ЕЖИК': 'ёжик',
+  'ЁЖИК': 'ёжик',
+  'ЛЕД': 'лёд',
+  'ЛЁД': 'лёд',
+  'КОТ': 'кот',
+  'БЕЛКА': 'бе\u0301лка',
+  'ЗАМОК': 'за\u0301мок',
+  'МУХА': 'му\u0301ха',
+  'УТКА': 'у\u0301тка',
+  'ЧАСЫ': 'часы\u0301',
+  'НОСКИ': 'носки\u0301',
+  'ОКНО': 'окно\u0301',
+  'ВОДА': 'вода\u0301',
+  'НОГА': 'нога\u0301',
+  'РУКА': 'рука\u0301',
+  'ЗИМА': 'зима\u0301',
+  'ЛИСА': 'лиса\u0301',
+  'ТРАВА': 'трава\u0301',
+  'СОВА': 'сова\u0301',
+  'КОЗА': 'коза\u0301',
+  'ГОРА': 'гора\u0301',
+  'РЕКА': 'река\u0301',
+  'ЛУНА': 'луна\u0301'
+};
+
+// Словарь составных английских слов и фразовых глаголов
+const EN_SPOKEN_OVERRIDES = {
+  'FINDOUT': 'find out',
+  'GIVEAWAY': 'give away',
+  'ENDUP': 'end up',
+  'PAYFOR': 'pay for',
+  'TURNINTO': 'turn into',
+  'GOON': 'go on',
+  'OHMYWORD': 'oh my word',
+  'ICECREAM': 'ice cream',
+  'FIRETRUCK': 'fire truck',
+  'PUSHOVER': 'push over',
+  'SETOFF': 'set off',
+  'FOX / BOX': 'box'
+};
+
 class SoundEngine {
   constructor() {
     this.ctx = null;
     this.soundEnabled = true;
     this.speechEnabled = true;
     this.voices = [];
+    this.speakTimer = null;
     this.initAudioContext();
     this.initVoices();
   }
@@ -54,146 +116,141 @@ class SoundEngine {
       this.voices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
     }
     const prefix = langCode === 'ru' ? 'ru' : (langCode === 'pl' ? 'pl' : 'en');
-    // Ищем подходящий голос
-    const match = this.voices.find(v => v.lang && v.lang.toLowerCase().startsWith(prefix));
-    return match || null;
+    const matchingVoices = this.voices.filter(v => v.lang && v.lang.toLowerCase().startsWith(prefix));
+    if (matchingVoices.length === 0) return null;
+
+    // Приоритет качественным голосам (Google, Microsoft Natural, Apple Milena/Yuri/Zosia/Samantha)
+    const preferred = matchingVoices.find(v =>
+      /google|natural|milena|yuri|zosia|paulina|samantha|daniel/i.test(v.name)
+    );
+    return preferred || matchingVoices[0];
+  }
+
+  // Полная остановка текущей и запланированной озвучки
+  stopSpeech() {
+    if (this.speakTimer) {
+      clearTimeout(this.speakTimer);
+      this.speakTimer = null;
+    }
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
+  }
+
+  // Безопасный запуск SpeechSynthesis без бага проглатывания после cancel() в браузерах
+  _speakUtterance(text, lang, rate = 0.85, pitch = 1.05) {
+    if (!this.speechEnabled || typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+
+    if (this.speakTimer) {
+      clearTimeout(this.speakTimer);
+      this.speakTimer = null;
+    }
+
+    const synth = window.speechSynthesis;
+    const wasBusy = synth.speaking || synth.pending;
+    synth.cancel();
+
+    const startSpeak = () => {
+      this.speakTimer = null;
+      if (!this.speechEnabled) return;
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = this.getLangTag(lang);
+      utterance.rate = rate;
+      utterance.pitch = pitch;
+
+      const voice = this.getVoice(lang);
+      if (voice) utterance.voice = voice;
+
+      synth.speak(utterance);
+    };
+
+    if (wasBusy) {
+      this.speakTimer = setTimeout(startSpeak, 35);
+    } else {
+      startSpeak();
+    }
+  }
+
+  // Нормализация слова перед отправкой в TTS
+  normalizeWordForSpeech(word, lang = 'ru') {
+    if (!word) return '';
+    const raw = String(word).trim();
+    const upper = raw.toUpperCase();
+
+    if (lang === 'ru' && RU_SPOKEN_OVERRIDES[upper]) {
+      return RU_SPOKEN_OVERRIDES[upper];
+    }
+    if (lang === 'en' && EN_SPOKEN_OVERRIDES[upper]) {
+      return EN_SPOKEN_OVERRIDES[upper];
+    }
+    return raw.toLowerCase();
+  }
+
+  // Нормализация русских фраз (замена Е на Ё в частых словах)
+  normalizePhraseForSpeech(text, lang = 'ru') {
+    if (!text) return '';
+    if (lang !== 'ru') return text;
+    return text
+      .replace(/самолет/gi, 'самолёт')
+      .replace(/вертолет/gi, 'вертолёт')
+      .replace(/береза/gi, 'берёза')
+      .replace(/щетка/gi, 'щётка')
+      .replace(/ежик/gi, 'ёжик')
+      .replace(/\bмед\b/gi, 'мёд')
+      .replace(/\bпьет\b/gi, 'пьёт')
+      .replace(/\bпоет\b/gi, 'поёт')
+      .replace(/\bидет\b/gi, 'идёт')
+      .replace(/\bплывет\b/gi, 'плывёт');
   }
 
   // Озвучивание отдельной буквы
   speakLetter(letter, lang = 'ru') {
-    if (!this.speechEnabled || !('speechSynthesis' in window)) return;
-    window.speechSynthesis.cancel(); // останавливаем предыдущую речь
-
-    const utterance = new SpeechSynthesisUtterance(letter.toLowerCase());
-    utterance.lang = this.getLangTag(lang);
-    utterance.rate = 0.85; // чуть медленнее для четкости
-    utterance.pitch = 1.05;
-
-    const voice = this.getVoice(lang);
-    if (voice) utterance.voice = voice;
-
-    window.speechSynthesis.speak(utterance);
+    if (!letter) return;
+    this._speakUtterance(String(letter).toLowerCase(), lang, 0.85, 1.05);
   }
 
   // Озвучивание слова целиком
   speakWord(word, lang = 'ru') {
-    if (!this.speechEnabled || !('speechSynthesis' in window)) return;
-    window.speechSynthesis.cancel();
-
-    // Для фразовых глаголов и составных выражений в английском (написанных слитно в карточках/сетке)
-    const phrasalSpoken = {
-      'FINDOUT': 'find out',
-      'GIVEAWAY': 'give away',
-      'ENDUP': 'end up',
-      'PAYFOR': 'pay for',
-      'TURNINTO': 'turn into',
-      'GOON': 'go on',
-      'OHMYWORD': 'oh my word',
-      'ICECREAM': 'ice cream',
-      'PUSHOVER': 'push over',
-      'SETOFF': 'set off'
-    };
-    const upper = String(word).toUpperCase();
-    const spokenText = (lang === 'en' && phrasalSpoken[upper])
-      ? phrasalSpoken[upper]
-      : word.toLowerCase();
-
-    const utterance = new SpeechSynthesisUtterance(spokenText);
-    utterance.lang = this.getLangTag(lang);
-    utterance.rate = 0.8;
-    utterance.pitch = 1.05;
-
-    const voice = this.getVoice(lang);
-    if (voice) utterance.voice = voice;
-
-    window.speechSynthesis.speak(utterance);
+    if (!word) return;
+    const spokenText = this.normalizeWordForSpeech(word, lang);
+    this._speakUtterance(spokenText, lang, 0.82, 1.05);
   }
 
   // Озвучивание буквы и слова для малыша: "К! Кот!" / "Ż! Żaba!" / "A! Apple!"
   speakLetterAndWord(letter, word, lang = 'ru') {
-    if (!this.speechEnabled || !('speechSynthesis' in window)) return;
-    window.speechSynthesis.cancel();
-
-    const text = `${letter}! ${word}`;
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = this.getLangTag(lang);
-    utterance.rate = 0.85;
-    utterance.pitch = 1.1;
-
-    const voice = this.getVoice(lang);
-    if (voice) utterance.voice = voice;
-
-    window.speechSynthesis.speak(utterance);
+    const cleanWord = this.normalizeWordForSpeech(word, lang);
+    const text = `${letter}! ${cleanWord}`;
+    this._speakUtterance(text, lang, 0.85, 1.08);
   }
 
   // Озвучивание вопроса викторины
   speakQuestion(letter, lang = 'ru') {
-    if (!this.speechEnabled || !('speechSynthesis' in window)) return;
-    window.speechSynthesis.cancel();
-
-    const text = lang === 'ru' 
-      ? `Где буква ${letter}?` 
+    const text = lang === 'ru'
+      ? `Где буква ${letter}?`
       : (lang === 'pl' ? `Gdzie jest litera ${letter}?` : `Where is letter ${letter}?`);
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = this.getLangTag(lang);
-    utterance.rate = 0.85;
-    utterance.pitch = 1.1;
-
-    const voice = this.getVoice(lang);
-    if (voice) utterance.voice = voice;
-
-    window.speechSynthesis.speak(utterance);
+    this._speakUtterance(text, lang, 0.85, 1.08);
   }
 
   // Озвучивание рифмы
   speakRhyme(word1, word2, lang = 'ru') {
-    if (!this.speechEnabled || !('speechSynthesis' in window)) return;
-    window.speechSynthesis.cancel();
-
-    const text = lang === 'ru' 
-      ? `${word1} и ${word2}! Звучит в рифму!` 
-      : (lang === 'pl' ? `${word1} i ${word2}! To się rymuje!` : `${word1} and ${word2}! They rhyme!`);
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = this.getLangTag(lang);
-    utterance.rate = 0.85;
-    utterance.pitch = 1.05;
-
-    const voice = this.getVoice(lang);
-    if (voice) utterance.voice = voice;
-
-    window.speechSynthesis.speak(utterance);
+    const w1 = this.normalizeWordForSpeech(word1, lang);
+    const w2 = this.normalizeWordForSpeech(word2, lang);
+    const text = lang === 'ru'
+      ? `${w1} и ${w2}! Звучит в рифму!`
+      : (lang === 'pl' ? `${w1} i ${w2}! To się rymuje!` : `${w1} and ${w2}! They rhyme!`);
+    this._speakUtterance(text, lang, 0.85, 1.05);
   }
 
   // Озвучивание объяснения
   speakExplanation(explanation, lang = 'ru') {
-    if (!this.speechEnabled || !('speechSynthesis' in window)) return;
-    window.speechSynthesis.cancel();
-
-    const utterance = new SpeechSynthesisUtterance(explanation);
-    utterance.lang = this.getLangTag(lang);
-    utterance.rate = 0.9;
-    utterance.pitch = 1.05;
-
-    const voice = this.getVoice(lang);
-    if (voice) utterance.voice = voice;
-
-    window.speechSynthesis.speak(utterance);
+    const cleanText = this.normalizePhraseForSpeech(explanation, lang);
+    this._speakUtterance(cleanText, lang, 0.9, 1.05);
   }
 
   // Похвала
   speakPhrase(phrase, lang = 'ru') {
-    if (!this.speechEnabled || !('speechSynthesis' in window)) return;
-    window.speechSynthesis.cancel();
-
-    const utterance = new SpeechSynthesisUtterance(phrase);
-    utterance.lang = this.getLangTag(lang);
-    utterance.rate = 0.95;
-    utterance.pitch = 1.1;
-
-    const voice = this.getVoice(lang);
-    if (voice) utterance.voice = voice;
-
-    window.speechSynthesis.speak(utterance);
+    const cleanText = this.normalizePhraseForSpeech(phrase, lang);
+    this._speakUtterance(cleanText, lang, 0.95, 1.1);
   }
 
   // Звуковые эффекты через Web Audio (без внешних файлов)
@@ -323,8 +380,14 @@ class SoundEngine {
   toggleSound() {
     this.soundEnabled = !this.soundEnabled;
     this.speechEnabled = this.soundEnabled;
+    if (!this.soundEnabled) {
+      this.stopSpeech();
+    }
     return this.soundEnabled;
   }
 }
 
-export const sound = new SoundEngine();
+// Гарантируем единый синглтон SoundEngine даже при разных query-параметрах импорта (?v=...)
+export const sound = (typeof window !== 'undefined' && window.__readingGameSound)
+  ? window.__readingGameSound
+  : (typeof window !== 'undefined' ? (window.__readingGameSound = new SoundEngine()) : new SoundEngine());

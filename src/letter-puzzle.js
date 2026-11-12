@@ -16,6 +16,19 @@ export class LetterPuzzleGame {
 
     // Состояние перетаскивания (Drag-and-Drop)
     this.dragState = null;
+    this.speakTimer = null;
+    this.nextTimer = null;
+  }
+
+  clearTimers() {
+    if (this.speakTimer) {
+      clearTimeout(this.speakTimer);
+      this.speakTimer = null;
+    }
+    if (this.nextTimer) {
+      clearTimeout(this.nextTimer);
+      this.nextTimer = null;
+    }
   }
 
   setLanguage(lang) {
@@ -31,13 +44,15 @@ export class LetterPuzzleGame {
   }
 
   loadPuzzle() {
+    this.clearTimers();
     this.cleanUpDrag();
     this.placedParts.clear();
     this.isCompleted = false;
     this.render();
 
     const puzzle = this.getCurrentPuzzle();
-    setTimeout(() => {
+    this.speakTimer = setTimeout(() => {
+      this.speakTimer = null;
       sound.speakLetter(puzzle.letter, this.lang);
     }, 350);
   }
@@ -178,7 +193,9 @@ export class LetterPuzzleGame {
       this.onWinEffect();
 
       // Переход к следующей букве
-      setTimeout(() => {
+      this.clearTimers();
+      this.nextTimer = setTimeout(() => {
+        this.nextTimer = null;
         this.currentPuzzleIndex++;
         this.loadPuzzle();
       }, 2800);
@@ -386,6 +403,7 @@ export class LetterPuzzleGame {
   }
 
   destroy() {
+    this.clearTimers();
     this.cleanUpDrag();
   }
 }

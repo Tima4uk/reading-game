@@ -19,14 +19,24 @@ export class WordLogicGame {
     this.shuffledReadPool = [];
     this.currentReadRound = null;
     this.roundAnswered = false;
+    this.nextTimer = null;
+  }
+
+  stop() {
+    if (this.nextTimer) {
+      clearTimeout(this.nextTimer);
+      this.nextTimer = null;
+    }
   }
 
   setLanguage(lang) {
+    this.stop();
     this.lang = lang;
     this.start();
   }
 
   start() {
+    this.stop();
     this.roundAnswered = false;
     this.shuffledRhymes = [...RHYMES_DATA[this.lang]].sort(() => 0.5 - Math.random());
     this.shuffledOdds = [...ODD_ONE_OUT_DATA[this.lang]].sort(() => 0.5 - Math.random());
@@ -39,6 +49,8 @@ export class WordLogicGame {
   }
 
   switchSubMode(mode) {
+    this.stop();
+    sound.stopSpeech();
     this.subMode = mode;
     sound.playLetterClick();
     this.roundAnswered = false;
@@ -147,7 +159,9 @@ export class WordLogicGame {
       this.onStarEarned(2);
       this.onWinEffect();
 
-      setTimeout(() => {
+      this.stop();
+      this.nextTimer = setTimeout(() => {
+        this.nextTimer = null;
         this.currentRhymeIndex++;
         this.roundAnswered = false;
         this.render();
@@ -227,7 +241,9 @@ export class WordLogicGame {
       this.onStarEarned(2);
       this.onWinEffect();
 
-      setTimeout(() => {
+      this.stop();
+      this.nextTimer = setTimeout(() => {
+        this.nextTimer = null;
         this.currentOddIndex++;
         this.roundAnswered = false;
         this.render();
@@ -350,7 +366,9 @@ export class WordLogicGame {
       this.onStarEarned(1);
       this.onWinEffect();
 
-      setTimeout(() => {
+      this.stop();
+      this.nextTimer = setTimeout(() => {
+        this.nextTimer = null;
         this.currentReadIndex++;
         this.currentReadRound = null;
         this.roundAnswered = false;

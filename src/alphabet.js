@@ -20,9 +20,26 @@ export class AlphabetGame {
 
     // Конструктор букв
     this.puzzleGame = null;
+    this.quizTimer = null;
+    this.speakTimer = null;
+  }
+
+  stop() {
+    if (this.quizTimer) {
+      clearTimeout(this.quizTimer);
+      this.quizTimer = null;
+    }
+    if (this.speakTimer) {
+      clearTimeout(this.speakTimer);
+      this.speakTimer = null;
+    }
+    if (this.puzzleGame && this.puzzleGame.destroy) {
+      this.puzzleGame.destroy();
+    }
   }
 
   setLanguage(lang) {
+    this.stop();
     this.lang = lang;
     this.selectedLetterItem = null;
     if (this.subMode === 'quiz') {
@@ -35,6 +52,7 @@ export class AlphabetGame {
   }
 
   start() {
+    this.stop();
     this.selectedLetterItem = null;
     if (this.subMode === 'quiz') {
       this.startNewQuizRound();
@@ -46,9 +64,8 @@ export class AlphabetGame {
   }
 
   switchSubMode(mode) {
-    if (this.puzzleGame && this.puzzleGame.destroy) {
-      this.puzzleGame.destroy();
-    }
+    this.stop();
+    sound.stopSpeech();
     this.subMode = mode;
     sound.playLetterClick();
     if (mode === 'quiz') {
@@ -218,6 +235,14 @@ export class AlphabetGame {
   // РЕЖИМ 2: Викторина «Где буква?»
   // ==========================================
   startNewQuizRound() {
+    if (this.quizTimer) {
+      clearTimeout(this.quizTimer);
+      this.quizTimer = null;
+    }
+    if (this.speakTimer) {
+      clearTimeout(this.speakTimer);
+      this.speakTimer = null;
+    }
     this.quizAnswered = false;
     const data = ALPHABET_DATA[this.lang];
 
@@ -236,7 +261,8 @@ export class AlphabetGame {
     this.render();
 
     // Озвучиваем вопрос: "Где буква М?"
-    setTimeout(() => {
+    this.speakTimer = setTimeout(() => {
+      this.speakTimer = null;
       sound.speakQuestion(this.quizTarget.letter, this.lang);
     }, 300);
   }
@@ -304,7 +330,9 @@ export class AlphabetGame {
       this.onWinEffect();
 
       // Переход к следующему вопросу
-      setTimeout(() => {
+      if (this.quizTimer) clearTimeout(this.quizTimer);
+      this.quizTimer = setTimeout(() => {
+        this.quizTimer = null;
         this.startNewQuizRound();
       }, 2000);
 
@@ -326,7 +354,9 @@ export class AlphabetGame {
       }
 
       // Голосовая подсказка
-      setTimeout(() => {
+      if (this.speakTimer) clearTimeout(this.speakTimer);
+      this.speakTimer = setTimeout(() => {
+        this.speakTimer = null;
         sound.speakLetterAndWord(letter, chosenWord, this.lang);
       }, 250);
     }

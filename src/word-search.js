@@ -17,6 +17,10 @@ export class WordSearchGame {
     this.selectedCells = [];
     this.isSelecting = false;
     this.selectionStart = null;
+    this.autoClearTimer = null;
+    this.winTimer = null;
+    this._onPointerMove = null;
+    this._onPointerUp = null;
 
     // Палитра мягких цветов для выделения найденных слов
     this.colors = [
@@ -52,7 +56,32 @@ export class WordSearchGame {
     this.render();
   }
 
+  cleanupListeners() {
+    if (this.autoClearTimer) {
+      clearTimeout(this.autoClearTimer);
+      this.autoClearTimer = null;
+    }
+    if (this._onPointerMove) {
+      window.removeEventListener('pointermove', this._onPointerMove);
+      this._onPointerMove = null;
+    }
+    if (this._onPointerUp) {
+      window.removeEventListener('pointerup', this._onPointerUp);
+      window.removeEventListener('pointercancel', this._onPointerUp);
+      this._onPointerUp = null;
+    }
+  }
+
+  stop() {
+    this.cleanupListeners();
+    if (this.winTimer) {
+      clearTimeout(this.winTimer);
+      this.winTimer = null;
+    }
+  }
+
   startNewGame() {
+    this.stop();
     this.foundWords.clear();
     this.selectedCells = [];
     this.isSelecting = false;
@@ -262,6 +291,8 @@ export class WordSearchGame {
   }
 
   attachEvents() {
+    this.cleanupListeners();
+
     // Переключение уровня сложности и отображения картинок
     const btnEasy = this.container.querySelector('#ws-diff-easy');
     const btnHard = this.container.querySelector('#ws-diff-hard');
@@ -284,11 +315,10 @@ export class WordSearchGame {
 
     // Оптимизация для планшета: поддержка как свайпа, так и последовательных тапов
     let didMove = false;
-    let autoClearTimer = null;
 
     const resetAutoClear = () => {
-      if (autoClearTimer) clearTimeout(autoClearTimer);
-      autoClearTimer = setTimeout(() => {
+      if (this.autoClearTimer) clearTimeout(this.autoClearTimer);
+      this.autoClearTimer = setTimeout(() => {
         if (!this.isSelecting && this.selectedCells.length > 0) {
           this.selectedCells = [];
           this.updateSelectionVisuals();
@@ -312,10 +342,12 @@ export class WordSearchGame {
         if (line && line.length > 1) {
           this.selectedCells = line;
           this.updateSelectionVisuals();
-          const letter = this.grid[r][c].letter;
           sound.playLetterClick();
-          sound.speakLetter(letter, this.lang);
-          this.checkSelectedWord(true); // true = сохранять подсветку при неудаче ненадолго
+          const matched = this.checkSelectedWord(true); // true = сохранять подсветку при неудаче ненадолго
+          if (!matched) {
+            const letter = this.grid[r][c].letter;
+            sound.speakLetter(letter, this.lang);
+          }
           resetAutoClear();
           return;
         }
@@ -333,7 +365,7 @@ export class WordSearchGame {
       resetAutoClear();
     };
 
-    const onPointerMove = (e) => {
+    this._onPointerMove = (e) => {
       if (!this.isSelecting) return;
       e.preventDefault();
 
@@ -361,7 +393,7 @@ export class WordSearchGame {
       }
     };
 
-    const onPointerUp = () => {
+    this._onPointerUp = () => {
       if (!this.isSelecting) return;
       this.isSelecting = false;
 
@@ -376,10 +408,12 @@ export class WordSearchGame {
       }
     };
 
-    gridEl.addEventListener('pointerdown', onPointerDown);
-    window.addEventListener('pointermove', onPointerMove);
-    window.addEventListener('pointerup', onPointerUp);
-    window.addEventListener('pointercancel', onPointerUp);
+    if (gridEl) {
+      gridEl.addEventListener('pointerdown', onPointerDown);
+    }
+    window.addEventListener('pointermove', this._onPointerMove);
+    window.addEventListener('pointerup', this._onPointerUp);
+    window.addEventListener('pointercancel', this._onPointerUp);
   }
 
   getCellFromEvent(e) {
@@ -441,20 +475,21 @@ export class WordSearchGame {
   }
 
   checkSelectedWord(fromTap = false) {
-    if (this.selectedCells.length < 2) return;
+    if (this.selectedCells.length < 2) return false;
 
     const selectedWord = this.selectedCells.map(pt => this.grid[pt.r][pt.c].letter).join('');
     const reversedWord = [...this.selectedCells].reverse().map(pt => this.grid[pt.r][pt.c].letter).join('');
 
     // Ищем совпадение
-    const matchedItem = this.wordsToFind.find(item =>
+    const matchedIdx = this.wordsToFind.findIndex(item =>
       !this.foundWords.has(item.word) && (item.word === selectedWord || item.word === reversedWord)
     );
+    const matchedItem = matchedIdx !== -1 ? this.wordsToFind[matchedIdx] : null;
 
     if (matchedItem) {
       // УРА! Слово найдено!
       this.foundWords.add(matchedItem.word);
-      const colorIndex = (this.foundWords.size - 1) % this.colors.length;
+      const colorIndex = matchedIdx % this.colors.length;
       const highlightColor = this.colors[colorIndex];
 
       // Закрепляем цвет за ячейками
@@ -474,11 +509,14 @@ export class WordSearchGame {
 
       // Проверка на победу в раунде
       if (this.foundWords.size === this.wordsToFind.length) {
-        setTimeout(() => {
+        if (this.winTimer) clearTimeout(this.winTimer);
+        this.winTimer = setTimeout(() => {
+          this.winTimer = null;
           sound.playVictory();
           this.onGameComplete();
-        }, 500);
+        }, 900);
       }
+      return true;
     } else {
       sound.playError();
       const statusEl = this.container.querySelector('#ws-status');
@@ -493,6 +531,7 @@ export class WordSearchGame {
           this.updateSelectionVisuals();
         }, 700);
       }
+      return false;
     }
   }
 }

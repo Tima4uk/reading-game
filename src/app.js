@@ -1,17 +1,18 @@
 // Главный модуль приложения: Управление режимами, языками, звездами и конфетти
-import { WordSearchGame } from './word-search.js?v=11';
-import { WordBuilderGame } from './word-builder.js?v=11';
-import { WordLogicGame } from './word-logic.js?v=11';
-import { AlphabetGame } from './alphabet.js?v=11';
-import { WordTranslateGame } from './word-translate.js?v=11';
-import { sound } from './audio.js?v=11';
-import { PRAISE_PHRASES } from './data.js?v=11';
-import { StickersAlbum } from './stickers.js?v=11';
+import { WordSearchGame } from './word-search.js?v=13';
+import { WordBuilderGame } from './word-builder.js?v=13';
+import { WordLogicGame } from './word-logic.js?v=13';
+import { AlphabetGame } from './alphabet.js?v=13';
+import { WordTranslateGame } from './word-translate.js?v=13';
+import { sound } from './audio.js?v=13';
+import { PRAISE_PHRASES } from './data.js?v=13';
+import { StickersAlbum } from './stickers.js?v=13';
 
 class App {
   constructor() {
     this.currentMode = 'search'; // 'search' | 'builder' | 'logic' | 'alphabet'
     this.currentLang = 'ru'; // 'ru' | 'pl'
+    this.praiseTimer = null;
     
     this.initProfiles();
     this.initDOM();
@@ -180,7 +181,6 @@ class App {
       onWordCompleted: (word) => {
         this.addStars(2);
         this.launchMiniConfetti();
-        this.speakPraise();
       }
     });
 
@@ -264,6 +264,7 @@ class App {
     const nextRoundBtn = document.getElementById('btn-next-round');
     if (nextRoundBtn) {
       nextRoundBtn.addEventListener('click', () => {
+        this.stopAllGames();
         this.celebrationModal.classList.add('hidden');
         if (this.currentMode === 'search') {
           this.wordSearch.startNewGame();
@@ -351,8 +352,22 @@ class App {
     }
   }
 
+  stopAllGames() {
+    if (this.praiseTimer) {
+      clearTimeout(this.praiseTimer);
+      this.praiseTimer = null;
+    }
+    sound.stopSpeech();
+    if (this.wordSearch && this.wordSearch.stop) this.wordSearch.stop();
+    if (this.wordBuilder && this.wordBuilder.stop) this.wordBuilder.stop();
+    if (this.wordLogic && this.wordLogic.stop) this.wordLogic.stop();
+    if (this.alphabetGame && this.alphabetGame.stop) this.alphabetGame.stop();
+    if (this.wordTranslate && this.wordTranslate.stop) this.wordTranslate.stop();
+  }
+
   setLanguage(lang) {
     if (this.currentLang === lang) return;
+    this.stopAllGames();
     this.currentLang = lang;
     sound.playLetterClick();
 
@@ -390,6 +405,7 @@ class App {
   }
 
   switchMode(mode) {
+    this.stopAllGames();
     this.currentMode = mode;
     sound.playLetterClick();
 
@@ -532,9 +548,11 @@ class App {
   }
 
   speakPraise() {
+    if (this.praiseTimer) clearTimeout(this.praiseTimer);
     const phrases = PRAISE_PHRASES[this.currentLang];
     const phrase = phrases[Math.floor(Math.random() * phrases.length)];
-    setTimeout(() => {
+    this.praiseTimer = setTimeout(() => {
+      this.praiseTimer = null;
       sound.speakPhrase(phrase, this.currentLang);
     }, 1100);
   }
