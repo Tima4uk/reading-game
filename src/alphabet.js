@@ -1,7 +1,8 @@
 // Модуль «Азбука» для детей 4.5 лет: Говорящая Азбука + Викторина + Конструктор букв
 import { ALPHABET_DATA, shuffleArray } from './data.js';
 import { sound } from './audio.js';
-import { LetterPuzzleGame } from './letter-puzzle.js?v=13';
+import { LetterPuzzleGame } from './letter-puzzle.js?v=15';
+import { getLetterLesson } from './letter-lessons.js?v=15';
 
 export class AlphabetGame {
   constructor(options = {}) {
@@ -12,6 +13,8 @@ export class AlphabetGame {
 
     this.subMode = 'explore'; // 'explore' | 'quiz' | 'puzzle'
     this.selectedLetterItem = null;
+    this.currentLesson = null;
+    this.lessonState = null;
 
     // Состояние викторины (Quiz)
     this.quizTarget = null;
@@ -168,24 +171,163 @@ export class AlphabetGame {
   renderLetterModalContent(item) {
     const isRu = this.lang === 'ru';
     const isPl = this.lang === 'pl';
-    const speakText = isRu ? 'Послушать' : (isPl ? 'Posłuchaj' : 'Listen');
+    const lesson = this.currentLesson || getLetterLesson(item.letter, this.lang);
+    const state = this.lessonState || {
+      readSyllables: new Set(),
+      syllablesRewarded: false,
+      foundBubbles: new Set(),
+      bubblesRewarded: false,
+      foundWords: new Set(),
+      wordsRewarded: false,
+      activeSyllableIdx: -1
+    };
+
+    const speakText = isRu ? 'Слушать' : (isPl ? 'Posłuchaj' : 'Listen');
+    const tipTitle = isRu ? 'Совет логопеда:' : (isPl ? 'Wskazówka logopedy:' : 'Speech tip:');
+    const comicTitle = isRu ? '📖 Комикс: нажми на облачко со словами!' : (isPl ? '📖 Komiks: kliknij dymek!' : '📖 Comic: tap the speech bubble!');
+    const syllablesTitle = isRu ? '👣 Дорожка слогов: прошагай и прочитай все!' : (isPl ? '👣 Ścieżka sylab: przeczytaj wszystkie!' : '👣 Syllable track: tap & read all!');
+    const detectiveTitle = isRu
+      ? `🔎 Сыщик: найди все буквы «${lesson.letter}» (${state.foundBubbles.size}/${lesson.targetBubblesCount})`
+      : (isPl
+        ? `🔎 Detektyw: znajdź wszystkie litery «${lesson.letter}» (${state.foundBubbles.size}/${lesson.targetBubblesCount})`
+        : `🔎 Detective: find all "${lesson.letter}" letters (${state.foundBubbles.size}/${lesson.targetBubblesCount})`);
+    const wordsTaskTitle = isRu
+      ? `🎯 В каких словах спряталась буква «${lesson.letter}»? (${state.foundWords.size}/${lesson.targetWordsCount})`
+      : (isPl
+        ? `🎯 W których słowach kryje się litera «${lesson.letter}»? (${state.foundWords.size}/${lesson.targetWordsCount})`
+        : `🎯 Which words have the letter "${lesson.letter}"? (${state.foundWords.size}/${lesson.targetWordsCount})`);
+
+    const highlightLetterInWord = (word, targetLetter, isFound) => {
+      if (!isFound) return word;
+      return word
+        .split('')
+        .map(ch => ch.toUpperCase() === targetLetter.toUpperCase()
+          ? `<span class="primer-word-hl">${ch}</span>`
+          : ch)
+        .join('');
+    };
+
     return `
       <div class="ab-modal-backdrop" id="ab-modal-close-bg"></div>
-      <div class="ab-modal-box">
-        <button class="ab-modal-close" id="ab-modal-btn-close">✖</button>
-        
-        <div class="ab-modal-main">
-          <div class="ab-modal-letter">${item.letter}</div>
-          <div class="ab-modal-emoji">${item.emoji}</div>
-          <div class="ab-modal-word">${item.word}</div>
+      <div class="ab-modal-box primer-modal-box">
+        <button class="ab-modal-close" id="ab-modal-btn-close" title="Закрыть">✖</button>
+
+        <!-- Шапка разворота Букваря -->
+        <div class="primer-header">
+          <button class="ab-action-btn" id="ab-btn-prev" title="Предыдущая буква">◀</button>
+
+          <div class="primer-hero-card sound-${lesson.soundType}">
+            <div class="primer-letter-big">${lesson.letter}</div>
+            <div class="primer-hero-info">
+              <span class="primer-sound-badge ${lesson.soundType}">${lesson.badgeText}</span>
+              <div class="primer-key-word">
+                <span class="primer-key-emoji">${lesson.emoji}</span>
+                <span class="primer-key-text">${lesson.word}</span>
+              </div>
+            </div>
+            <button class="primer-listen-btn" id="ab-btn-speak" title="${speakText}">
+              🔊 ${speakText}
+            </button>
+          </div>
+
+          <button class="ab-action-btn" id="ab-btn-next" title="Следующая буква">▶</button>
         </div>
 
-        <div class="ab-modal-actions">
-          <button class="ab-action-btn" id="ab-btn-prev">◀</button>
-          <button class="ab-sound-btn" id="ab-btn-speak">
-            🔊 ${speakText}
-          </button>
-          <button class="ab-action-btn" id="ab-btn-next">▶</button>
+        <!-- Логопедическая подсказка -->
+        <div class="primer-tip-box" id="primer-tip-box">
+          <span class="primer-tip-icon">👩‍⚕️</span>
+          <div class="primer-tip-content">
+            <strong>${tipTitle}</strong> ${lesson.tipText}
+          </div>
+          <button class="primer-tip-audio-btn" id="primer-btn-tip-speak" title="${speakText}">🔊</button>
+        </div>
+
+        <!-- Сетка разворота: Комикс + Дорожка слогов + 2 Игровых задания -->
+        <div class="primer-spread-grid">
+          <!-- БЛОК 1: КОМИКС -->
+          <div class="primer-section primer-comic-section">
+            <div class="primer-section-title">${comicTitle}</div>
+            <div class="primer-comic-panels">
+              ${lesson.comic.map((panel, idx) => `
+                <div class="primer-comic-panel" data-panel-idx="${idx}">
+                  <div class="primer-comic-caption">${panel.caption}</div>
+                  <div class="primer-comic-stage">
+                    <div class="primer-comic-avatars">
+                      <span class="primer-comic-avatar">${panel.avatar}</span>
+                      <span class="primer-comic-scene">${panel.scene}</span>
+                    </div>
+                    <button class="primer-speech-bubble" data-spoken="${panel.spoken}">
+                      <span class="primer-bubble-text">${panel.bubble}</span>
+                      <span class="primer-bubble-sound">🔊</span>
+                    </button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- БЛОК 2: ДОРОЖКА СЛОГОВ -->
+          <div class="primer-section primer-syllables-section ${state.syllablesRewarded ? 'section-completed' : ''}">
+            <div class="primer-section-title">
+              <span>${syllablesTitle}</span>
+              ${state.syllablesRewarded ? '<span class="primer-done-badge">⭐ +1</span>' : ''}
+            </div>
+            <div class="primer-syllable-track">
+              ${lesson.syllables.map((syl, idx) => {
+                const isRead = state.readSyllables.has(idx);
+                const isWalkerHere = state.activeSyllableIdx === idx;
+                return `
+                  <button class="primer-syllable-stone ${isRead ? 'read' : ''} ${isWalkerHere ? 'active-walker' : ''}" data-syl="${syl}" data-idx="${idx}">
+                    <span class="primer-walker-icon">${isWalkerHere ? '🐾' : (isRead ? '✓' : '•')}</span>
+                    <span class="primer-syllable-text">${syl}</span>
+                  </button>
+                `;
+              }).join('<span class="primer-track-arrow">➔</span>')}
+            </div>
+          </div>
+
+          <!-- БЛОК 3: ЗАДАНИЕ 1 — БУКВЕННЫЙ СЫЩИК -->
+          <div class="primer-section primer-detective-section ${state.bubblesRewarded ? 'section-completed' : ''}">
+            <div class="primer-section-title">
+              <span id="primer-detective-title">${detectiveTitle}</span>
+              ${state.bubblesRewarded ? '<span class="primer-done-badge">⭐ +1</span>' : ''}
+            </div>
+            <div class="primer-detective-grid">
+              ${lesson.detectiveBubbles.map((b) => {
+                const isFound = state.foundBubbles.has(b.id);
+                return `
+                  <button class="primer-bubble-btn ${isFound ? 'found' : ''}"
+                          data-bubble-id="${b.id}"
+                          data-letter="${b.letter}"
+                          data-is-target="${b.isTarget}">
+                    ${b.letter}
+                  </button>
+                `;
+              }).join('')}
+            </div>
+          </div>
+
+          <!-- БЛОК 4: ЗАДАНИЕ 2 — СЛОВА С ЭТОЙ БУКВОЙ -->
+          <div class="primer-section primer-words-section ${state.wordsRewarded ? 'section-completed' : ''}">
+            <div class="primer-section-title">
+              <span id="primer-words-title">${wordsTaskTitle}</span>
+              ${state.wordsRewarded ? '<span class="primer-done-badge">⭐ +1</span>' : ''}
+            </div>
+            <div class="primer-words-grid">
+              ${lesson.wordChoices.map((w, idx) => {
+                const isFound = state.foundWords.has(idx);
+                return `
+                  <button class="primer-word-card ${isFound ? 'found' : ''}"
+                          data-word-idx="${idx}"
+                          data-word="${w.word}"
+                          data-has-letter="${w.hasLetter}">
+                    <span class="primer-word-emoji">${w.emoji}</span>
+                    <span class="primer-word-label">${highlightLetterInWord(w.word, lesson.letter, isFound)}</span>
+                  </button>
+                `;
+              }).join('')}
+            </div>
+          </div>
         </div>
       </div>
     `;
@@ -195,6 +337,16 @@ export class AlphabetGame {
     const data = ALPHABET_DATA[this.lang];
     this.selectedLetterItem = data[index];
     this.selectedLetterIndex = index;
+    this.currentLesson = getLetterLesson(this.selectedLetterItem.letter, this.lang);
+    this.lessonState = {
+      readSyllables: new Set(),
+      syllablesRewarded: false,
+      foundBubbles: new Set(),
+      bubblesRewarded: false,
+      foundWords: new Set(),
+      wordsRewarded: false,
+      activeSyllableIdx: -1
+    };
 
     sound.playLetterClick();
     sound.speakLetterAndWord(this.selectedLetterItem.letter, this.selectedLetterItem.word, this.lang);
@@ -207,8 +359,23 @@ export class AlphabetGame {
     }
   }
 
+  refreshModalUI() {
+    const modal = this.container.querySelector('#ab-modal');
+    if (modal && this.selectedLetterItem) {
+      const box = modal.querySelector('.primer-modal-box');
+      const scrollTop = box ? box.scrollTop : 0;
+      modal.innerHTML = this.renderLetterModalContent(this.selectedLetterItem);
+      const newBox = modal.querySelector('.primer-modal-box');
+      if (newBox) newBox.scrollTop = scrollTop;
+      this.attachModalEvents();
+    }
+  }
+
   closeLetterModal() {
     this.selectedLetterItem = null;
+    this.currentLesson = null;
+    this.lessonState = null;
+    sound.stopSpeech();
     const modal = this.container.querySelector('#ab-modal');
     if (modal) {
       modal.classList.add('hidden');
@@ -228,6 +395,7 @@ export class AlphabetGame {
     const closeBtn = this.container.querySelector('#ab-modal-btn-close');
     const closeBg = this.container.querySelector('#ab-modal-close-bg');
     const speakBtn = this.container.querySelector('#ab-btn-speak');
+    const tipSpeakBtn = this.container.querySelector('#primer-btn-tip-speak');
     const prevBtn = this.container.querySelector('#ab-btn-prev');
     const nextBtn = this.container.querySelector('#ab-btn-next');
 
@@ -241,8 +409,125 @@ export class AlphabetGame {
       });
     }
 
+    if (tipSpeakBtn && this.currentLesson) {
+      tipSpeakBtn.addEventListener('click', () => {
+        sound.playLetterClick();
+        const cleanTip = this.currentLesson.tipText.replace(/[🔴🔵⚪]/g, '');
+        sound.speakExplanation(cleanTip, this.lang);
+      });
+    }
+
     if (prevBtn) prevBtn.addEventListener('click', () => this.navigateLetter(-1));
     if (nextBtn) nextBtn.addEventListener('click', () => this.navigateLetter(1));
+
+    // 1. Облачка комикса (Speech Bubbles)
+    const comicBubbles = this.container.querySelectorAll('.primer-speech-bubble');
+    comicBubbles.forEach(bubble => {
+      bubble.addEventListener('click', () => {
+        sound.playLetterClick();
+        bubble.classList.remove('bubble-pop');
+        void bubble.offsetWidth;
+        bubble.classList.add('bubble-pop');
+        const text = bubble.dataset.spoken || '';
+        sound.speakPhrase(text, this.lang);
+      });
+    });
+
+    // 2. Дорожка слогов
+    const syllableStones = this.container.querySelectorAll('.primer-syllable-stone');
+    syllableStones.forEach(stone => {
+      stone.addEventListener('click', () => {
+        if (!this.lessonState || !this.currentLesson) return;
+        const idx = parseInt(stone.dataset.idx, 10);
+        const syl = stone.dataset.syl;
+
+        sound.playLetterClick();
+        sound.speakWord(syl, this.lang);
+
+        this.lessonState.activeSyllableIdx = idx;
+        this.lessonState.readSyllables.add(idx);
+
+        if (!this.lessonState.syllablesRewarded &&
+            this.lessonState.readSyllables.size >= this.currentLesson.syllables.length) {
+          this.lessonState.syllablesRewarded = true;
+          sound.playSuccess();
+          this.onStarEarned(1);
+          this.onWinEffect();
+        }
+
+        this.refreshModalUI();
+      });
+    });
+
+    // 3. Задание 1: Буквенный сыщик
+    const detectiveBtns = this.container.querySelectorAll('.primer-bubble-btn');
+    detectiveBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (!this.lessonState || !this.currentLesson) return;
+        const bId = btn.dataset.bubbleId;
+        const isTarget = btn.dataset.isTarget === 'true';
+        const clickedLetter = btn.dataset.letter;
+
+        if (this.lessonState.foundBubbles.has(bId)) {
+          sound.speakLetter(clickedLetter, this.lang);
+          return;
+        }
+
+        if (isTarget) {
+          this.lessonState.foundBubbles.add(bId);
+          sound.playSuccess();
+          sound.speakLetter(clickedLetter, this.lang);
+
+          if (!this.lessonState.bubblesRewarded &&
+              this.lessonState.foundBubbles.size >= this.currentLesson.targetBubblesCount) {
+            this.lessonState.bubblesRewarded = true;
+            this.onStarEarned(1);
+            this.onWinEffect();
+          }
+          this.refreshModalUI();
+        } else {
+          btn.classList.add('wrong');
+          sound.playError();
+          sound.speakLetter(clickedLetter, this.lang);
+          setTimeout(() => btn.classList.remove('wrong'), 450);
+        }
+      });
+    });
+
+    // 4. Задание 2: Слова с изучаемой буквой
+    const wordCards = this.container.querySelectorAll('.primer-word-card');
+    wordCards.forEach(card => {
+      card.addEventListener('click', () => {
+        if (!this.lessonState || !this.currentLesson) return;
+        const idx = parseInt(card.dataset.wordIdx, 10);
+        const word = card.dataset.word;
+        const hasLetter = card.dataset.hasLetter === 'true';
+
+        if (this.lessonState.foundWords.has(idx)) {
+          sound.speakWord(word, this.lang);
+          return;
+        }
+
+        if (hasLetter) {
+          this.lessonState.foundWords.add(idx);
+          sound.playSuccess();
+          sound.speakWord(word, this.lang);
+
+          if (!this.lessonState.wordsRewarded &&
+              this.lessonState.foundWords.size >= this.currentLesson.targetWordsCount) {
+            this.lessonState.wordsRewarded = true;
+            this.onStarEarned(1);
+            this.onWinEffect();
+          }
+          this.refreshModalUI();
+        } else {
+          card.classList.add('wrong');
+          sound.playError();
+          sound.speakWord(word, this.lang);
+          setTimeout(() => card.classList.remove('wrong'), 450);
+        }
+      });
+    });
   }
 
   // ==========================================
