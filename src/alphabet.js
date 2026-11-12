@@ -1,8 +1,8 @@
 // Модуль «Азбука» для детей 4.5 лет: Говорящая Азбука + Викторина + Конструктор букв
-import { ALPHABET_DATA, shuffleArray } from './data.js';
-import { sound } from './audio.js';
-import { LetterPuzzleGame } from './letter-puzzle.js?v=15';
-import { getLetterLesson } from './letter-lessons.js?v=15';
+import { ALPHABET_DATA, shuffleArray } from './data.js?v=17';
+import { sound } from './audio.js?v=17';
+import { LetterPuzzleGame } from './letter-puzzle.js?v=17';
+import { getLetterLesson } from './letter-lessons.js?v=17';
 
 export class AlphabetGame {
   constructor(options = {}) {
