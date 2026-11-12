@@ -1,7 +1,7 @@
 // Модуль «Азбука» для детей 4.5 лет: Говорящая Азбука + Викторина + Конструктор букв
-import { ALPHABET_DATA } from './data.js';
+import { ALPHABET_DATA, shuffleArray } from './data.js';
 import { sound } from './audio.js';
-import { LetterPuzzleGame } from './letter-puzzle.js?v=7';
+import { LetterPuzzleGame } from './letter-puzzle.js?v=13';
 
 export class AlphabetGame {
   constructor(options = {}) {
@@ -17,6 +17,8 @@ export class AlphabetGame {
     this.quizTarget = null;
     this.quizOptions = [];
     this.quizAnswered = false;
+    this.usedQuizLetters = new Set();
+    this.lastQuizLetter = null;
 
     // Конструктор букв
     this.puzzleGame = null;
@@ -40,7 +42,14 @@ export class AlphabetGame {
 
   setLanguage(lang) {
     this.stop();
-    this.lang = lang;
+    if (this.lang !== lang) {
+      this.lang = lang;
+      this.usedQuizLetters.clear();
+      this.lastQuizLetter = null;
+      if (this.puzzleGame) {
+        this.puzzleGame.setLanguage(lang);
+      }
+    }
     this.selectedLetterItem = null;
     if (this.subMode === 'quiz') {
       this.startNewQuizRound();
@@ -78,19 +87,24 @@ export class AlphabetGame {
   }
 
   startPuzzleMode() {
-    if (this.puzzleGame && this.puzzleGame.destroy) {
-      this.puzzleGame.destroy();
-    }
     this.render();
     const contentArea = this.container.querySelector('#ab-content-area');
     if (contentArea) {
-      this.puzzleGame = new LetterPuzzleGame({
-        container: contentArea,
-        lang: this.lang,
-        onStarEarned: this.onStarEarned,
-        onWinEffect: this.onWinEffect
-      });
-      this.puzzleGame.start();
+      if (!this.puzzleGame || this.puzzleGame.lang !== this.lang) {
+        if (this.puzzleGame && this.puzzleGame.destroy) {
+          this.puzzleGame.destroy();
+        }
+        this.puzzleGame = new LetterPuzzleGame({
+          container: contentArea,
+          lang: this.lang,
+          onStarEarned: this.onStarEarned,
+          onWinEffect: this.onWinEffect
+        });
+        this.puzzleGame.start();
+      } else {
+        this.puzzleGame.container = contentArea;
+        this.puzzleGame.loadPuzzle();
+      }
     }
   }
 
@@ -246,17 +260,27 @@ export class AlphabetGame {
     this.quizAnswered = false;
     const data = ALPHABET_DATA[this.lang];
 
-    // Выбираем случайную целевую букву
-    const target = data[Math.floor(Math.random() * data.length)];
+    // Выбираем неиспользованную целевую букву (без повторов подряд)
+    let available = data.filter(d => !this.usedQuizLetters.has(d.letter) && d.letter !== this.lastQuizLetter);
+    if (available.length === 0) {
+      this.usedQuizLetters.clear();
+      available = data.filter(d => d.letter !== this.lastQuizLetter);
+      if (available.length === 0) available = data;
+    }
+
+    const shuffledTargets = shuffleArray(available);
+    const target = shuffledTargets[0];
     this.quizTarget = target;
+    this.lastQuizLetter = target.letter;
+    this.usedQuizLetters.add(target.letter);
 
     // Выбираем 2 других случайных буквы в качестве дистракторов
     const otherLetters = data.filter(d => d.letter !== target.letter);
-    const shuffledOthers = [...otherLetters].sort(() => 0.5 - Math.random());
+    const shuffledOthers = shuffleArray(otherLetters);
     const distractors = shuffledOthers.slice(0, 2);
 
     // Перемешиваем варианты ответов (3 больших варианта)
-    this.quizOptions = [target, ...distractors].sort(() => 0.5 - Math.random());
+    this.quizOptions = shuffleArray([target, ...distractors]);
 
     this.render();
 

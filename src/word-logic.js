@@ -1,5 +1,5 @@
 // Модуль «Умные слова»: «Найди рифму», «Лишнее слово» и «Прочитай сам (Слово ➔ Картинка)»
-import { RHYMES_DATA, ODD_ONE_OUT_DATA, WORDS_DATA } from './data.js';
+import { RHYMES_DATA, ODD_ONE_OUT_DATA, WORDS_DATA, shuffleArray } from './data.js';
 import { sound } from './audio.js';
 
 export class WordLogicGame {
@@ -18,6 +18,8 @@ export class WordLogicGame {
     this.shuffledOdds = [];
     this.shuffledReadPool = [];
     this.currentReadRound = null;
+    this.currentRhymeOptions = null;
+    this.currentOddOptions = null;
     this.roundAnswered = false;
     this.nextTimer = null;
   }
@@ -31,20 +33,32 @@ export class WordLogicGame {
 
   setLanguage(lang) {
     this.stop();
-    this.lang = lang;
-    this.start();
+    if (this.lang !== lang || this.shuffledRhymes.length === 0) {
+      this.lang = lang;
+      this.resetDecks();
+    }
+    this.roundAnswered = false;
+    this.render();
+  }
+
+  resetDecks() {
+    this.shuffledRhymes = shuffleArray(RHYMES_DATA[this.lang]);
+    this.shuffledOdds = shuffleArray(ODD_ONE_OUT_DATA[this.lang]);
+    this.shuffledReadPool = shuffleArray(this.getReadPool());
+    this.currentRhymeIndex = 0;
+    this.currentOddIndex = 0;
+    this.currentReadIndex = 0;
+    this.currentReadRound = null;
+    this.currentRhymeOptions = null;
+    this.currentOddOptions = null;
   }
 
   start() {
     this.stop();
     this.roundAnswered = false;
-    this.shuffledRhymes = [...RHYMES_DATA[this.lang]].sort(() => 0.5 - Math.random());
-    this.shuffledOdds = [...ODD_ONE_OUT_DATA[this.lang]].sort(() => 0.5 - Math.random());
-    this.shuffledReadPool = [...this.getReadPool()].sort(() => 0.5 - Math.random());
-    this.currentRhymeIndex = 0;
-    this.currentOddIndex = 0;
-    this.currentReadIndex = 0;
-    this.currentReadRound = null;
+    if (this.shuffledRhymes.length === 0) {
+      this.resetDecks();
+    }
     this.render();
   }
 
@@ -99,9 +113,9 @@ export class WordLogicGame {
     const isPl = this.lang === 'pl';
     const round = this.shuffledRhymes[this.currentRhymeIndex % this.shuffledRhymes.length];
 
-    // Варианты ответов: 1 правильный + дистракторы
-    if (!round.optionsCache) {
-      round.optionsCache = [round.correct, ...round.distractors].sort(() => 0.5 - Math.random());
+    // Варианты ответов: 1 правильный + дистракторы (перемешиваем заново для каждого раунда)
+    if (!this.currentRhymeOptions) {
+      this.currentRhymeOptions = shuffleArray([round.correct, ...round.distractors]);
     }
 
     const promptText = isRu ? 'Подбери рифму к слову:' : (isPl ? 'Dobierz rym do słowa:' : 'Find the rhyming word for:');
@@ -121,7 +135,7 @@ export class WordLogicGame {
         </div>
 
         <div class="wl-options-grid">
-          ${round.optionsCache.map((opt, i) => `
+          ${this.currentRhymeOptions.map((opt, i) => `
             <button class="wl-option-btn" data-word="${opt.word}" data-is-correct="${opt.word === round.correct.word}">
               <span class="wl-option-emoji">${opt.emoji}</span>
               <span class="wl-option-word">${opt.word}</span>
@@ -163,6 +177,11 @@ export class WordLogicGame {
       this.nextTimer = setTimeout(() => {
         this.nextTimer = null;
         this.currentRhymeIndex++;
+        if (this.currentRhymeIndex >= this.shuffledRhymes.length) {
+          this.shuffledRhymes = shuffleArray(RHYMES_DATA[this.lang]);
+          this.currentRhymeIndex = 0;
+        }
+        this.currentRhymeOptions = null;
         this.roundAnswered = false;
         this.render();
       }, 2300);
@@ -192,6 +211,10 @@ export class WordLogicGame {
     const isPl = this.lang === 'pl';
     const round = this.shuffledOdds[this.currentOddIndex % this.shuffledOdds.length];
 
+    if (!this.currentOddOptions) {
+      this.currentOddOptions = shuffleArray(round.items);
+    }
+
     const promptText = isRu ? 'Какое слово здесь лишнее?' : (isPl ? 'Które słowo tu nie pasuje?' : 'Which word does not belong?');
     const feedbackPrompt = isRu 
       ? 'Прочитай слова и найди то, что не подходит к остальным!' 
@@ -204,7 +227,7 @@ export class WordLogicGame {
         </div>
 
         <div class="wl-odd-grid">
-          ${round.items.map(item => `
+          ${this.currentOddOptions.map(item => `
             <button class="wl-odd-btn" data-word="${item.word}" data-is-odd="${item.word === round.oddWord}">
               <span class="wl-odd-emoji">${item.emoji}</span>
               <span class="wl-odd-word">${item.word}</span>
@@ -245,6 +268,11 @@ export class WordLogicGame {
       this.nextTimer = setTimeout(() => {
         this.nextTimer = null;
         this.currentOddIndex++;
+        if (this.currentOddIndex >= this.shuffledOdds.length) {
+          this.shuffledOdds = shuffleArray(ODD_ONE_OUT_DATA[this.lang]);
+          this.currentOddIndex = 0;
+        }
+        this.currentOddOptions = null;
         this.roundAnswered = false;
         this.render();
       }, 3000);
@@ -283,8 +311,11 @@ export class WordLogicGame {
   }
 
   getReadRound() {
+    if (this.currentReadRound) {
+      return this.currentReadRound;
+    }
     if (!this.shuffledReadPool || this.shuffledReadPool.length === 0) {
-      this.shuffledReadPool = [...this.getReadPool()].sort(() => 0.5 - Math.random());
+      this.shuffledReadPool = shuffleArray(this.getReadPool());
     }
 
     const pool = this.shuffledReadPool;
@@ -292,10 +323,10 @@ export class WordLogicGame {
     const target = pool[targetIdx];
 
     // 3 случайных дистрактора с другими эмодзи
-    const otherItems = pool.filter((_, idx) => idx !== targetIdx).sort(() => 0.5 - Math.random());
+    const otherItems = shuffleArray(pool.filter((_, idx) => idx !== targetIdx));
     const distractors = otherItems.slice(0, 3);
 
-    const options = [target, ...distractors].sort(() => 0.5 - Math.random());
+    const options = shuffleArray([target, ...distractors]);
 
     this.currentReadRound = { target, options };
     return this.currentReadRound;
@@ -370,6 +401,10 @@ export class WordLogicGame {
       this.nextTimer = setTimeout(() => {
         this.nextTimer = null;
         this.currentReadIndex++;
+        if (this.currentReadIndex >= this.shuffledReadPool.length) {
+          this.shuffledReadPool = shuffleArray(this.getReadPool());
+          this.currentReadIndex = 0;
+        }
         this.currentReadRound = null;
         this.roundAnswered = false;
         this.render();

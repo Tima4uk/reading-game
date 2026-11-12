@@ -1,5 +1,5 @@
 // Игровой режим: «Собери слово» (Word Builder / Ułóż słowo)
-import { WORDS_DATA, WORDS_DATA_HARD, VOWELS } from './data.js';
+import { WORDS_DATA, WORDS_DATA_HARD, VOWELS, shuffleArray } from './data.js';
 import { sound } from './audio.js';
 
 export class WordBuilderGame {
@@ -11,10 +11,11 @@ export class WordBuilderGame {
 
     this.currentWordItem = null;
     this.targetWord = '';
+    this.lastWord = '';
     this.slots = []; // Массив букв в слотах: [ { letter, tileId } ]
     this.availableTiles = []; // Буквы для выбора: [ { id, letter, used } ]
     this.isCompleted = false;
-    this.usedWordIndexes = new Set();
+    this.usedWords = new Set();
     this.speakTimer = null;
   }
 
@@ -26,8 +27,10 @@ export class WordBuilderGame {
   }
 
   setLanguage(lang) {
-    this.lang = lang;
-    this.usedWordIndexes.clear();
+    if (this.lang !== lang) {
+      this.lang = lang;
+      this.usedWords.clear();
+    }
     this.startNewWord();
   }
 
@@ -36,7 +39,7 @@ export class WordBuilderGame {
     this.difficulty = diff;
     localStorage.setItem('wb_difficulty', diff);
     sound.playLetterClick();
-    this.usedWordIndexes.clear();
+    this.usedWords.clear();
     this.startNewWord();
   }
 
@@ -58,19 +61,18 @@ export class WordBuilderGame {
     }
 
     // Выбираем неиспользованное слово
-    if (this.usedWordIndexes.size >= words.length) {
-      this.usedWordIndexes.clear();
+    let available = words.filter(w => !this.usedWords.has(w.word) && w.word !== this.lastWord);
+    if (available.length === 0) {
+      this.usedWords.clear();
+      available = words.filter(w => w.word !== this.lastWord);
+      if (available.length === 0) available = words;
     }
 
-    let availableIndices = [];
-    for (let i = 0; i < words.length; i++) {
-      if (!this.usedWordIndexes.has(i)) availableIndices.push(i);
-    }
-
-    const randomIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
-    this.usedWordIndexes.add(randomIndex);
-    this.currentWordItem = words[randomIndex];
+    const shuffledPool = shuffleArray(available);
+    this.currentWordItem = shuffledPool[0];
     this.targetWord = this.currentWordItem.word;
+    this.lastWord = this.targetWord;
+    this.usedWords.add(this.targetWord);
 
     // Инициализируем пустые слоты
     this.slots = Array(this.targetWord.length).fill(null);
@@ -82,8 +84,12 @@ export class WordBuilderGame {
       used: false
     }));
 
-    // Перемешиваем буквы (чтобы не совпадали сразу с ответом)
-    let shuffled = [...letters].sort(() => 0.5 - Math.random());
+    // Перемешиваем буквы по Фишеру-Йетсу (чтобы не совпадали сразу с ответом)
+    let shuffled = shuffleArray(letters);
+    for (let attempt = 0; attempt < 5; attempt++) {
+      if (shuffled.map(t => t.letter).join('') !== this.targetWord) break;
+      shuffled = shuffleArray(letters);
+    }
     if (shuffled.map(t => t.letter).join('') === this.targetWord && this.targetWord.length > 2) {
       shuffled.reverse();
     }

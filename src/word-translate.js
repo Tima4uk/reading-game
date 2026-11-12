@@ -5,7 +5,7 @@
 // Направления: EN->RU, PL->RU, RU->EN, RU->PL
 // Сложность: Легкий (3-4 буквы / базовый) и Мастер (детективные слова, фразовые глаголы)
 
-import { TRANSLATIONS_DATA, PRAISE_PHRASES } from './data.js';
+import { TRANSLATIONS_DATA, PRAISE_PHRASES, shuffleArray } from './data.js';
 import { sound } from './audio.js';
 
 export class WordTranslateGame {
@@ -25,12 +25,14 @@ export class WordTranslateGame {
     this.matchedPairsCount = 0;
     this.totalPairsCount = 0;
     this.isLocked = false;
+    this.usedPairsWords = new Set();
 
     // Состояние режима "Викторина"
     this.quizQuestion = null;
     this.quizOptions = [];
     this.quizAnswered = false;
     this.usedQuizIndexes = new Set();
+    this.lastQuizIdx = -1;
     this.autoNextTimeout = null;
     this.speakTimeout = null;
   }
@@ -88,7 +90,6 @@ export class WordTranslateGame {
     if (this.subMode === 'pairs') {
       this.startPairsRound();
     } else {
-      this.usedQuizIndexes.clear();
       this.startNewQuiz();
     }
   }
@@ -128,9 +129,15 @@ export class WordTranslateGame {
     const count = this.difficulty === 'easy' ? 4 : 6;
     this.totalPairsCount = Math.min(count, pool.length);
 
-    // Выбираем случайные слова для раунда
-    const shuffledPool = [...pool].sort(() => 0.5 - Math.random());
+    // Выбираем слова, которые еще не выпадали в недавних раундах
+    let freshPool = pool.filter(item => !this.usedPairsWords.has(item.en));
+    if (freshPool.length < this.totalPairsCount) {
+      this.usedPairsWords.clear();
+      freshPool = pool;
+    }
+    const shuffledPool = shuffleArray(freshPool);
     const selectedItems = shuffledPool.slice(0, this.totalPairsCount);
+    selectedItems.forEach(item => this.usedPairsWords.add(item.en));
 
     const { from, to, fromTag, toTag } = this.getLanguages();
 
@@ -160,8 +167,8 @@ export class WordTranslateGame {
       });
     });
 
-    // Перемешиваем карточки на поле
-    this.pairsCards = cards.sort(() => 0.5 - Math.random());
+    // Перемешиваем карточки на поле по Фишеру-Йетсу
+    this.pairsCards = shuffleArray(cards);
     this.render();
   }
 
@@ -258,17 +265,22 @@ export class WordTranslateGame {
     const pool = this.getPool();
     const { from, to } = this.getLanguages();
 
-    if (this.usedQuizIndexes.size >= pool.length) {
-      this.usedQuizIndexes.clear();
-    }
-
-    const availableIndices = [];
+    let availableIndices = [];
     for (let i = 0; i < pool.length; i++) {
-      if (!this.usedQuizIndexes.has(i)) availableIndices.push(i);
+      if (!this.usedQuizIndexes.has(i) && i !== this.lastQuizIdx) availableIndices.push(i);
+    }
+    if (availableIndices.length === 0) {
+      this.usedQuizIndexes.clear();
+      for (let i = 0; i < pool.length; i++) {
+        if (i !== this.lastQuizIdx) availableIndices.push(i);
+      }
+      if (availableIndices.length === 0) availableIndices = [0];
     }
 
-    const targetIdx = availableIndices[Math.floor(Math.random() * availableIndices.length)];
+    const shuffledIndices = shuffleArray(availableIndices);
+    const targetIdx = shuffledIndices[0];
     this.usedQuizIndexes.add(targetIdx);
+    this.lastQuizIdx = targetIdx;
 
     const questionItem = pool[targetIdx];
     this.quizQuestion = {
@@ -281,7 +293,7 @@ export class WordTranslateGame {
 
     // Формируем варианты ответов (1 правильный + 2 дистрактора)
     const options = [questionItem[to]];
-    const otherItems = pool.filter((_, idx) => idx !== targetIdx).sort(() => 0.5 - Math.random());
+    const otherItems = shuffleArray(pool.filter((_, idx) => idx !== targetIdx));
 
     for (const item of otherItems) {
       if (options.length >= 3) break;
@@ -290,7 +302,7 @@ export class WordTranslateGame {
       }
     }
 
-    this.quizOptions = options.sort(() => 0.5 - Math.random());
+    this.quizOptions = shuffleArray(options);
     this.render();
 
     // Озвучиваем слово вопроса

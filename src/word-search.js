@@ -1,4 +1,4 @@
-import { WORDS_DATA, WORDS_DATA_HARD, POLISH_ALPHABET, RUSSIAN_ALPHABET, ENGLISH_ALPHABET, VOWELS } from './data.js';
+import { WORDS_DATA, WORDS_DATA_HARD, POLISH_ALPHABET, RUSSIAN_ALPHABET, ENGLISH_ALPHABET, VOWELS, shuffleArray } from './data.js';
 import { sound } from './audio.js';
 
 export class WordSearchGame {
@@ -13,6 +13,7 @@ export class WordSearchGame {
 
     this.wordsToFind = [];
     this.foundWords = new Set();
+    this.usedWords = new Set();
     this.grid = []; // 2D массив { letter, row, col, foundColor }
     this.selectedCells = [];
     this.isSelecting = false;
@@ -36,7 +37,10 @@ export class WordSearchGame {
   }
 
   setLanguage(lang) {
-    this.lang = lang;
+    if (this.lang !== lang) {
+      this.lang = lang;
+      this.usedWords.clear();
+    }
     this.startNewGame();
   }
 
@@ -45,6 +49,7 @@ export class WordSearchGame {
     this.difficulty = diff;
     this.gridSize = diff === 'hard' ? 8 : 6;
     localStorage.setItem('ws_difficulty', diff);
+    this.usedWords.clear();
     sound.playLetterClick();
     this.startNewGame();
   }
@@ -102,12 +107,19 @@ export class WordSearchGame {
       candidateWords = normalPool.filter(w => w.word.length <= 6);
     }
 
-    // Перемешиваем
-    const shuffled = [...candidateWords].sort(() => 0.5 - Math.random());
+    // Делим слова на еще не показанные в недавних раундах и уже показанные
+    const freshWords = candidateWords.filter(w => !this.usedWords.has(w.word));
+    if (freshWords.length < targetCount * 2) {
+      this.usedWords.clear();
+    }
+    const unusedPool = shuffleArray(candidateWords.filter(w => !this.usedWords.has(w.word)));
+    const usedPool = shuffleArray(candidateWords.filter(w => this.usedWords.has(w.word)));
+    const shuffled = [...unusedPool, ...usedPool];
     this.wordsToFind = [];
 
     // Генерируем поле и размещаем слова
     this.generateBoard(shuffled, targetCount);
+    this.wordsToFind.forEach(w => this.usedWords.add(w.word));
     this.render();
   }
 
@@ -127,7 +139,8 @@ export class WordSearchGame {
       );
 
       placedWords = [];
-      for (const item of candidateWords) {
+      const attemptCandidates = attempt === 0 ? candidateWords : shuffleArray(candidateWords);
+      for (const item of attemptCandidates) {
         if (placedWords.length >= targetCount) break;
         // Избегаем дубликатов одинаковых слов
         if (placedWords.some(p => p.word === item.word)) continue;
@@ -137,20 +150,33 @@ export class WordSearchGame {
         }
       }
 
-      if (placedWords.length >= (targetCount - 1)) break;
+      if (placedWords.length >= targetCount) break;
     }
 
     this.wordsToFind = placedWords;
 
-    // Заполняем пустые клетки случайными буквами соответствующего алфавита
+    // Заполняем пустые клетки равномерно перемешанными буквами алфавита (без повторов соседних клеток)
     const alphabet = this.lang === 'ru' 
       ? RUSSIAN_ALPHABET 
       : (this.lang === 'pl' ? POLISH_ALPHABET : ENGLISH_ALPHABET);
+    let letterBag = shuffleArray(alphabet);
+    let bagIdx = 0;
+
     for (let r = 0; r < size; r++) {
       for (let c = 0; c < size; c++) {
         if (!this.grid[r][c].letter) {
-          const randomChar = alphabet[Math.floor(Math.random() * alphabet.length)];
-          this.grid[r][c].letter = randomChar;
+          if (bagIdx >= letterBag.length) {
+            letterBag = shuffleArray(alphabet);
+            bagIdx = 0;
+          }
+          let chosenChar = letterBag[bagIdx++];
+          const upChar = r > 0 ? this.grid[r - 1][c].letter : '';
+          const leftChar = c > 0 ? this.grid[r][c - 1].letter : '';
+          if (chosenChar === upChar || chosenChar === leftChar) {
+            const alt = letterBag.find(ch => ch !== upChar && ch !== leftChar);
+            if (alt) chosenChar = alt;
+          }
+          this.grid[r][c].letter = chosenChar;
         }
       }
     }
@@ -174,15 +200,15 @@ export class WordSearchGame {
       );
     }
 
-    directions.sort(() => 0.5 - Math.random());
+    directions = shuffleArray(directions);
 
-    const positions = [];
+    let positions = [];
     for (let r = 0; r < size; r++) {
       for (let c = 0; c < size; c++) {
         positions.push({ r, c });
       }
     }
-    positions.sort(() => 0.5 - Math.random());
+    positions = shuffleArray(positions);
 
     for (const dir of directions) {
       for (const pos of positions) {

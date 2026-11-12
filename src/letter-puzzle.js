@@ -1,5 +1,5 @@
 // Модуль «Конструктор букв» для малышей 4.5 лет (Развивающий пазл букв с Drag-and-Drop)
-import { LETTER_PUZZLES_DATA } from './data.js';
+import { LETTER_PUZZLES_DATA, shuffleArray } from './data.js';
 import { sound } from './audio.js';
 
 export class LetterPuzzleGame {
@@ -11,6 +11,7 @@ export class LetterPuzzleGame {
 
     this.currentPuzzleIndex = 0;
     this.puzzles = [];
+    this.trayParts = [];
     this.placedParts = new Set();
     this.isCompleted = false;
 
@@ -32,13 +33,17 @@ export class LetterPuzzleGame {
   }
 
   setLanguage(lang) {
-    this.lang = lang;
-    this.start();
+    if (this.lang !== lang || this.puzzles.length === 0) {
+      this.lang = lang;
+      this.start();
+    } else {
+      this.loadPuzzle();
+    }
   }
 
   start() {
     const list = LETTER_PUZZLES_DATA[this.lang] || LETTER_PUZZLES_DATA['ru'];
-    this.puzzles = [...list].sort(() => 0.5 - Math.random());
+    this.puzzles = shuffleArray(list);
     this.currentPuzzleIndex = 0;
     this.loadPuzzle();
   }
@@ -48,9 +53,10 @@ export class LetterPuzzleGame {
     this.cleanUpDrag();
     this.placedParts.clear();
     this.isCompleted = false;
+    const puzzle = this.getCurrentPuzzle();
+    this.trayParts = shuffleArray(puzzle.parts);
     this.render();
 
-    const puzzle = this.getCurrentPuzzle();
     this.speakTimer = setTimeout(() => {
       this.speakTimer = null;
       sound.speakLetter(puzzle.letter, this.lang);
@@ -125,7 +131,7 @@ export class LetterPuzzleGame {
             ${trayLabelText}
           </div>
           <div class="lp-parts-tray">
-            ${puzzle.parts.map((part) => {
+            ${(this.trayParts.length ? this.trayParts : puzzle.parts).map((part) => {
               const isUsed = this.placedParts.has(part.id);
               const pPath = part.previewPath || 'M 10 30 L 50 30';
               return `
@@ -196,7 +202,16 @@ export class LetterPuzzleGame {
       this.clearTimers();
       this.nextTimer = setTimeout(() => {
         this.nextTimer = null;
+        const lastLetter = puzzle.letter;
         this.currentPuzzleIndex++;
+        if (this.currentPuzzleIndex >= this.puzzles.length) {
+          const list = LETTER_PUZZLES_DATA[this.lang] || LETTER_PUZZLES_DATA['ru'];
+          this.puzzles = shuffleArray(list);
+          if (this.puzzles.length > 1 && this.puzzles[0].letter === lastLetter) {
+            [this.puzzles[0], this.puzzles[1]] = [this.puzzles[1], this.puzzles[0]];
+          }
+          this.currentPuzzleIndex = 0;
+        }
         this.loadPuzzle();
       }, 2800);
     } else {

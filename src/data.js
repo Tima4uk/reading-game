@@ -1,5 +1,25 @@
 // Словари для обучающей игры: Русский и Польский (с полной поддержкой всех польских букв)
 
+/**
+ * Честное перемешивание массива по алгоритму Фишера — Йетса (без перекоса .sort(() => 0.5 - Math.random()))
+ */
+export function shuffleArray(array) {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    let rand;
+    if (typeof window !== 'undefined' && window.crypto && window.crypto.getRandomValues) {
+      const buf = new Uint32Array(1);
+      window.crypto.getRandomValues(buf);
+      rand = buf[0] / (0xffffffff + 1);
+    } else {
+      rand = Math.random();
+    }
+    const j = Math.floor(rand * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
 export const POLISH_ALPHABET = [
   'A', 'Ą', 'B', 'C', 'Ć', 'D', 'E', 'Ę', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'Ł',
   'M', 'N', 'Ń', 'O', 'Ó', 'P', 'R', 'S', 'Ś', 'T', 'U', 'W', 'Y', 'Z', 'Ź', 'Ż'
@@ -3725,6 +3745,105 @@ export const LETTER_PUZZLES_DATA = {
         { id: 'p2', label: 'Верхнее ушко', path: 'M 68 45 L 120 45 A 36 36 0 0 1 120 117 L 68 117', center: { x: 110, y: 81 }, previewPath: 'M 16 16 L 34 16 A 14 14 0 0 1 34 44 L 16 44' },
         { id: 'p3', label: 'Нижнее ушко', path: 'M 68 117 L 124 117 A 40 40 0 0 1 124 197 L 68 197', center: { x: 114, y: 157 }, previewPath: 'M 16 16 L 34 16 A 14 14 0 0 1 34 44 L 16 44' }
       ]
+    },
+    {
+      letter: 'Л',
+      word: 'Лев',
+      emoji: '🦁',
+      parts: [
+        { id: 'p1', label: 'Левая ножка', path: 'M 120 45 L 60 200', center: { x: 90, y: 122 }, previewPath: 'M 45 12 L 15 48' },
+        { id: 'p2', label: 'Правая ножка', path: 'M 120 45 L 180 200', center: { x: 150, y: 122 }, previewPath: 'M 15 12 L 45 48' }
+      ]
+    },
+    {
+      letter: 'М',
+      word: 'Мишка',
+      emoji: '🐻',
+      parts: [
+        { id: 'p1', label: 'Левый столбик', path: 'M 55 45 L 55 200', center: { x: 55, y: 122 }, previewPath: 'M 30 10 L 30 50' },
+        { id: 'p2', label: 'Левый склон', path: 'M 55 45 L 120 140', center: { x: 87, y: 92 }, previewPath: 'M 15 12 L 45 48' },
+        { id: 'p3', label: 'Правый склон', path: 'M 185 45 L 120 140', center: { x: 152, y: 92 }, previewPath: 'M 45 12 L 15 48' },
+        { id: 'p4', label: 'Правый столбик', path: 'M 185 45 L 185 200', center: { x: 185, y: 122 }, previewPath: 'M 30 10 L 30 50' }
+      ]
+    },
+    {
+      letter: 'К',
+      word: 'Кот',
+      emoji: '🐱',
+      parts: [
+        { id: 'p1', label: 'Столбик', path: 'M 70 45 L 70 200', center: { x: 70, y: 122 }, previewPath: 'M 30 10 L 30 50' },
+        { id: 'p2', label: 'Верхняя лапка', path: 'M 75 122 L 175 45', center: { x: 125, y: 83 }, previewPath: 'M 15 48 L 45 12' },
+        { id: 'p3', label: 'Нижняя лапка', path: 'M 75 122 L 175 200', center: { x: 125, y: 161 }, previewPath: 'M 15 12 L 45 48' }
+      ]
+    },
+    {
+      letter: 'Е',
+      word: 'Ель',
+      emoji: '🌲',
+      parts: [
+        { id: 'p1', label: 'Столбик', path: 'M 70 45 L 70 195', center: { x: 70, y: 120 }, previewPath: 'M 30 10 L 30 50' },
+        { id: 'p2', label: 'Верхняя ветка', path: 'M 70 45 L 175 45', center: { x: 122, y: 45 }, previewPath: 'M 10 30 L 50 30' },
+        { id: 'p3', label: 'Средняя ветка', path: 'M 70 120 L 160 120', center: { x: 115, y: 120 }, previewPath: 'M 15 30 L 45 30' },
+        { id: 'p4', label: 'Нижняя ветка', path: 'M 70 195 L 175 195', center: { x: 122, y: 195 }, previewPath: 'M 10 30 L 50 30' }
+      ]
+    },
+    {
+      letter: 'С',
+      word: 'Слон',
+      emoji: '🐘',
+      parts: [
+        { id: 'p1', label: 'Верхняя дуга', path: 'M 168 65 A 65 72 0 0 0 60 120', center: { x: 100, y: 70 }, previewPath: 'M 45 18 A 22 22 0 0 0 18 42' },
+        { id: 'p2', label: 'Нижняя дуга', path: 'M 60 120 A 65 72 0 0 0 168 175', center: { x: 100, y: 170 }, previewPath: 'M 18 18 A 22 22 0 0 0 45 42' }
+      ]
+    },
+    {
+      letter: 'Х',
+      word: 'Хлеб',
+      emoji: '🍞',
+      parts: [
+        { id: 'p1', label: 'Первая линия', path: 'M 65 45 L 175 195', center: { x: 120, y: 120 }, previewPath: 'M 15 12 L 45 48' },
+        { id: 'p2', label: 'Вторая линия', path: 'M 175 45 L 65 195', center: { x: 120, y: 120 }, previewPath: 'M 45 12 L 15 48' }
+      ]
+    },
+    {
+      letter: 'И',
+      word: 'Игрушка',
+      emoji: '🧸',
+      parts: [
+        { id: 'p1', label: 'Левый столбик', path: 'M 65 45 L 65 195', center: { x: 65, y: 120 }, previewPath: 'M 30 10 L 30 50' },
+        { id: 'p2', label: 'Лесенка', path: 'M 65 195 L 175 45', center: { x: 120, y: 120 }, previewPath: 'M 15 48 L 45 12' },
+        { id: 'p3', label: 'Правый столбик', path: 'M 175 45 L 175 195', center: { x: 175, y: 120 }, previewPath: 'M 30 10 L 30 50' }
+      ]
+    },
+    {
+      letter: 'Ш',
+      word: 'Шарик',
+      emoji: '🎈',
+      parts: [
+        { id: 'p1', label: 'Левый столбик', path: 'M 55 45 L 55 195', center: { x: 55, y: 120 }, previewPath: 'M 30 10 L 30 50' },
+        { id: 'p2', label: 'Средний столбик', path: 'M 120 45 L 120 195', center: { x: 120, y: 120 }, previewPath: 'M 30 10 L 30 50' },
+        { id: 'p3', label: 'Правый столбик', path: 'M 185 45 L 185 195', center: { x: 185, y: 120 }, previewPath: 'M 30 10 L 30 50' },
+        { id: 'p4', label: 'Основание', path: 'M 55 195 L 185 195', center: { x: 120, y: 195 }, previewPath: 'M 10 30 L 50 30' }
+      ]
+    },
+    {
+      letter: 'У',
+      word: 'Утка',
+      emoji: '🦆',
+      parts: [
+        { id: 'p1', label: 'Короткая ветка', path: 'M 65 45 L 120 125', center: { x: 92, y: 85 }, previewPath: 'M 15 12 L 45 48' },
+        { id: 'p2', label: 'Длинная ножка', path: 'M 175 45 L 80 198', center: { x: 127, y: 121 }, previewPath: 'M 45 12 L 15 48' }
+      ]
+    },
+    {
+      letter: 'Ч',
+      word: 'Черепаха',
+      emoji: '🐢',
+      parts: [
+        { id: 'p1', label: 'Маленький столбик', path: 'M 68 45 L 68 122', center: { x: 68, y: 83 }, previewPath: 'M 30 15 L 30 45' },
+        { id: 'p2', label: 'Мостик', path: 'M 68 122 L 168 122', center: { x: 118, y: 122 }, previewPath: 'M 15 30 L 45 30' },
+        { id: 'p3', label: 'Высокий столбик', path: 'M 168 45 L 168 198', center: { x: 168, y: 121 }, previewPath: 'M 30 10 L 30 50' }
+      ]
     }
   ],
   pl: [
@@ -3794,6 +3913,87 @@ export const LETTER_PUZZLES_DATA = {
         { id: 'p3', label: 'Dół Z', path: 'M 65 188 L 175 188', center: { x: 120, y: 188 }, previewPath: 'M 10 30 L 50 30' },
         { id: 'p4', label: 'Kropka Ż', path: 'M 120 22 L 120 22.1', center: { x: 120, y: 22 }, previewPath: 'M 30 30 L 30 30.1' }
       ]
+    },
+    {
+      letter: 'E',
+      word: 'Ekran',
+      emoji: '📺',
+      parts: [
+        { id: 'p1', label: 'Słupek', path: 'M 70 45 L 70 195', center: { x: 70, y: 120 }, previewPath: 'M 30 10 L 30 50' },
+        { id: 'p2', label: 'Górna kreska', path: 'M 70 45 L 175 45', center: { x: 122, y: 45 }, previewPath: 'M 10 30 L 50 30' },
+        { id: 'p3', label: 'Środkowa kreska', path: 'M 70 120 L 160 120', center: { x: 115, y: 120 }, previewPath: 'M 15 30 L 45 30' },
+        { id: 'p4', label: 'Dolna kreska', path: 'M 70 195 L 175 195', center: { x: 122, y: 195 }, previewPath: 'M 10 30 L 50 30' }
+      ]
+    },
+    {
+      letter: 'F',
+      word: 'Foka',
+      emoji: '🦭',
+      parts: [
+        { id: 'p1', label: 'Słupek', path: 'M 70 45 L 70 195', center: { x: 70, y: 120 }, previewPath: 'M 30 10 L 30 50' },
+        { id: 'p2', label: 'Górna kreska', path: 'M 70 45 L 175 45', center: { x: 122, y: 45 }, previewPath: 'M 10 30 L 50 30' },
+        { id: 'p3', label: 'Środkowa kreska', path: 'M 70 120 L 155 120', center: { x: 112, y: 120 }, previewPath: 'M 15 30 L 45 30' }
+      ]
+    },
+    {
+      letter: 'H',
+      word: 'Herbata',
+      emoji: '🍵',
+      parts: [
+        { id: 'p1', label: 'Lewy słupek', path: 'M 65 45 L 65 200', center: { x: 65, y: 122 }, previewPath: 'M 30 10 L 30 50' },
+        { id: 'p2', label: 'Prawy słupek', path: 'M 175 45 L 175 200', center: { x: 175, y: 122 }, previewPath: 'M 30 10 L 30 50' },
+        { id: 'p3', label: 'Mostek', path: 'M 77 122 L 163 122', center: { x: 120, y: 122 }, previewPath: 'M 15 30 L 45 30' }
+      ]
+    },
+    {
+      letter: 'K',
+      word: 'Kot',
+      emoji: '🐱',
+      parts: [
+        { id: 'p1', label: 'Słupek', path: 'M 70 45 L 70 200', center: { x: 70, y: 122 }, previewPath: 'M 30 10 L 30 50' },
+        { id: 'p2', label: 'Górne ramię', path: 'M 75 122 L 175 45', center: { x: 125, y: 83 }, previewPath: 'M 15 48 L 45 12' },
+        { id: 'p3', label: 'Dolne ramię', path: 'M 75 122 L 175 200', center: { x: 125, y: 161 }, previewPath: 'M 15 12 L 45 48' }
+      ]
+    },
+    {
+      letter: 'M',
+      word: 'Miś',
+      emoji: '🧸',
+      parts: [
+        { id: 'p1', label: 'Lewy słupek', path: 'M 55 45 L 55 200', center: { x: 55, y: 122 }, previewPath: 'M 30 10 L 30 50' },
+        { id: 'p2', label: 'Lewy skos', path: 'M 55 45 L 120 140', center: { x: 87, y: 92 }, previewPath: 'M 15 12 L 45 48' },
+        { id: 'p3', label: 'Prawy skos', path: 'M 185 45 L 120 140', center: { x: 152, y: 92 }, previewPath: 'M 45 12 L 15 48' },
+        { id: 'p4', label: 'Prawy słupek', path: 'M 185 45 L 185 200', center: { x: 185, y: 122 }, previewPath: 'M 30 10 L 30 50' }
+      ]
+    },
+    {
+      letter: 'N',
+      word: 'Nos',
+      emoji: '👃',
+      parts: [
+        { id: 'p1', label: 'Lewy słupek', path: 'M 65 45 L 65 195', center: { x: 65, y: 120 }, previewPath: 'M 30 10 L 30 50' },
+        { id: 'p2', label: 'Skos', path: 'M 65 45 L 175 195', center: { x: 120, y: 120 }, previewPath: 'M 15 12 L 45 48' },
+        { id: 'p3', label: 'Prawy słupek', path: 'M 175 45 L 175 195', center: { x: 175, y: 120 }, previewPath: 'M 30 10 L 30 50' }
+      ]
+    },
+    {
+      letter: 'Z',
+      word: 'Zamek',
+      emoji: '🏰',
+      parts: [
+        { id: 'p1', label: 'Góra', path: 'M 65 52 L 175 52', center: { x: 120, y: 52 }, previewPath: 'M 10 30 L 50 30' },
+        { id: 'p2', label: 'Skos', path: 'M 170 55 L 70 185', center: { x: 120, y: 120 }, previewPath: 'M 45 12 L 15 48' },
+        { id: 'p3', label: 'Dół', path: 'M 65 188 L 175 188', center: { x: 120, y: 188 }, previewPath: 'M 10 30 L 50 30' }
+      ]
+    },
+    {
+      letter: 'C',
+      word: 'Cytryna',
+      emoji: '🍋',
+      parts: [
+        { id: 'p1', label: 'Górny łuk', path: 'M 168 65 A 65 72 0 0 0 60 120', center: { x: 100, y: 70 }, previewPath: 'M 45 18 A 22 22 0 0 0 18 42' },
+        { id: 'p2', label: 'Dolny łuk', path: 'M 60 120 A 65 72 0 0 0 168 175', center: { x: 100, y: 170 }, previewPath: 'M 18 18 A 22 22 0 0 0 45 42' }
+      ]
     }
   ],
   en: [
@@ -3851,6 +4051,87 @@ export const LETTER_PUZZLES_DATA = {
         { id: 'p1', label: 'Left bar', path: 'M 65 45 L 65 200', center: { x: 65, y: 122 }, previewPath: 'M 30 10 L 30 50' },
         { id: 'p2', label: 'Right bar', path: 'M 175 45 L 175 200', center: { x: 175, y: 122 }, previewPath: 'M 30 10 L 30 50' },
         { id: 'p3', label: 'Middle bridge', path: 'M 77 122 L 163 122', center: { x: 120, y: 122 }, previewPath: 'M 15 30 L 45 30' }
+      ]
+    },
+    {
+      letter: 'E',
+      word: 'Elephant',
+      emoji: '🐘',
+      parts: [
+        { id: 'p1', label: 'Tall stem', path: 'M 70 45 L 70 195', center: { x: 70, y: 120 }, previewPath: 'M 30 10 L 30 50' },
+        { id: 'p2', label: 'Top bar', path: 'M 70 45 L 175 45', center: { x: 122, y: 45 }, previewPath: 'M 10 30 L 50 30' },
+        { id: 'p3', label: 'Middle bar', path: 'M 70 120 L 160 120', center: { x: 115, y: 120 }, previewPath: 'M 15 30 L 45 30' },
+        { id: 'p4', label: 'Bottom bar', path: 'M 70 195 L 175 195', center: { x: 122, y: 195 }, previewPath: 'M 10 30 L 50 30' }
+      ]
+    },
+    {
+      letter: 'F',
+      word: 'Fish',
+      emoji: '🐟',
+      parts: [
+        { id: 'p1', label: 'Tall stem', path: 'M 70 45 L 70 195', center: { x: 70, y: 120 }, previewPath: 'M 30 10 L 30 50' },
+        { id: 'p2', label: 'Top bar', path: 'M 70 45 L 175 45', center: { x: 122, y: 45 }, previewPath: 'M 10 30 L 50 30' },
+        { id: 'p3', label: 'Middle bar', path: 'M 70 120 L 155 120', center: { x: 112, y: 120 }, previewPath: 'M 15 30 L 45 30' }
+      ]
+    },
+    {
+      letter: 'K',
+      word: 'Kite',
+      emoji: '🪁',
+      parts: [
+        { id: 'p1', label: 'Tall stem', path: 'M 70 45 L 70 200', center: { x: 70, y: 122 }, previewPath: 'M 30 10 L 30 50' },
+        { id: 'p2', label: 'Upper arm', path: 'M 75 122 L 175 45', center: { x: 125, y: 83 }, previewPath: 'M 15 48 L 45 12' },
+        { id: 'p3', label: 'Lower leg', path: 'M 75 122 L 175 200', center: { x: 125, y: 161 }, previewPath: 'M 15 12 L 45 48' }
+      ]
+    },
+    {
+      letter: 'M',
+      word: 'Monkey',
+      emoji: '🐵',
+      parts: [
+        { id: 'p1', label: 'Left bar', path: 'M 55 45 L 55 200', center: { x: 55, y: 122 }, previewPath: 'M 30 10 L 30 50' },
+        { id: 'p2', label: 'Left slope', path: 'M 55 45 L 120 140', center: { x: 87, y: 92 }, previewPath: 'M 15 12 L 45 48' },
+        { id: 'p3', label: 'Right slope', path: 'M 185 45 L 120 140', center: { x: 152, y: 92 }, previewPath: 'M 45 12 L 15 48' },
+        { id: 'p4', label: 'Right bar', path: 'M 185 45 L 185 200', center: { x: 185, y: 122 }, previewPath: 'M 30 10 L 30 50' }
+      ]
+    },
+    {
+      letter: 'N',
+      word: 'Nose',
+      emoji: '👃',
+      parts: [
+        { id: 'p1', label: 'Left bar', path: 'M 65 45 L 65 195', center: { x: 65, y: 120 }, previewPath: 'M 30 10 L 30 50' },
+        { id: 'p2', label: 'Diagonal', path: 'M 65 45 L 175 195', center: { x: 120, y: 120 }, previewPath: 'M 15 12 L 45 48' },
+        { id: 'p3', label: 'Right bar', path: 'M 175 45 L 175 195', center: { x: 175, y: 120 }, previewPath: 'M 30 10 L 30 50' }
+      ]
+    },
+    {
+      letter: 'Z',
+      word: 'Zebra',
+      emoji: '🦓',
+      parts: [
+        { id: 'p1', label: 'Top bar', path: 'M 65 52 L 175 52', center: { x: 120, y: 52 }, previewPath: 'M 10 30 L 50 30' },
+        { id: 'p2', label: 'Diagonal', path: 'M 170 55 L 70 185', center: { x: 120, y: 120 }, previewPath: 'M 45 12 L 15 48' },
+        { id: 'p3', label: 'Bottom bar', path: 'M 65 188 L 175 188', center: { x: 120, y: 188 }, previewPath: 'M 10 30 L 50 30' }
+      ]
+    },
+    {
+      letter: 'C',
+      word: 'Cat',
+      emoji: '🐱',
+      parts: [
+        { id: 'p1', label: 'Upper curve', path: 'M 168 65 A 65 72 0 0 0 60 120', center: { x: 100, y: 70 }, previewPath: 'M 45 18 A 22 22 0 0 0 18 42' },
+        { id: 'p2', label: 'Lower curve', path: 'M 60 120 A 65 72 0 0 0 168 175', center: { x: 100, y: 170 }, previewPath: 'M 18 18 A 22 22 0 0 0 45 42' }
+      ]
+    },
+    {
+      letter: 'B',
+      word: 'Bear',
+      emoji: '🐻',
+      parts: [
+        { id: 'p1', label: 'Tall stem', path: 'M 68 45 L 68 200', center: { x: 68, y: 122 }, previewPath: 'M 30 10 L 30 50' },
+        { id: 'p2', label: 'Top loop', path: 'M 68 45 L 120 45 A 36 36 0 0 1 120 117 L 68 117', center: { x: 110, y: 81 }, previewPath: 'M 16 16 L 34 16 A 14 14 0 0 1 34 44 L 16 44' },
+        { id: 'p3', label: 'Bottom loop', path: 'M 68 117 L 124 117 A 40 40 0 0 1 124 197 L 68 197', center: { x: 114, y: 157 }, previewPath: 'M 16 16 L 34 16 A 14 14 0 0 1 34 44 L 16 44' }
       ]
     }
   ]
