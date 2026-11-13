@@ -1,8 +1,9 @@
 // Модуль «Азбука» для детей 4.5 лет: Говорящая Азбука + Викторина + Конструктор букв
-import { ALPHABET_DATA, shuffleArray } from './data.js?v=18';
-import { sound } from './audio.js?v=18';
-import { LetterPuzzleGame } from './letter-puzzle.js?v=18';
-import { getLetterLesson } from './letter-lessons.js?v=18';
+import { ALPHABET_DATA, shuffleArray } from './data.js?v=19';
+import { sound } from './audio.js?v=19';
+import { LetterPuzzleGame } from './letter-puzzle.js?v=19';
+import { getLetterLesson } from './letter-lessons.js?v=19';
+import { KochamCzytacGame } from './kocham-czytac.js?v=19';
 
 export class AlphabetGame {
   constructor(options = {}) {
@@ -11,7 +12,7 @@ export class AlphabetGame {
     this.onStarEarned = options.onStarEarned || (() => {});
     this.onWinEffect = options.onWinEffect || (() => {});
 
-    this.subMode = 'explore'; // 'explore' | 'quiz' | 'puzzle'
+    this.subMode = 'explore'; // 'explore' | 'quiz' | 'puzzle' | 'workbooks'
     this.selectedLetterItem = null;
     this.currentLesson = null;
     this.lessonState = null;
@@ -23,8 +24,9 @@ export class AlphabetGame {
     this.usedQuizLetters = new Set();
     this.lastQuizLetter = null;
 
-    // Конструктор букв
+    // Конструктор букв и Тетради Kocham Czytać
     this.puzzleGame = null;
+    this.workbooksGame = null;
     this.quizTimer = null;
     this.speakTimer = null;
   }
@@ -40,6 +42,9 @@ export class AlphabetGame {
     }
     if (this.puzzleGame && this.puzzleGame.destroy) {
       this.puzzleGame.destroy();
+    }
+    if (this.workbooksGame && this.workbooksGame.stop) {
+      this.workbooksGame.stop();
     }
   }
 
@@ -58,6 +63,8 @@ export class AlphabetGame {
       this.startNewQuizRound();
     } else if (this.subMode === 'puzzle') {
       this.startPuzzleMode();
+    } else if (this.subMode === 'workbooks') {
+      this.startWorkbooksMode();
     } else {
       this.render();
     }
@@ -70,6 +77,8 @@ export class AlphabetGame {
       this.startNewQuizRound();
     } else if (this.subMode === 'puzzle') {
       this.startPuzzleMode();
+    } else if (this.subMode === 'workbooks') {
+      this.startWorkbooksMode();
     } else {
       this.render();
     }
@@ -84,8 +93,33 @@ export class AlphabetGame {
       this.startNewQuizRound();
     } else if (mode === 'puzzle') {
       this.startPuzzleMode();
+    } else if (mode === 'workbooks') {
+      this.startWorkbooksMode();
     } else {
       this.render();
+    }
+  }
+
+  startWorkbooksMode() {
+    this.render();
+    const contentArea = this.container.querySelector('#ab-content-area');
+    if (contentArea) {
+      if (!this.workbooksGame) {
+        this.workbooksGame = new KochamCzytacGame({
+          container: contentArea,
+          lang: this.lang,
+          onStarEarned: this.onStarEarned,
+          onWinEffect: this.onWinEffect
+        });
+        this.workbooksGame.start();
+      } else {
+        this.workbooksGame.container = contentArea;
+        if (this.workbooksGame.lang !== this.lang) {
+          this.workbooksGame.setLanguage(this.lang);
+        } else {
+          this.workbooksGame.start();
+        }
+      }
     }
   }
 
@@ -119,6 +153,7 @@ export class AlphabetGame {
     const exploreTab = isRu ? 'Все буквы' : (isPl ? 'Wszystkie litery' : 'All Letters');
     const quizTab = isRu ? 'Где буква?' : (isPl ? 'Gdzie jest litera?' : 'Where is Letter?');
     const puzzleTab = isRu ? 'Собери букву' : (isPl ? 'Złóż literkę' : 'Build a Letter');
+    const workbooksTab = isRu ? 'Тетради' : (isPl ? 'Zeszyty' : 'Workbooks');
 
     this.container.innerHTML = `
       <div class="ab-wrapper">
@@ -132,6 +167,9 @@ export class AlphabetGame {
           </button>
           <button class="ab-subnav-btn ${this.subMode === 'puzzle' ? 'active' : ''}" id="ab-btn-puzzle">
             🧩 ${puzzleTab}
+          </button>
+          <button class="ab-subnav-btn ${this.subMode === 'workbooks' ? 'active' : ''}" id="ab-btn-workbooks">
+            📚 ${workbooksTab}
           </button>
         </div>
 
@@ -746,10 +784,12 @@ export class AlphabetGame {
     const btnExplore = this.container.querySelector('#ab-btn-explore');
     const btnQuiz = this.container.querySelector('#ab-btn-quiz');
     const btnPuzzle = this.container.querySelector('#ab-btn-puzzle');
+    const btnWorkbooks = this.container.querySelector('#ab-btn-workbooks');
 
     if (btnExplore) btnExplore.addEventListener('click', () => this.switchSubMode('explore'));
     if (btnQuiz) btnQuiz.addEventListener('click', () => this.switchSubMode('quiz'));
     if (btnPuzzle) btnPuzzle.addEventListener('click', () => this.switchSubMode('puzzle'));
+    if (btnWorkbooks) btnWorkbooks.addEventListener('click', () => this.switchSubMode('workbooks'));
 
     if (this.subMode === 'explore') {
       const cards = this.container.querySelectorAll('.ab-letter-card');
@@ -759,7 +799,7 @@ export class AlphabetGame {
           this.openLetterModal(idx);
         });
       });
-    } else {
+    } else if (this.subMode === 'quiz') {
       // Викторина
       const repeatBtn = this.container.querySelector('#ab-quiz-repeat');
       if (repeatBtn) {

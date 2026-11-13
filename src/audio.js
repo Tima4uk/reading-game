@@ -42,7 +42,108 @@ const RU_SPOKEN_OVERRIDES = {
   'КОЗА': 'коза\u0301',
   'ГОРА': 'гора\u0301',
   'РЕКА': 'река\u0301',
-  'ЛУНА': 'луна\u0301'
+  'ЛУНА': 'луна\u0301',
+  // Слоги и звукоподражания (Kocham Czytać)
+  'МЭ': 'мэ',
+  'ПЭ': 'пэ',
+  'БЭ': 'бэ',
+  'ВЭ': 'вэ',
+  'ФЭ': 'фэ',
+  'ТЭ': 'тэ',
+  'ДЭ': 'дэ',
+  'НЭ': 'нэ',
+  'ЛЭ': 'лэ',
+  'СЭ': 'сэ',
+  'ЗЭ': 'зэ',
+  'КЭ': 'кэ',
+  'ГЭ': 'гэ',
+  'РЭ': 'рэ',
+  'ЭМ': 'эм',
+  'ЭП': 'эп',
+  'ЧУ': 'чу',
+  'ЩУ': 'щу',
+  'МЮ': 'мю',
+  'ЛЮ': 'лю',
+  'ЛЬ': 'ль',
+  'НЬ': 'нь',
+  'ТЬ': 'ть',
+  'СЬ': 'сь',
+  'РЬ': 'рь',
+  'КО-КО': 'ко ко',
+  'ГА-ГА': 'га га',
+  'ПИ-ПИ': 'пи пи',
+  'БЕ-Е': 'бее',
+  'МЕ-Е': 'мее',
+  'ТУ-ТУ': 'ту ту',
+  'ТИК-ТАК': 'тик так',
+  'КАП-КАП': 'кап кап'
+};
+
+// Словарь фонетического произношения польских слогов, двузнаков и звукоподражаний
+const PL_SPOKEN_OVERRIDES = {
+  'SZ': 'sz',
+  'CZ': 'cz',
+  'RZ': 'ż',
+  'Ż': 'ż',
+  'DZ': 'dz',
+  'DŹ': 'dź',
+  'DŻ': 'dż',
+  'CH': 'ch',
+  'Ł': 'ł',
+  'Ś': 'ś',
+  'Ć': 'ć',
+  'Ź': 'ź',
+  'Ń': 'ń',
+  'Ą': 'ą',
+  'Ę': 'ę',
+  'Ó': 'u',
+  'PE': 'pe',
+  'BE': 'be',
+  'CE': 'ce',
+  'DE': 'de',
+  'GE': 'ge',
+  'TE': 'te',
+  'WE': 'we',
+  'ZE': 'ze',
+  'KI': 'ki',
+  'PI': 'pi',
+  'CI': 'ci',
+  'SI': 'si',
+  'ZI': 'zi',
+  'NI': 'ni',
+  'SZA': 'sza',
+  'SZO': 'szo',
+  'SZU': 'szu',
+  'SZE': 'sze',
+  'SZY': 'szy',
+  'CZA': 'cza',
+  'CZO': 'czo',
+  'CZU': 'czu',
+  'CZE': 'cze',
+  'CZY': 'czy',
+  'RZA': 'ża',
+  'RZO': 'żo',
+  'RZU': 'żu',
+  'ŁA': 'ła',
+  'ŁO': 'ło',
+  'ŁU': 'łu',
+  'MĄ': 'mą',
+  'MĘ': 'mę',
+  'KĄ': 'ką',
+  'KĘ': 'kę',
+  'SĄ': 'są',
+  'SĘ': 'sę',
+  'CHÓD': 'chut',
+  'TEK': 'tek',
+  'SEK': 'sek',
+  'HAU': 'hau',
+  'MIAU': 'miau',
+  'KWA': 'kwa',
+  'KO-KO': 'ko ko',
+  'PI-PI': 'pi pi',
+  'GĘ-GĘ': 'gę gę',
+  'KAP-KAP': 'kap kap',
+  'TIK-TAK': 'tik tak'
 };
 
 // Словарь составных английских слов и фразовых глаголов
@@ -174,11 +275,14 @@ class SoundEngine {
   // Нормализация слова перед отправкой в TTS
   normalizeWordForSpeech(word, lang = 'ru') {
     if (!word) return '';
-    const raw = String(word).trim();
+    const raw = String(word).trim().replace(/·/g, '');
     const upper = raw.toUpperCase();
 
     if (lang === 'ru' && RU_SPOKEN_OVERRIDES[upper]) {
       return RU_SPOKEN_OVERRIDES[upper];
+    }
+    if (lang === 'pl' && PL_SPOKEN_OVERRIDES[upper]) {
+      return PL_SPOKEN_OVERRIDES[upper];
     }
     if (lang === 'en' && EN_SPOKEN_OVERRIDES[upper]) {
       return EN_SPOKEN_OVERRIDES[upper];

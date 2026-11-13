@@ -1,19 +1,22 @@
 // Игровой режим: «Собери слово» (Word Builder / Ułóż słowo)
-import { WORDS_DATA, WORDS_DATA_HARD, VOWELS, shuffleArray } from './data.js';
-import { sound } from './audio.js';
+import { WORDS_DATA, WORDS_DATA_HARD, VOWELS, shuffleArray } from './data.js?v=19';
+import { sound } from './audio.js?v=19';
+import { SYLLABLE_WORDS_DATA } from './kocham-czytac.js?v=19';
 
 export class WordBuilderGame {
   constructor(options = {}) {
     this.container = options.container;
     this.lang = options.lang || 'ru';
-    this.difficulty = localStorage.getItem('wb_difficulty') || 'easy'; // 'easy' | 'hard'
+    const savedDiff = localStorage.getItem('wb_difficulty');
+    this.difficulty = ['easy', 'syllables', 'hard'].includes(savedDiff) ? savedDiff : 'easy'; // 'easy' | 'syllables' | 'hard'
     this.onWordCompleted = options.onWordCompleted || (() => {});
 
     this.currentWordItem = null;
     this.targetWord = '';
+    this.targetUnits = [];
     this.lastWord = '';
-    this.slots = []; // Массив букв в слотах: [ { letter, tileId } ]
-    this.availableTiles = []; // Буквы для выбора: [ { id, letter, used } ]
+    this.slots = []; // Массив букв/слогов в слотах: [ { letter, tileId } ]
+    this.availableTiles = []; // Плитки для выбора: [ { id, letter, used } ]
     this.isCompleted = false;
     this.usedWords = new Set();
     this.speakTimer = null;
@@ -46,9 +49,12 @@ export class WordBuilderGame {
   startNewWord() {
     this.stop();
     this.isCompleted = false;
-    
+
+    const isSyllables = this.difficulty === 'syllables';
     let words = [];
-    if (this.difficulty === 'hard') {
+    if (isSyllables) {
+      words = SYLLABLE_WORDS_DATA[this.lang] || [];
+    } else if (this.difficulty === 'hard') {
       const hardPool = WORDS_DATA_HARD[this.lang] || [];
       const normalPool = WORDS_DATA[this.lang] || [];
       words = [...hardPool, ...normalPool.filter(w => w.word.length >= 5)];
@@ -74,26 +80,52 @@ export class WordBuilderGame {
     this.lastWord = this.targetWord;
     this.usedWords.add(this.targetWord);
 
-    // Инициализируем пустые слоты
-    this.slots = Array(this.targetWord.length).fill(null);
+    if (isSyllables && Array.isArray(this.currentWordItem.syllables)) {
+      this.targetUnits = [...this.currentWordItem.syllables];
+      this.slots = Array(this.targetUnits.length).fill(null);
 
-    // Создаем плитки с буквами и перемешиваем их
-    const letters = this.targetWord.split('').map((letter, idx) => ({
-      id: idx,
-      letter,
-      used: false
-    }));
+      // Добавляем 1 слог-ловушку для тренировки внимательного чтения
+      const traps = shuffleArray((this.currentWordItem.trapSyllables || []).filter(t => !this.targetUnits.includes(t)));
+      const rawTiles = [...this.targetUnits];
+      if (traps.length > 0) {
+        rawTiles.push(traps[0]);
+      }
 
-    // Перемешиваем буквы по Фишеру-Йетсу (чтобы не совпадали сразу с ответом)
-    let shuffled = shuffleArray(letters);
-    for (let attempt = 0; attempt < 5; attempt++) {
-      if (shuffled.map(t => t.letter).join('') !== this.targetWord) break;
-      shuffled = shuffleArray(letters);
+      const tiles = rawTiles.map((unit, idx) => ({
+        id: idx,
+        letter: unit,
+        used: false
+      }));
+
+      let shuffled = shuffleArray(tiles);
+      for (let attempt = 0; attempt < 5; attempt++) {
+        if (shuffled.slice(0, this.targetUnits.length).map(t => t.letter).join('') !== this.targetWord) break;
+        shuffled = shuffleArray(tiles);
+      }
+      this.availableTiles = shuffled;
+    } else {
+      this.targetUnits = this.targetWord.split('');
+      // Инициализируем пустые слоты
+      this.slots = Array(this.targetUnits.length).fill(null);
+
+      // Создаем плитки с буквами и перемешиваем их
+      const letters = this.targetUnits.map((letter, idx) => ({
+        id: idx,
+        letter,
+        used: false
+      }));
+
+      // Перемешиваем буквы по Фишеру-Йетсу (чтобы не совпадали сразу с ответом)
+      let shuffled = shuffleArray(letters);
+      for (let attempt = 0; attempt < 5; attempt++) {
+        if (shuffled.map(t => t.letter).join('') !== this.targetWord) break;
+        shuffled = shuffleArray(letters);
+      }
+      if (shuffled.map(t => t.letter).join('') === this.targetWord && this.targetWord.length > 2) {
+        shuffled.reverse();
+      }
+      this.availableTiles = shuffled;
     }
-    if (shuffled.map(t => t.letter).join('') === this.targetWord && this.targetWord.length > 2) {
-      shuffled.reverse();
-    }
-    this.availableTiles = shuffled;
 
     this.render();
 
@@ -111,9 +143,11 @@ export class WordBuilderGame {
     const isRu = this.lang === 'ru';
     const isPl = this.lang === 'pl';
     const isHard = this.difficulty === 'hard';
-    const isExtraLong = this.targetWord && this.targetWord.length >= 10;
+    const isSyllables = this.difficulty === 'syllables';
+    const isExtraLong = !isSyllables && this.targetWord && this.targetWord.length >= 10;
 
     const easyLabel = isRu ? 'Легкий (3-4 буквы)' : (isPl ? 'Łatwy (3-4 litery)' : 'Easy (3-4 letters)');
+    const syllablesLabel = isRu ? 'По слогам' : (isPl ? 'Sylaby' : 'Syllables');
     const hardLabel = isRu ? 'Мастер (5-12 букв)' : (isPl ? 'Mistrz (5-12 liter)' : 'Master (5-12 letters)');
     const listenTitle = isRu ? 'Послушать' : (isPl ? 'Posłuchaj' : 'Listen');
     const listenText = isRu ? 'Послушать слово' : (isPl ? 'Posłuchaj słowa' : 'Listen to word');
@@ -122,11 +156,14 @@ export class WordBuilderGame {
     const nextLabel = isRu ? 'Дальше' : (isPl ? 'Dalej' : 'Next');
 
     this.container.innerHTML = `
-      <div class="wb-game ${isHard ? 'wb-hard-mode' : ''} ${isExtraLong ? 'wb-extra-long' : ''}">
+      <div class="wb-game ${isHard ? 'wb-hard-mode' : ''} ${isSyllables ? 'wb-syllables-mode' : ''} ${isExtraLong ? 'wb-extra-long' : ''}">
         <!-- Переключатель сложности -->
         <div class="ws-diff-bar">
-          <button class="ws-diff-btn ${!isHard ? 'active' : ''}" id="wb-diff-easy">
+          <button class="ws-diff-btn ${this.difficulty === 'easy' ? 'active' : ''}" id="wb-diff-easy">
             🐣 ${easyLabel}
+          </button>
+          <button class="ws-diff-btn ${isSyllables ? 'active' : ''}" id="wb-diff-syllables">
+            🧱 ${syllablesLabel}
           </button>
           <button class="ws-diff-btn ${isHard ? 'active' : ''}" id="wb-diff-hard">
             🚀 ${hardLabel}
@@ -148,9 +185,9 @@ export class WordBuilderGame {
         <div class="wb-slots-container">
           ${this.slots.map((slot, index) => {
             const letter = slot ? slot.letter : '';
-            const isVowel = letter ? VOWELS[this.lang].has(letter) : false;
+            const colorClass = !isSyllables && letter ? (VOWELS[this.lang].has(letter) ? 'vowel' : 'consonant') : '';
             return `
-              <div class="wb-slot ${slot ? 'filled' : 'empty'} ${isCompleted ? 'success-anim' : ''} ${isVowel ? 'vowel' : 'consonant'}" 
+              <div class="wb-slot ${slot ? 'filled' : 'empty'} ${isCompleted ? 'success-anim' : ''} ${colorClass}" 
                    data-slot-index="${index}"
                    title="${isCompleted ? (isRu ? 'Нажми, чтобы послушать слово' : (isPl ? 'Kliknij, aby posłuchać' : 'Tap to listen')) : ''}">
                 ${letter}
@@ -159,12 +196,12 @@ export class WordBuilderGame {
           }).join('')}
         </div>
 
-        <!-- Доступные буквы для нажатия -->
+        <!-- Доступные буквы или слоги для нажатия -->
         <div class="wb-tiles-container">
           ${this.availableTiles.map(tile => {
-            const isVowel = VOWELS[this.lang].has(tile.letter);
+            const colorClass = !isSyllables ? (VOWELS[this.lang].has(tile.letter) ? 'vowel' : 'consonant') : '';
             return `
-              <button class="wb-tile ${tile.used ? 'used' : ''} ${isVowel ? 'vowel' : 'consonant'}" 
+              <button class="wb-tile ${tile.used ? 'used' : ''} ${colorClass}" 
                       data-tile-id="${tile.id}" 
                       ${tile.used ? 'disabled' : ''}>
                 ${tile.letter}
@@ -197,8 +234,10 @@ export class WordBuilderGame {
   attachEvents() {
     // Переключение уровня сложности
     const btnEasy = this.container.querySelector('#wb-diff-easy');
+    const btnSyllables = this.container.querySelector('#wb-diff-syllables');
     const btnHard = this.container.querySelector('#wb-diff-hard');
     if (btnEasy) btnEasy.addEventListener('click', () => this.setDifficulty('easy'));
+    if (btnSyllables) btnSyllables.addEventListener('click', () => this.setDifficulty('syllables'));
     if (btnHard) btnHard.addEventListener('click', () => this.setDifficulty('hard'));
 
     // Клик на плитку буквы
@@ -281,7 +320,11 @@ export class WordBuilderGame {
     if (!this.slots.includes(null)) {
       this.checkWord(tile.letter);
     } else {
-      sound.speakLetter(tile.letter, this.lang);
+      if (this.difficulty === 'syllables') {
+        sound.speakWord(tile.letter, this.lang);
+      } else {
+        sound.speakLetter(tile.letter, this.lang);
+      }
       this.render();
     }
   }
@@ -299,16 +342,16 @@ export class WordBuilderGame {
   }
 
   resetSlots() {
-    this.slots = Array(this.targetWord.length).fill(null);
+    this.slots = Array(this.targetUnits.length).fill(null);
     this.availableTiles.forEach(t => (t.used = false));
     this.render();
   }
 
   applyHint() {
-    // Находим первый слот, где буква отсутствует или неверна
+    // Находим первый слот, где буква/слог отсутствует или неверен
     let targetIdx = -1;
-    for (let i = 0; i < this.targetWord.length; i++) {
-      if (!this.slots[i] || this.slots[i].letter !== this.targetWord[i]) {
+    for (let i = 0; i < this.targetUnits.length; i++) {
+      if (!this.slots[i] || this.slots[i].letter !== this.targetUnits[i]) {
         targetIdx = i;
         break;
       }
@@ -316,21 +359,21 @@ export class WordBuilderGame {
 
     if (targetIdx === -1) return;
 
-    // Если в этом слоте уже была неправильная буква - освобождаем ее
+    // Если в этом слоте уже была неправильная плитка - освобождаем ее
     if (this.slots[targetIdx]) {
       const wrongTile = this.availableTiles.find(t => t.id === this.slots[targetIdx].tileId);
       if (wrongTile) wrongTile.used = false;
       this.slots[targetIdx] = null;
     }
 
-    const neededChar = this.targetWord[targetIdx];
-    // Ищем доступную неиспользованную плитку с нужной буквой
-    let candidateTile = this.availableTiles.find(t => !t.used && t.letter === neededChar);
+    const neededUnit = this.targetUnits[targetIdx];
+    // Ищем доступную неиспользованную плитку с нужной буквой/слогом
+    let candidateTile = this.availableTiles.find(t => !t.used && t.letter === neededUnit);
 
     // Если все такие плитки уже были ошибочно поставлены в другие слоты, найдем и снимем
     if (!candidateTile) {
       for (let s = 0; s < this.slots.length; s++) {
-        if (this.slots[s] && this.slots[s].letter === neededChar && s !== targetIdx) {
+        if (this.slots[s] && this.slots[s].letter === neededUnit && s !== targetIdx) {
           const t = this.availableTiles.find(tile => tile.id === this.slots[s].tileId);
           t.used = false;
           this.slots[s] = null;
@@ -348,7 +391,11 @@ export class WordBuilderGame {
         this.checkWord(candidateTile.letter);
       } else {
         sound.playSuccess();
-        sound.speakLetter(candidateTile.letter, this.lang);
+        if (this.difficulty === 'syllables') {
+          sound.speakWord(candidateTile.letter, this.lang);
+        } else {
+          sound.speakLetter(candidateTile.letter, this.lang);
+        }
         this.render();
       }
     }
@@ -356,8 +403,9 @@ export class WordBuilderGame {
 
   checkWord(lastLetter = '') {
     this.stop();
-    const currentWord = this.slots.map(s => s.letter).join('');
-    if (currentWord === this.targetWord) {
+    const isExactMatch = this.slots.length === this.targetUnits.length &&
+      this.slots.every((s, idx) => s && s.letter === this.targetUnits[idx]);
+    if (isExactMatch) {
       // Победа!
       this.isCompleted = true;
       this.render();
@@ -372,7 +420,11 @@ export class WordBuilderGame {
       this.render();
       sound.playError();
       if (lastLetter) {
-        sound.speakLetter(lastLetter, this.lang);
+        if (this.difficulty === 'syllables') {
+          sound.speakWord(lastLetter, this.lang);
+        } else {
+          sound.speakLetter(lastLetter, this.lang);
+        }
       }
       const slotsContainer = this.container.querySelector('.wb-slots-container');
       if (slotsContainer) {

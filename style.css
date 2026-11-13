@@ -1174,6 +1174,7 @@ body {
 .ab-subnav {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 10px;
 }
 
@@ -3242,4 +3243,666 @@ body {
   border-radius: 6px;
   font-weight: 900;
   border: 1.5px solid #facc15;
+}
+
+/* ========================================================
+   РЕЖИМ «ПО СЛОГАМ» В КОНСТРУКТОРЕ СЛОВ
+   ======================================================== */
+.wb-syllables-mode .wb-slot {
+  width: auto;
+  min-width: clamp(68px, 16vw, 96px);
+  padding: 0 14px;
+  height: clamp(56px, 13vw, 72px);
+  font-size: clamp(1.35rem, 4.2vw, 1.95rem);
+  letter-spacing: 0.5px;
+}
+
+.wb-syllables-mode .wb-tile {
+  width: auto;
+  min-width: clamp(72px, 17vw, 102px);
+  padding: 0 16px;
+  height: clamp(56px, 13vw, 72px);
+  font-size: clamp(1.35rem, 4.2vw, 1.95rem);
+  border-color: #93c5fd;
+  background: linear-gradient(180deg, #ffffff 0%, #eff6ff 100%);
+  color: #1e3a8a;
+  box-shadow: 0 7px 0px #60a5fa, 0 10px 18px rgba(37, 99, 235, 0.12);
+}
+
+/* ========================================================
+   ТЕТРАДИ «KOCHAM CZYTAĆ» (АЗБУКА ➔ ТЕТРАДИ)
+   ======================================================== */
+.kc-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 880px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.kc-chapters-nav {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(112px, 1fr));
+  gap: 8px;
+}
+
+.kc-chapter-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 9px 10px;
+  border-radius: 16px;
+  border: 2.5px solid #cbd5e1;
+  background: #ffffff;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  box-shadow: 0 4px 0px #cbd5e1;
+}
+
+.kc-chapter-btn:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0px #cbd5e1;
+}
+
+.kc-chapter-btn.active {
+  background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+  border-color: #8b5cf6;
+  box-shadow: 0 4px 0px #a78bfa;
+}
+
+.kc-ch-badge {
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: #64748b;
+  letter-spacing: 0.4px;
+}
+
+.kc-chapter-btn.active .kc-ch-badge {
+  color: #7c3aed;
+}
+
+.kc-ch-title {
+  font-size: 0.96rem;
+  font-weight: 900;
+  color: #1e293b;
+}
+
+.kc-intro-banner {
+  background: linear-gradient(135deg, #fef9c3 0%, #fef3c7 100%);
+  border: 2.5px solid #fcd34d;
+  border-radius: 18px;
+  padding: 10px 16px;
+  font-size: 0.98rem;
+  font-weight: 800;
+  color: #78350f;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.kc-card {
+  background: #ffffff;
+  border: 2.5px solid #e2e8f0;
+  border-radius: 22px;
+  padding: 14px 16px;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.05);
+  margin-bottom: 12px;
+}
+
+.kc-card.kc-card-done {
+  border-color: #4ade80;
+  background: #f0fdf4;
+}
+
+.kc-sec-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 1.02rem;
+  font-weight: 900;
+  color: #334155;
+  margin-bottom: 10px;
+}
+
+/* Этап 1: Гласные */
+.kc-vowel-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 10px;
+}
+
+.kc-vowel-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 8px;
+  border-radius: 18px;
+  border: 3px solid #fca5a5;
+  background: linear-gradient(180deg, #fff1f2 0%, #ffe4e6 100%);
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow: 0 5px 0px #fca5a5;
+  transition: transform 0.14s ease;
+}
+
+.kc-vowel-btn:active {
+  transform: translateY(4px);
+  box-shadow: 0 1px 0px #fca5a5;
+}
+
+.kc-vowel-letter {
+  font-size: 2.3rem;
+  font-weight: 900;
+  color: #be123c;
+  line-height: 1;
+}
+
+.kc-vowel-emoji {
+  font-size: 1.5rem;
+}
+
+.kc-vowel-cue {
+  font-size: 0.76rem;
+  font-weight: 800;
+  color: #881337;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.kc-pairs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+}
+
+.kc-pair-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 8px;
+  border-radius: 18px;
+  border: 2.5px solid #93c5fd;
+  background: #eff6ff;
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow: 0 4px 0px #93c5fd;
+  transition: transform 0.14s ease;
+}
+
+.kc-pair-btn:active {
+  transform: translateY(3px);
+}
+
+.kc-pair-scene {
+  font-size: 1.7rem;
+}
+
+.kc-pair-text {
+  font-size: 1.55rem;
+  font-weight: 900;
+  color: #1d4ed8;
+}
+
+.kc-pair-cap {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #1e40af;
+}
+
+/* Мини-викторины внутри тетрадей */
+.kc-quiz-card {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-color: #cbd5e1;
+}
+
+.kc-quiz-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.kc-quiz-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.kc-audio-btn,
+.kc-next-mini-btn,
+.kc-hint-audio-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 14px;
+  border: 2.5px solid #38bdf8;
+  background: #ffffff;
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 900;
+  color: #0369a1;
+  cursor: pointer;
+  box-shadow: 0 3px 0px #7dd3fc;
+}
+
+.kc-next-mini-btn {
+  border-color: #a78bfa;
+  color: #6d28d9;
+  box-shadow: 0 3px 0px #c4b5fd;
+}
+
+.kc-audio-btn:active,
+.kc-next-mini-btn:active,
+.kc-hint-audio-btn:active {
+  transform: translateY(2px);
+}
+
+.kc-quiz-options-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.kc-quiz-pill {
+  padding: 14px 8px;
+  border-radius: 18px;
+  border: 3px solid #cbd5e1;
+  background: #ffffff;
+  font-family: inherit;
+  font-size: clamp(1.3rem, 3.8vw, 1.85rem);
+  font-weight: 900;
+  color: #1e293b;
+  cursor: pointer;
+  box-shadow: 0 5px 0px #cbd5e1;
+  transition: all 0.15s ease;
+}
+
+.kc-quiz-pill.correct,
+.kc-actor-choice.correct,
+.kc-dig-choice-btn.correct,
+.kc-sen-pic-btn.correct {
+  background: #dcfce7 !important;
+  border-color: #22c55e !important;
+  color: #15803d !important;
+  box-shadow: 0 5px 0px #86efac !important;
+  transform: scale(1.04);
+}
+
+.kc-quiz-pill.wrong,
+.kc-actor-choice.wrong,
+.kc-dig-choice-btn.wrong,
+.kc-sen-pic-btn.wrong {
+  background: #fee2e2 !important;
+  border-color: #ef4444 !important;
+  animation: shakeAnim 0.4s ease;
+}
+
+/* Этап 2: Звукоподражания */
+.kc-mode-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.kc-toggle-btn {
+  padding: 9px 16px;
+  border-radius: 14px;
+  border: 2.5px solid #cbd5e1;
+  background: #ffffff;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #475569;
+  cursor: pointer;
+}
+
+.kc-toggle-btn.active {
+  background: #e0f2fe;
+  border-color: #0284c7;
+  color: #0369a1;
+}
+
+.kc-onomat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(122px, 1fr));
+  gap: 10px;
+}
+
+.kc-onomat-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 8px;
+  border-radius: 20px;
+  border: 2.5px solid #fde047;
+  background: linear-gradient(180deg, #ffffff 0%, #fefce8 100%);
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow: 0 5px 0px #facc15;
+  transition: transform 0.14s ease;
+}
+
+.kc-onomat-card:active {
+  transform: translateY(4px);
+  box-shadow: 0 1px 0px #facc15;
+}
+
+.kc-onomat-bubble {
+  background: #ffffff;
+  border: 2px solid #f59e0b;
+  border-radius: 12px;
+  padding: 4px 10px;
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #b45309;
+}
+
+.kc-onomat-emoji {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.kc-onomat-actor {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #475569;
+}
+
+.kc-onomat-target-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 12px 0 18px;
+}
+
+.kc-giant-bubble {
+  background: #fef9c3;
+  border: 3px solid #eab308;
+  border-radius: 24px 24px 24px 6px;
+  padding: 14px 28px;
+  font-size: clamp(1.8rem, 5vw, 2.5rem);
+  font-weight: 900;
+  color: #713f12;
+  box-shadow: 0 6px 0px #facc15;
+}
+
+.kc-onomat-choices {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.kc-actor-choice {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 16px 10px;
+  border-radius: 20px;
+  border: 3px solid #cbd5e1;
+  background: #f8fafc;
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow: 0 5px 0px #cbd5e1;
+}
+
+.kc-actor-emoji {
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.kc-actor-name {
+  font-size: 1rem;
+  font-weight: 900;
+  color: #1e293b;
+}
+
+/* Этапы 3 и 4: Слоги и Двузнаки */
+.kc-consonant-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 7px;
+  margin-bottom: 12px;
+}
+
+.kc-cons-btn {
+  min-width: 44px;
+  height: 44px;
+  padding: 0 12px;
+  border-radius: 14px;
+  border: 2.5px solid #cbd5e1;
+  background: #ffffff;
+  font-family: inherit;
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #334155;
+  cursor: pointer;
+  box-shadow: 0 4px 0px #cbd5e1;
+  transition: all 0.14s ease;
+}
+
+.kc-cons-btn.wide {
+  min-width: auto;
+  padding: 0 14px;
+  font-size: 0.98rem;
+}
+
+.kc-cons-btn.active {
+  background: #3b82f6;
+  border-color: #1d4ed8;
+  color: #ffffff;
+  box-shadow: 0 4px 0px #1e40af;
+}
+
+.kc-cons-btn.done:not(.active) {
+  background: #dcfce7;
+  border-color: #4ade80;
+  color: #15803d;
+}
+
+.kc-syl-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  justify-content: center;
+}
+
+.kc-syl-stone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 72px;
+  padding: 10px 14px;
+  border-radius: 18px;
+  border: 3px solid #93c5fd;
+  background: #eff6ff;
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow: 0 5px 0px #93c5fd;
+  transition: transform 0.14s ease;
+}
+
+.kc-syl-stone.closed {
+  border-color: #d8b4fe;
+  background: #faf5ff;
+  box-shadow: 0 5px 0px #d8b4fe;
+}
+
+.kc-syl-stone.walked {
+  background: #dcfce7;
+  border-color: #22c55e;
+  box-shadow: 0 5px 0px #86efac;
+}
+
+.kc-syl-stone:active {
+  transform: translateY(4px);
+}
+
+.kc-syl-mark {
+  font-size: 0.85rem;
+  color: #16a34a;
+  line-height: 1;
+}
+
+.kc-syl-txt {
+  font-size: 1.45rem;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.kc-mini-words-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+}
+
+.kc-mini-word-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  border: 2.5px solid #cbd5e1;
+  background: #f8fafc;
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow: 0 4px 0px #cbd5e1;
+}
+
+.kc-mini-word-btn:active {
+  transform: translateY(3px);
+}
+
+.kc-mini-word-emoji {
+  font-size: 1.8rem;
+}
+
+.kc-mini-word-txt {
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #1e293b;
+}
+
+.kc-digraph-tip {
+  background: #f0f9ff;
+  border: 2px solid #bae6fd;
+  border-radius: 14px;
+  padding: 8px 12px;
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #0369a1;
+}
+
+.kc-digraph-quiz-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.kc-dig-choice-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 8px;
+  border-radius: 18px;
+  border: 3px solid #cbd5e1;
+  background: #ffffff;
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow: 0 5px 0px #cbd5e1;
+}
+
+.kc-dig-emoji {
+  font-size: 2.2rem;
+}
+
+.kc-dig-word {
+  font-size: 1.05rem;
+  font-weight: 900;
+  color: #1e293b;
+}
+
+/* Этап 5: Первые фразы */
+.kc-sentence-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 18px;
+}
+
+.kc-sentence-text {
+  font-size: clamp(1.45rem, 4.4vw, 2.2rem);
+  font-weight: 900;
+  color: #0f172a;
+  background: #eff6ff;
+  border: 3px solid #93c5fd;
+  border-radius: 20px;
+  padding: 16px 24px;
+  text-align: center;
+  margin-bottom: 14px;
+  letter-spacing: 0.8px;
+  width: 100%;
+}
+
+.kc-sentence-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  width: 100%;
+}
+
+.kc-sen-pic-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1 / 0.85;
+  border-radius: 22px;
+  border: 3px solid #cbd5e1;
+  background: #f8fafc;
+  cursor: pointer;
+  box-shadow: 0 6px 0px #cbd5e1;
+  transition: transform 0.14s ease;
+}
+
+.kc-sen-pic-btn:active {
+  transform: translateY(4px);
+}
+
+.kc-sen-emoji {
+  font-size: clamp(3rem, 9vw, 4.5rem);
+  line-height: 1;
+}
+
+.kc-sen-feedback {
+  margin-top: 12px;
+  min-height: 24px;
+  font-size: 1.05rem;
+  font-weight: 900;
+  text-align: center;
+}
+
+@media (max-width: 520px) {
+  .kc-quiz-options-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
