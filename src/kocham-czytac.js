@@ -1,8 +1,8 @@
 // Модуль «Тетради Kocham Czytać» (по методике проф. Ягоды Цешиньской — Metoda Krakowska, Zeszyty 1–18)
 // и база слов по слогам для «Собери слово»
 
-import { shuffleArray } from './data.js?v=21';
-import { sound } from './audio.js?v=21';
+import { shuffleArray } from './data.js?v=22';
+import { sound } from './audio.js?v=22';
 
 // Слова, разбитые на слоги, с лишним «слогом-ловушкой» (дистрактором)
 export const SYLLABLE_WORDS_DATA = {
@@ -181,7 +181,11 @@ export const WORKBOOKS_DATA = {
         { c: 'З', open: ['ЗА', 'ЗО', 'ЗУ', 'ЗЭ', 'ЗИ', 'ЗЫ'], closed: ['АЗ', 'ОЗ', 'УЗ', 'ЭЗ', 'ИЗ', 'ЫЗ'], words: [{ emoji: '❄️', display: 'ЗИ·МА', word: 'ЗИМА' }, { emoji: '🐐', display: 'КО·ЗА', word: 'КОЗА' }, { emoji: '🦷', display: 'ЗУБ', word: 'ЗУБ' }, { emoji: '☂️', display: 'ЗОНТ', word: 'ЗОНТ' }] },
         { c: 'К', open: ['КА', 'КО', 'КУ', 'КЭ', 'КИ', 'КЫ'], closed: ['АК', 'ОК', 'УК', 'ЭК', 'ИК', 'ЫК'], words: [{ emoji: '🐱', display: 'КОТ', word: 'КОТ' }, { emoji: '🥣', display: 'КА·ША', word: 'КАША' }, { emoji: '🐋', display: 'КИТ', word: 'КИТ' }, { emoji: '🐄', display: 'КО·РО·ВА', word: 'КОРОВА' }] },
         { c: 'Г', open: ['ГА', 'ГО', 'ГУ', 'ГЭ', 'ГИ', 'ГЫ'], closed: ['АГ', 'ОГ', 'УГ', 'ЭГ', 'ИГ', 'ЫГ'], words: [{ emoji: '🏔️', display: 'ГО·РА', word: 'ГОРА' }, { emoji: '🪿', display: 'ГУ·СИ', word: 'ГУСИ' }, { emoji: '🍄', display: 'ГРИБ', word: 'ГРИБ' }, { emoji: '🎸', display: 'ГИ·ТА·РА', word: 'ГИТАРА' }] },
-        { c: 'Р', open: ['РА', 'РО', 'РУ', 'РЭ', 'РИ', 'РЫ'], closed: ['АР', 'ОР', 'УР', 'ЭР', 'ИР', 'ЫР'], words: [{ emoji: '🐟', display: 'РЫ·БА', word: 'РЫБА' }, { emoji: '✋', display: 'РУ·КА', word: 'РУКА' }, { emoji: '🚀', display: 'РА·КЕ·ТА', word: 'РАКЕТА' }, { emoji: '🌈', display: 'РА·ДУ·ГА', word: 'РАДУГА' }] }
+        { c: 'Х', open: ['ХА', 'ХО', 'ХУ', 'ХЭ', 'ХИ', 'ХЫ'], closed: ['АХ', 'ОХ', 'УХ', 'ЭХ', 'ИХ', 'ЫХ'], words: [{ emoji: '🍞', display: 'ХЛЕБ', word: 'ХЛЕБ' }, { emoji: '🪰', display: 'МУ·ХА', word: 'МУХА' }, { emoji: '👂', display: 'У·ХО', word: 'УХО' }, { emoji: '🐹', display: 'ХО·МЯК', word: 'ХОМЯК' }] },
+        { c: 'Р', open: ['РА', 'РО', 'РУ', 'РЭ', 'РИ', 'РЫ'], closed: ['АР', 'ОР', 'УР', 'ЭР', 'ИР', 'ЫР'], words: [{ emoji: '🐟', display: 'РЫ·БА', word: 'РЫБА' }, { emoji: '✋', display: 'РУ·КА', word: 'РУКА' }, { emoji: '🚀', display: 'РА·КЕ·ТА', word: 'РАКЕТА' }, { emoji: '🌈', display: 'РА·ДУ·ГА', word: 'РАДУГА' }] },
+        { c: 'Ж', open: ['ЖА', 'ЖО', 'ЖУ', 'ЖЕ', 'ЖИ', 'ЖЁ'], closed: ['АЖ', 'ОЖ', 'УЖ', 'ЭЖ', 'ИЖ', 'ЫЖ'], words: [{ emoji: '🪲', display: 'ЖУК', word: 'ЖУК' }, { emoji: '🐸', display: 'ЖА·БА', word: 'ЖАБА' }, { emoji: '🦒', display: 'ЖИ·РАФ', word: 'ЖИРАФ' }, { emoji: '🦔', display: 'Ё·ЖИК', word: 'ЁЖИК' }] },
+        { c: 'Ш', open: ['ША', 'ШО', 'ШУ', 'ШЕ', 'ШИ', 'ШЁ'], closed: ['АШ', 'ОШ', 'УШ', 'ЭШ', 'ИШ', 'ЫШ'], words: [{ emoji: '🎈', display: 'ШАР', word: 'ШАР' }, { emoji: '🧣', display: 'ШАРФ', word: 'ШАРФ' }, { emoji: '🥣', display: 'КА·ША', word: 'КАША' }, { emoji: '🚗', display: 'МА·ШИ·НА', word: 'МАШИНА' }] },
+        { c: 'Ц', open: ['ЦА', 'ЦО', 'ЦУ', 'ЦЕ', 'ЦИ', 'ЦЫ'], closed: ['АЦ', 'ОЦ', 'УЦ', 'ЭЦ', 'ИЦ', 'ЫЦ'], words: [{ emoji: '🎪', display: 'ЦИРК', word: 'ЦИРК' }, { emoji: '🌸', display: 'ЦВЕ·ТОК', word: 'ЦВЕТОК' }, { emoji: '🐰', display: 'ЗА·ЯЦ', word: 'ЗАЯЦ' }, { emoji: '🐦', display: 'ПТИ·ЦА', word: 'ПТИЦА' }] }
       ]
     },
     digraphs: {
@@ -320,6 +324,10 @@ export const WORKBOOKS_DATA = {
         { c: 'K', open: ['KA', 'KO', 'KU', 'KE', 'KI', 'KY'], closed: ['AK', 'OK', 'UK', 'EK', 'IK', 'YK'], words: [{ emoji: '🐱', display: 'KO·TEK', word: 'KOTEK' }, { emoji: '☕', display: 'KA·WA', word: 'KAWA' }, { emoji: '🐄', display: 'KRO·WA', word: 'KROWA' }, { emoji: '🐔', display: 'KU·RA', word: 'KURA' }] },
         { c: 'G', open: ['GA', 'GO', 'GU', 'GE', 'GI', 'GY'], closed: ['AG', 'OG', 'UG', 'EG', 'IG', 'YG'], words: [{ emoji: '🏔️', display: 'GÓ·RA', word: 'GÓRA' }, { emoji: '🍄', display: 'GRZYB', word: 'GRZYB' }, { emoji: '🕊️', display: 'GO·ŁĄB', word: 'GOŁĄB' }, { emoji: '🎸', display: 'GI·TA·RA', word: 'GITARA' }] },
         { c: 'N', open: ['NA', 'NO', 'NU', 'NE', 'NI', 'NY'], closed: ['AN', 'ON', 'UN', 'EN', 'IN', 'YN'], words: [{ emoji: '👃', display: 'NOS', word: 'NOS' }, { emoji: '🦶', display: 'NO·GA', word: 'NOGA' }, { emoji: '🌙', display: 'NOC', word: 'NOC' }, { emoji: '🍌', display: 'BA·NAN', word: 'BANAN' }] },
+        { c: 'R', open: ['RA', 'RO', 'RU', 'RE', 'RY', 'RÓ'], closed: ['AR', 'OR', 'UR', 'ER', 'IR', 'YR'], words: [{ emoji: '🐟', display: 'RY·BA', word: 'RYBA' }, { emoji: '✋', display: 'RĘ·KA', word: 'RĘKA' }, { emoji: '🚲', display: 'RO·WER', word: 'ROWER' }, { emoji: '🚀', display: 'RA·KIE·TA', word: 'RAKIETA' }] },
+        { c: 'C', open: ['CA', 'CO', 'CU', 'CE', 'CY', 'CÓ'], closed: ['AC', 'OC', 'UC', 'EC', 'IC', 'YC'], words: [{ emoji: '🌙', display: 'NOC', word: 'NOC' }, { emoji: '🍋', display: 'CY·TRY·NA', word: 'CYTRYNA' }, { emoji: '🧅', display: 'CE·BU·LA', word: 'CEBULA' }, { emoji: '🧱', display: 'CE·GŁA', word: 'CEGŁA' }] },
+        { c: 'H', open: ['HA', 'HO', 'HU', 'HE', 'HI', 'HY'], closed: ['AH', 'OH', 'UH', 'EH', 'IH', 'YH'], words: [{ emoji: '🍵', display: 'HER·BA·TA', word: 'HERBATA' }, { emoji: '🛌', display: 'HA·MAK', word: 'HAMAK' }, { emoji: '🚁', display: 'HE·LI·KOP·TER', word: 'HELIKOPTER' }, { emoji: '🐶', display: 'HAU', word: 'HAU' }] },
+        { c: 'Ł', open: ['ŁA', 'ŁO', 'ŁU', 'ŁE', 'ŁY', 'ŁÓ'], closed: ['AŁ', 'OŁ', 'UŁ', 'EŁ', 'IŁ', 'YŁ'], words: [{ emoji: '🪵', display: 'ŁA·WA', word: 'ŁAWA' }, { emoji: '⛵', display: 'ŁÓD·KA', word: 'ŁÓDKA' }, { emoji: '🍎', display: 'JABŁ·KO', word: 'JABŁKO' }, { emoji: '🪑', display: 'STÓŁ', word: 'STÓŁ' }] },
         { c: 'J', open: ['JA', 'JO', 'JU', 'JE', 'JI', 'JY'], closed: ['AJ', 'OJ', 'UJ', 'EJ', 'IJ', 'YJ'], words: [{ emoji: '🥚', display: 'JAJ·KO', word: 'JAJKO' }, { emoji: '🦔', display: 'JEŻ', word: 'JEŻ' }, { emoji: '🍎', display: 'JABŁ·KO', word: 'JABŁKO' }, { emoji: '🍓', display: 'JA·GO·DA', word: 'JAGODA' }] }
       ]
     },
@@ -455,7 +463,14 @@ export const WORKBOOKS_DATA = {
         { c: 'L', open: ['LA', 'LE', 'LI', 'LO', 'LU', 'LY'], closed: ['AL', 'EL', 'IL', 'OL', 'UL', 'YL'], words: [{ emoji: '🦁', display: 'LI·ON', word: 'LION' }, { emoji: '🍋', display: 'LE·MON', word: 'LEMON' }, { emoji: '🍃', display: 'LEAF', word: 'LEAF' }, { emoji: '🐞', display: 'LA·DY·BUG', word: 'LADYBUG' }] },
         { c: 'S', open: ['SA', 'SE', 'SI', 'SO', 'SU', 'SY'], closed: ['AS', 'ES', 'IS', 'OS', 'US', 'YS'], words: [{ emoji: '☀️', display: 'SUN', word: 'SUN' }, { emoji: '🕷️', display: 'SPI·DER', word: 'SPIDER' }, { emoji: '⭐', display: 'STAR', word: 'STAR' }, { emoji: '🌅', display: 'SUN·SET', word: 'SUNSET' }] },
         { c: 'K', open: ['KA', 'KE', 'KI', 'KO', 'KU', 'KY'], closed: ['AK', 'EK', 'IK', 'OK', 'UK', 'YK'], words: [{ emoji: '🐱', display: 'KIT·TEN', word: 'KITTEN' }, { emoji: '🔑', display: 'KEY', word: 'KEY' }, { emoji: '👑', display: 'KING', word: 'KING' }, { emoji: '🐨', display: 'KO·A·LA', word: 'KOALA' }] },
-        { c: 'R', open: ['RA', 'RE', 'RI', 'RO', 'RU', 'RY'], closed: ['AR', 'ER', 'IR', 'OR', 'UR', 'YR'], words: [{ emoji: '🐰', display: 'RAB·BIT', word: 'RABBIT' }, { emoji: '🤖', display: 'RO·BOT', word: 'ROBOT' }, { emoji: '🌈', display: 'RAIN·BOW', word: 'RAINBOW' }, { emoji: '🚀', display: 'ROCK·ET', word: 'ROCKET' }] }
+        { c: 'R', open: ['RA', 'RE', 'RI', 'RO', 'RU', 'RY'], closed: ['AR', 'ER', 'IR', 'OR', 'UR', 'YR'], words: [{ emoji: '🐰', display: 'RAB·BIT', word: 'RABBIT' }, { emoji: '🤖', display: 'RO·BOT', word: 'ROBOT' }, { emoji: '🌈', display: 'RAIN·BOW', word: 'RAINBOW' }, { emoji: '🚀', display: 'ROCK·ET', word: 'ROCKET' }] },
+        { c: 'F', open: ['FA', 'FE', 'FI', 'FO', 'FU', 'FY'], closed: ['AF', 'EF', 'IF', 'OF', 'UF', 'YF'], words: [{ emoji: '🐟', display: 'FISH', word: 'FISH' }, { emoji: '🦊', display: 'FOX', word: 'FOX' }, { emoji: '🐸', display: 'FROG', word: 'FROG' }, { emoji: '🌸', display: 'FLOW·ER', word: 'FLOWER' }] },
+        { c: 'G', open: ['GA', 'GE', 'GI', 'GO', 'GU', 'GY'], closed: ['AG', 'EG', 'IG', 'OG', 'UG', 'YG'], words: [{ emoji: '🐐', display: 'GOAT', word: 'GOAT' }, { emoji: '🎁', display: 'GIFT', word: 'GIFT' }, { emoji: '🏡', display: 'GAR·DEN', word: 'GARDEN' }, { emoji: '🦒', display: 'GI·RAFFE', word: 'GIRAFFE' }] },
+        { c: 'H', open: ['HA', 'HE', 'HI', 'HO', 'HU', 'HY'], closed: ['AH', 'EH', 'IH', 'OH', 'UH', 'YH'], words: [{ emoji: '🎩', display: 'HAT', word: 'HAT' }, { emoji: '✋', display: 'HAND', word: 'HAND' }, { emoji: '🍯', display: 'HO·NEY', word: 'HONEY' }, { emoji: '😊', display: 'HAP·PY', word: 'HAPPY' }] },
+        { c: 'J', open: ['JA', 'JE', 'JI', 'JO', 'JU', 'JY'], closed: ['AJ', 'EJ', 'IJ', 'OJ', 'UJ', 'YJ'], words: [{ emoji: '🍓', display: 'JAM', word: 'JAM' }, { emoji: '✈️', display: 'JET', word: 'JET' }, { emoji: '🧃', display: 'JUICE', word: 'JUICE' }, { emoji: '🧥', display: 'JACK·ET', word: 'JACKET' }] },
+        { c: 'V', open: ['VA', 'VE', 'VI', 'VO', 'VU', 'VY'], closed: ['AV', 'EV', 'IV', 'OV', 'UV', 'YV'], words: [{ emoji: '🚐', display: 'VAN', word: 'VAN' }, { emoji: '🦺', display: 'VEST', word: 'VEST' }, { emoji: '🏺', display: 'VA·SE', word: 'VASE' }, { emoji: '🎻', display: 'VI·O·LIN', word: 'VIOLIN' }] },
+        { c: 'W', open: ['WA', 'WE', 'WI', 'WO', 'WU', 'WY'], closed: ['AW', 'EW', 'IW', 'OW', 'UW', 'YW'], words: [{ emoji: '🕸️', display: 'WEB', word: 'WEB' }, { emoji: '🐺', display: 'WOLF', word: 'WOLF' }, { emoji: '💧', display: 'WA·TER', word: 'WATER' }, { emoji: '🪟', display: 'WIN·DOW', word: 'WINDOW' }] },
+        { c: 'Z', open: ['ZA', 'ZE', 'ZI', 'ZO', 'ZU', 'ZY'], closed: ['AZ', 'EZ', 'IZ', 'OZ', 'UZ', 'YZ'], words: [{ emoji: '🦁', display: 'ZOO', word: 'ZOO' }, { emoji: '0️⃣', display: 'ZE·RO', word: 'ZERO' }, { emoji: '🦓', display: 'ZE·BRA', word: 'ZEBRA' }, { emoji: '🍕', display: 'PIZ·ZA', word: 'PIZZA' }] }
       ]
     },
     digraphs: {

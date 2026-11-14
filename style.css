@@ -2968,11 +2968,12 @@ body {
   background: #ffffff;
   border: 3px solid #e2e8f0;
   border-radius: 24px;
-  padding: 14px 18px;
+  padding: 16px 18px;
   box-shadow: 0 6px 16px rgba(15, 23, 42, 0.05);
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
+  min-width: 0;
   transition: border-color 0.25s ease, background 0.25s ease;
 }
 
@@ -3192,29 +3193,28 @@ body {
 /* БЛОК 4: Слова с этой буквой */
 .primer-words-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 10px;
-}
-
-@media (max-width: 620px) {
-  .primer-words-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
 }
 
 .primer-word-card {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 12px 14px;
+  min-width: 0;
+  padding: 12px 13px;
   border-radius: 18px;
   border: 3px solid #cbd5e1;
   background: #f8fafc;
   font-family: inherit;
   cursor: pointer;
   box-shadow: 0 5px 0px #cbd5e1;
-  transition: all 0.15s ease;
+  transition: transform 0.14s ease, border-color 0.15s ease, background 0.15s ease;
   text-align: left;
+}
+
+.primer-word-card:active {
+  transform: translateY(3px);
 }
 
 .primer-word-card.found {
@@ -3230,25 +3230,36 @@ body {
 }
 
 .primer-word-emoji {
-  font-size: 2.2rem;
+  font-size: clamp(1.75rem, 2.8vw, 2.2rem);
   line-height: 1;
+  flex-shrink: 0;
 }
 
 .primer-word-label {
-  font-size: 1.18rem;
+  flex: 1;
+  min-width: 0;
+  font-size: clamp(0.92rem, 1.45vw, 1.12rem);
   font-weight: 900;
   color: #1e293b;
-  word-break: break-word;
+  line-height: 1.2;
+  overflow-wrap: break-word;
 }
 
 .primer-word-hl {
   display: inline-block;
   background: #fef08a;
   color: #dc2626;
-  padding: 0 4px;
-  border-radius: 6px;
+  padding: 0 3px;
+  margin: 0 1px;
+  border-radius: 5px;
   font-weight: 900;
   border: 1.5px solid #facc15;
+}
+
+@media (max-width: 440px) {
+  .primer-words-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* БЛОКИ 5 и 6 БУКВАРЯ: Позиция буквы в слове и «Почини слово» */

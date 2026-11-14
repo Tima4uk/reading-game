@@ -1,12 +1,12 @@
 // Интерактивный «Букварь: Комиксы, слоги, игры и задания» (по мотивам методики В. и А. Мельниковых / АСТ)
 // Поддерживает все буквы RU (33), PL (32), EN (26)
 
-import { ALPHABET_DATA, WORDS_DATA, WORDS_DATA_HARD, VOWELS, RUSSIAN_ALPHABET, POLISH_ALPHABET, ENGLISH_ALPHABET, shuffleArray } from './data.js?v=21';
+import { ALPHABET_DATA, WORDS_DATA, WORDS_DATA_HARD, VOWELS, RUSSIAN_ALPHABET, POLISH_ALPHABET, ENGLISH_ALPHABET, shuffleArray } from './data.js?v=22';
 
 const RU_CUSTOM_LESSONS = {
   'А': {
     tip: 'Широко открой ротик и пропоём песенку голосом: «А-А-А!». Воздух выходит свободно — это гласный звук 🔴.',
-    syllables: ['АУ', 'АМ', 'МА', 'ПА', 'БА'],
+    syllables: ['АУ', 'АМ', 'МА', 'ПА', 'БА', 'СА'],
     comic: [
       { avatar: '👧', scene: '🌲', bubble: 'А-У!', spoken: 'Ау!', caption: 'Аня гуляет в лесу и зовёт друзей:' },
       { avatar: '🐊', scene: '🍉', bubble: 'АМ! Вкусно!', spoken: 'Ам! Вкусно!', caption: 'Акула и крокодил кушают сладкий арбуз:' }
@@ -14,7 +14,7 @@ const RU_CUSTOM_LESSONS = {
   },
   'Б': {
     tip: 'Сожми губы вместе и резко выдохни с голосом: «Б-Б-Б!». Губы лопаются как мыльный пузырь — согласный звук 🔵.',
-    syllables: ['БА', 'БО', 'БУ', 'БЫ', 'БИ'],
+    syllables: ['БА', 'БО', 'БУ', 'БЫ', 'БИ', 'АБ'],
     comic: [
       { avatar: '🐏', scene: '🥁', bubble: 'БУМ-БАМ!', spoken: 'Бум бам!', caption: 'Барашек бьёт в большой барабан:' },
       { avatar: '🐿️', scene: '🍌', bubble: 'Браво, Боб!', spoken: 'Браво, Боб!', caption: 'Белка угощает друзей спелым бананом:' }
@@ -22,7 +22,7 @@ const RU_CUSTOM_LESSONS = {
   },
   'В': {
     tip: 'Верхние зубки легко касаются нижней губы, продуй ветерок с голосом: «В-В-В!» — согласный звук 🔵.',
-    syllables: ['ВА', 'ВО', 'ВУ', 'ВЫ', 'ВИ'],
+    syllables: ['ВА', 'ВО', 'ВУ', 'ВЫ', 'ВИ', 'АВ'],
     comic: [
       { avatar: '🐺', scene: '🌬️', bubble: 'В-В-УУУ!', spoken: 'Вууу!', caption: 'Воет ветер и волк поёт луне:' },
       { avatar: '🐦‍⬛', scene: '🍒', bubble: 'Вот вода!', spoken: 'Вот вода!', caption: 'Ворона нашла вкусную вишню и воду:' }
@@ -30,7 +30,7 @@ const RU_CUSTOM_LESSONS = {
   },
   'Г': {
     tip: 'Спинка язычка стучит у горлышка с голосом: «Г-Г-Г!», как гогочут гуси — согласный звук 🔵.',
-    syllables: ['ГА', 'ГО', 'ГУ', 'ГЫ', 'ГИ'],
+    syllables: ['ГА', 'ГО', 'ГУ', 'ГИ', 'ГЕ', 'АГ'],
     comic: [
       { avatar: '🪿', scene: '🌧️', bubble: 'ГА-ГА-ГА!', spoken: 'Га-га-га!', caption: 'Гуси громко гогочут на лугу:' },
       { avatar: '🦔', scene: '🍄', bubble: 'Ого, гриб!', spoken: 'Ого, гриб!', caption: 'Под горой вырос огромный гриб:' }
@@ -38,7 +38,7 @@ const RU_CUSTOM_LESSONS = {
   },
   'Д': {
     tip: 'Кончик языка звонко стучит за верхними зубками: «Д-Д-Д!», как дятел по дереву — согласный звук 🔵.',
-    syllables: ['ДА', 'ДО', 'ДУ', 'ДЫ', 'ДИ'],
+    syllables: ['ДА', 'ДО', 'ДУ', 'ДЫ', 'ДИ', 'АД'],
     comic: [
       { avatar: '🐦', scene: '🌳', bubble: 'ТУК-ДДД!', spoken: 'Тук, да-да!', caption: 'Дятел строит добрый дом на дубе:' },
       { avatar: '👦', scene: '🏠', bubble: 'Да! Наш дом!', spoken: 'Да! Наш дом!', caption: 'Дети рады: готов уютный дом!' }
@@ -46,7 +46,7 @@ const RU_CUSTOM_LESSONS = {
   },
   'Е': {
     tip: 'Улыбнись губками и мягко пропоём: «ЙЭ-Е-Е!». Этот гласный звук 🔴 смягчает согласные перед собой.',
-    syllables: ['МЕ', 'ЛЕ', 'НЕ', 'СЕ', 'ЕЛЬ'],
+    syllables: ['МЕ', 'ЛЕ', 'НЕ', 'СЕ', 'ТЕ', 'ЕЛЬ'],
     comic: [
       { avatar: '🦝', scene: '🌲', bubble: 'Е-е! Ель!', spoken: 'Ель!', caption: 'Енот нашёл пушистую лесную ель:' },
       { avatar: '🦄', scene: '🫐', bubble: 'Ем ежевику!', spoken: 'Ем ежевику!', caption: 'Единорог угощается сладкими ягодами:' }
@@ -54,7 +54,7 @@ const RU_CUSTOM_LESSONS = {
   },
   'Ё': {
     tip: 'Вытяни губки трубочкой вперёд и пропоём: «ЙО-Ё-Ё!». Буква Ё всегда ударная и гласная 🔴.',
-    syllables: ['МЁ', 'ЛЁ', 'НЁ', 'ТЁ', 'ЁЖ'],
+    syllables: ['МЁ', 'ЛЁ', 'НЁ', 'ТЁ', 'ВСЁ', 'ЁЖ'],
     comic: [
       { avatar: '🦔', scene: '🎄', bubble: 'Ой, ёлка!', spoken: 'Ой, ёлка!', caption: 'Колючий ёжик несёт фонарик к ёлке:' },
       { avatar: '🐻', scene: '🍯', bubble: 'Вкусный мёд!', spoken: 'Вкусный мёд!', caption: 'На ёлке зажглись яркие огоньки:' }
@@ -62,7 +62,7 @@ const RU_CUSTOM_LESSONS = {
   },
   'Ж': {
     tip: 'Округли губы, подними язычок «чашечкой» кверху и пожужжи как жук: «Ж-Ж-Ж!» — всегда твёрдый согласный 🔵.',
-    syllables: ['ЖА', 'ЖО', 'ЖУ', 'ЖИ', 'ЖЕ'],
+    syllables: ['ЖА', 'ЖУ', 'ЖИ', 'ЖЕ', 'ЖЁ', 'УЖ'],
     comic: [
       { avatar: '🪲', scene: '🌼', bubble: 'Ж-Ж-ЖУ!', spoken: 'Жу-жу!', caption: 'Большой жук жужжит над жёлтым цветком:' },
       { avatar: '🦒', scene: '🍦', bubble: 'Жарко жду!', spoken: 'Жарко!', caption: 'Жираф ждёт прохладный дождик:' }
@@ -70,7 +70,7 @@ const RU_CUSTOM_LESSONS = {
   },
   'З': {
     tip: 'Улыбнись, кончик языка у нижних зубов, позвени как комарик: «З-З-З!» — звонкий согласный 🔵.',
-    syllables: ['ЗА', 'ЗО', 'ЗУ', 'ЗЫ', 'ЗИ'],
+    syllables: ['ЗА', 'ЗО', 'ЗУ', 'ЗЫ', 'ЗИ', 'АЗ'],
     comic: [
       { avatar: '🦟', scene: '🌿', bubble: 'З-З-ЗВЕНЬ!', spoken: 'Ззз!', caption: 'Комарик звенит в зелёной траве:' },
       { avatar: '🐰', scene: '☂️', bubble: 'Зонт зайки!', spoken: 'Зонт зайки!', caption: 'Зайка спрятался под ярким зонтиком:' }
@@ -78,7 +78,7 @@ const RU_CUSTOM_LESSONS = {
   },
   'И': {
     tip: 'Широко улыбнись, покажи зубки и пропоём звонко: «И-И-И!», как жеребёнок — гласный звук 🔴.',
-    syllables: ['МИ', 'ЛИ', 'НИ', 'СИ', 'ТИ'],
+    syllables: ['МИ', 'ЛИ', 'НИ', 'СИ', 'ТИ', 'ИВ'],
     comic: [
       { avatar: '🐴', scene: '🌾', bubble: 'И-ГО-ГО!', spoken: 'И-го-го!', caption: 'Лошадка весело скачет по лугу:' },
       { avatar: '🧒', scene: '🧸', bubble: 'Играем!', spoken: 'Играем!', caption: 'У Иры любимые мягкие игрушки:' }
@@ -86,7 +86,7 @@ const RU_CUSTOM_LESSONS = {
   },
   'Й': {
     tip: 'Короткий и мягкий согласный звук 🔵: улыбнись и коротко выдохни «Й!», как в словах «Ой!» и «Ай!».',
-    syllables: ['ОЙ', 'АЙ', 'ЭЙ', 'МАЙ', 'ЧАЙ'],
+    syllables: ['ОЙ', 'АЙ', 'ЭЙ', 'МАЙ', 'ЧАЙ', 'РАЙ'],
     comic: [
       { avatar: '🦜', scene: '🍵', bubble: 'ЭЙ! Пей чай!', spoken: 'Эй! Пей чай!', caption: 'Попугай зовёт гостей к столу:' },
       { avatar: '🧒', scene: '🍦', bubble: 'ОЙ, йогурт!', spoken: 'Ой, йогурт!', caption: 'На завтрак вкусный ягодный йогурт:' }
@@ -94,7 +94,7 @@ const RU_CUSTOM_LESSONS = {
   },
   'К': {
     tip: 'Спинка язычка коротко толкает воздух у горлышка без голоса: «К-К-К!», как капельки дождя — согласный 🔵.',
-    syllables: ['КА', 'КО', 'КУ', 'КЫ', 'КИ'],
+    syllables: ['КА', 'КО', 'КУ', 'КИ', 'КЕ', 'АК'],
     comic: [
       { avatar: '🐔', scene: '🌾', bubble: 'КО-КО-КО!', spoken: 'Ко-ко-ко!', caption: 'Курочка зовёт маленьких цыплят:' },
       { avatar: '🐱', scene: '🥛', bubble: 'Кот и каша!', spoken: 'Кот и каша!', caption: 'Котёнок лакает молоко на кухне:' }
@@ -102,7 +102,7 @@ const RU_CUSTOM_LESSONS = {
   },
   'Л': {
     tip: 'Прижми кончик языка к верхним зубкам и пропоём плавно: «Л-Л-Л!», как гудит пароход — согласный 🔵.',
-    syllables: ['ЛА', 'ЛО', 'ЛУ', 'ЛЫ', 'ЛИ'],
+    syllables: ['ЛА', 'ЛО', 'ЛУ', 'ЛЫ', 'ЛИ', 'АЛ'],
     comic: [
       { avatar: '🦁', scene: '🚢', bubble: 'Л-Л-ЛА!', spoken: 'Ла-ла-ла!', caption: 'Лев плывёт на большой лодке по волнам:' },
       { avatar: '🦊', scene: '🌙', bubble: 'Луна в лесу!', spoken: 'Луна в лесу!', caption: 'Лисичка смотрит на золотую луну:' }
@@ -110,7 +110,7 @@ const RU_CUSTOM_LESSONS = {
   },
   'М': {
     tip: 'Сомкни губы и помычи носом и голосом, как телёнок зовёт маму: «М-М-М!» — согласный звук 🔵.',
-    syllables: ['МА', 'МО', 'МУ', 'МЫ', 'МИ'],
+    syllables: ['МА', 'МО', 'МУ', 'МЫ', 'МИ', 'АМ'],
     comic: [
       { avatar: '🐮', scene: '🌼', bubble: 'МУ-У! Мама!', spoken: 'Муу! Мама!', caption: 'Телёнок гуляет на лугу и поёт:' },
       { avatar: '🐻', scene: '🍯', bubble: 'М-м, малина!', spoken: 'Ммм, малина!', caption: 'Мишка нашёл в лесу сладкую малину:' }
@@ -118,7 +118,7 @@ const RU_CUSTOM_LESSONS = {
   },
   'Н': {
     tip: 'Кончик языка упирается в верхние зубки, воздух идёт через нос: «Н-Н-Н!» — согласный звук 🔵.',
-    syllables: ['НА', 'НО', 'НУ', 'НЫ', 'НИ'],
+    syllables: ['НА', 'НО', 'НУ', 'НЫ', 'НИ', 'АН'],
     comic: [
       { avatar: '🦏', scene: '🧦', bubble: 'НО-НО! Носки!', spoken: 'Но-но! Носки!', caption: 'Носорог надел тёплые полосатые носки:' },
       { avatar: '👧', scene: '🎶', bubble: 'На-на, ноты!', spoken: 'На-на, ноты!', caption: 'Нина поёт весёлую песенку по нотам:' }
@@ -126,7 +126,7 @@ const RU_CUSTOM_LESSONS = {
   },
   'О': {
     tip: 'Округли губки колечком, как бублик, и пропоём: «О-О-О!» — поющийся гласный звук 🔴.',
-    syllables: ['ОХ', 'ОМ', 'МО', 'ТО', 'КО'],
+    syllables: ['ОХ', 'ОМ', 'МО', 'ТО', 'КО', 'СО'],
     comic: [
       { avatar: '🫏', scene: '🏝️', bubble: 'О-ГО-ГО!', spoken: 'О-го-го!', caption: 'Ослик увидел чудесный зелёный остров:' },
       { avatar: '🐒', scene: '☁️', bubble: 'О! Облако!', spoken: 'О! Облако!', caption: 'В небе плывёт пушистое белое облако:' }
@@ -134,7 +134,7 @@ const RU_CUSTOM_LESSONS = {
   },
   'П': {
     tip: 'Сомкни губы и выпусти ветерок толчком без голоса: «П-П-П!», как пыхтит паровозик — согласный 🔵.',
-    syllables: ['ПА', 'ПО', 'ПУ', 'ПЫ', 'ПИ'],
+    syllables: ['ПА', 'ПО', 'ПУ', 'ПЫ', 'ПИ', 'АП'],
     comic: [
       { avatar: '🚂', scene: '💨', bubble: 'ПЫХ-ПЫХ!', spoken: 'Пых-пых!', caption: 'Паровозик везёт подарки по рельсам:' },
       { avatar: '🐦', scene: '🥧', bubble: 'Пи-пи, пирог!', spoken: 'Пи-пи, пирог!', caption: 'Птичка клюёт вкусные крошки пирога:' }
@@ -142,7 +142,7 @@ const RU_CUSTOM_LESSONS = {
   },
   'Р': {
     tip: 'Улыбнись, подними кончик языка за верхние зубки и заведи моторчик: «Р-Р-Р!» — звонкий согласный 🔵.',
-    syllables: ['РА', 'РО', 'РУ', 'РЫ', 'РИ'],
+    syllables: ['РА', 'РО', 'РУ', 'РЫ', 'РИ', 'АР'],
     comic: [
       { avatar: '🐯', scene: '🚀', bubble: 'Р-Р-РЫК!', spoken: 'Ррр! Ракета!', caption: 'Рыжий тигрёнок заводит мотор ракеты:' },
       { avatar: '🐟', scene: '🌊', bubble: 'Ура, река!', spoken: 'Ура, река!', caption: 'Рыбка радостно плещется в реке:' }
@@ -150,7 +150,7 @@ const RU_CUSTOM_LESSONS = {
   },
   'С': {
     tip: 'Улыбнись, кончик языка у нижних зубов, выпусти холодный ветерок: «С-С-С!», как насос — согласный 🔵.',
-    syllables: ['СА', 'СО', 'СУ', 'СЫ', 'СИ'],
+    syllables: ['СА', 'СО', 'СУ', 'СЫ', 'СИ', 'АС'],
     comic: [
       { avatar: '🐘', scene: '☀️', bubble: 'С-С-СОК!', spoken: 'Вкусный сок!', caption: 'Слонёнок пьёт прохладный сок под солнцем:' },
       { avatar: '🦉', scene: '🧀', bubble: 'Сыр на столе!', spoken: 'Сыр на столе!', caption: 'Сова нашла кусочек жёлтого сыра:' }
@@ -158,7 +158,7 @@ const RU_CUSTOM_LESSONS = {
   },
   'Т': {
     tip: 'Кончик языка стучит за верхними зубками без голоса: «Т-Т-Т!», как тикают часики — согласный 🔵.',
-    syllables: ['ТА', 'ТО', 'ТУ', 'ТЫ', 'ТИ'],
+    syllables: ['ТА', 'ТО', 'ТУ', 'ТЫ', 'ТИ', 'АТ'],
     comic: [
       { avatar: '⏰', scene: '🐯', bubble: 'ТИК-ТАК!', spoken: 'Тик-так!', caption: 'Часики будят полосатого тигрёнка:' },
       { avatar: '🚜', scene: '🎂', bubble: 'Тут торт!', spoken: 'Тут торт!', caption: 'На праздничном столе большой торт:' }
@@ -166,7 +166,7 @@ const RU_CUSTOM_LESSONS = {
   },
   'У': {
     tip: 'Вытяни губки длинной трубочкой вперёд и погуди как поезд: «У-У-У!» — гласный звук 🔴.',
-    syllables: ['УХ', 'УМ', 'МУ', 'ПУ', 'ТУ'],
+    syllables: ['УХ', 'УМ', 'МУ', 'ПУ', 'ТУ', 'ЛУ'],
     comic: [
       { avatar: '🚂', scene: '🦆', bubble: 'У-У-У! Утка!', spoken: 'Ууу! Утка!', caption: 'Поезд гудит, а уточка плывёт в пруду:' },
       { avatar: '🐌', scene: '🌿', bubble: 'Ура, утро!', spoken: 'Ура, утро!', caption: 'Улитка греется в лучах утреннего солнца:' }
@@ -174,7 +174,7 @@ const RU_CUSTOM_LESSONS = {
   },
   'Ф': {
     tip: 'Верхние зубки на нижней губе, выдохни воздух без голоса: «Ф-Ф-Ф!», как фыркает ёжик — согласный 🔵.',
-    syllables: ['ФА', 'ФО', 'ФУ', 'ФЫ', 'ФИ'],
+    syllables: ['ФА', 'ФО', 'ФУ', 'ФИ', 'ФЕ', 'АФ'],
     comic: [
       { avatar: '🦔', scene: '🔦', bubble: 'ФЫР-ФЫР!', spoken: 'Фыр-фыр!', caption: 'Ёжик светит ярким фонариком в темноте:' },
       { avatar: '🦩', scene: '🚩', bubble: 'Флаг и фокус!', spoken: 'Флаг и фокус!', caption: 'Фламинго показывает весёлый фокус:' }
@@ -182,7 +182,7 @@ const RU_CUSTOM_LESSONS = {
   },
   'Х': {
     tip: 'Открой рот и погрей ладошки тёплым дыханием: «Х-Х-Х!» — глухой согласный звук 🔵.',
-    syllables: ['ХА', 'ХО', 'ХУ', 'ХИ', 'ХЕ'],
+    syllables: ['ХА', 'ХО', 'ХУ', 'ХИ', 'ХЕ', 'АХ'],
     comic: [
       { avatar: '🐹', scene: '🍞', bubble: 'ХА-ХА! Хлеб!', spoken: 'Ха-ха! Хлеб!', caption: 'Хомячок радуется свежему тёплому хлебу:' },
       { avatar: '🐷', scene: '🏡', bubble: 'Хрю-хрю, хор!', spoken: 'Хрю-хрю!', caption: 'Зверята поют в дружном лесном хоре:' }
@@ -190,7 +190,7 @@ const RU_CUSTOM_LESSONS = {
   },
   'Ц': {
     tip: 'Улыбнись и быстро скажи слитно «ТС» -> «Ц-Ц-Ц!», как синичка: «Цып-цып!» — всегда твёрдый согласный 🔵.',
-    syllables: ['ЦА', 'ЦО', 'ЦУ', 'ЦЫ', 'ЦЕ'],
+    syllables: ['ЦА', 'ЦО', 'ЦУ', 'ЦЫ', 'ЦЕ', 'АЦ'],
     comic: [
       { avatar: '🐤', scene: '🌸', bubble: 'ЦЫП-ЦЫП!', spoken: 'Цып-цып!', caption: 'Жёлтый цыплёнок нюхает красивый цветок:' },
       { avatar: '🐦', scene: '🎪', bubble: 'Цирк и цапля!', spoken: 'Цирк и цапля!', caption: 'Цапля выступает на арене цирка:' }
@@ -198,7 +198,7 @@ const RU_CUSTOM_LESSONS = {
   },
   'Ч': {
     tip: 'Губы округли, подними язычок кверху и скажи мягко: «Ч-Ч-Ч!», как едет поезд «Чух-чух» — всегда мягкий 🔵.',
-    syllables: ['ЧА', 'ЧО', 'ЧУ', 'ЧИ', 'ЧЕ'],
+    syllables: ['ЧА', 'ЧУ', 'ЧИ', 'ЧЕ', 'ЧЁ', 'МЕЧ'],
     comic: [
       { avatar: '🚂', scene: '🐢', bubble: 'ЧУХ-ЧУХ!', spoken: 'Чух-чух!', caption: 'Черепашка едет на поезде пить чай:' },
       { avatar: '🫖', scene: '🍵', bubble: 'Чашка чая!', spoken: 'Чашка чая!', caption: 'На столе горячий душистый чай:' }
@@ -206,7 +206,7 @@ const RU_CUSTOM_LESSONS = {
   },
   'Ш': {
     tip: 'Подними широкий язычок к нёбу, округли губы и пошурши как ветер в листве: «Ш-Ш-Ш!» — твёрдый согласный 🔵.',
-    syllables: ['ША', 'ШО', 'ШУ', 'ШИ', 'ШЕ'],
+    syllables: ['ША', 'ШУ', 'ШИ', 'ШЕ', 'ШЁ', 'ДУШ'],
     comic: [
       { avatar: '🐍', scene: '🎈', bubble: 'Ш-Ш-ШАР!', spoken: 'Шшш! Шарик!', caption: 'Воздушный шарик тихонько шипит и летит:' },
       { avatar: '🐻', scene: '🌲', bubble: 'Шишка в шапке!', spoken: 'Шишка в шапке!', caption: 'Мишка собрал сосновые шишки в шапку:' }
@@ -214,7 +214,7 @@ const RU_CUSTOM_LESSONS = {
   },
   'Щ': {
     tip: 'Улыбнись и произнеси долгое мягкое шипение: «Щ-Щ-Щ!», как чистит зубки щётка — всегда мягкий согласный 🔵.',
-    syllables: ['ЩА', 'ЩО', 'ЩУ', 'ЩИ', 'ЩЕ'],
+    syllables: ['ЩА', 'ЩУ', 'ЩИ', 'ЩЕ', 'ЩЁ', 'БОРЩ'],
     comic: [
       { avatar: '🐶', scene: '🪥', bubble: 'Щ-Щ! Щётка!', spoken: 'Щётка и щенок!', caption: 'Щенок чистит белые зубки щёткой:' },
       { avatar: '🐟', scene: '🍲', bubble: 'Щука и щи!', spoken: 'Щука и щи!', caption: 'В реке плывёт быстрая зубастая щука:' }
@@ -222,7 +222,7 @@ const RU_CUSTOM_LESSONS = {
   },
   'Ъ': {
     tip: 'Твёрдый знак ⚪ сам звука не даёт, но делает паузу-разделитель перед гласными Е, Ё, Ю, Я!',
-    syllables: ['СЪЕЛ', 'ВЪЕЗД', 'ПОДЪЕЗД', 'ОБЪЁМ'],
+    syllables: ['СЪЕЛ', 'ВЪЕЗД', 'СЪЕЗД', 'ОБЪЁМ', 'ПОДЪЁМ', 'ПОДЪЕЗД'],
     comic: [
       { avatar: '🚗', scene: '🏢', bubble: 'Тут подъезд!', spoken: 'Тут подъезд!', caption: 'Машина подъехала прямо к подъезду дома:' },
       { avatar: '🐱', scene: '🐟', bubble: 'Кот всё съел!', spoken: 'Кот всё съел!', caption: 'Довольный котик съел весь свой обед:' }
@@ -230,7 +230,7 @@ const RU_CUSTOM_LESSONS = {
   },
   'Ы': {
     tip: 'Улыбнись, отодвинь язычок чуть назад и пропоём низким голосом: «Ы-Ы-Ы!» — гласный звук 🔴.',
-    syllables: ['МЫ', 'ТЫ', 'ВЫ', 'СЫР', 'ДЫМ'],
+    syllables: ['МЫ', 'ТЫ', 'ВЫ', 'БЫ', 'СЫР', 'ДЫМ'],
     comic: [
       { avatar: '🐭', scene: '🧀', bubble: 'МЫ и СЫР!', spoken: 'Мы и сыр!', caption: 'Мышата нашли большой вкусный сыр:' },
       { avatar: '🏠', scene: '💨', bubble: 'Пых, дым!', spoken: 'Пых, дым!', caption: 'Из печной трубы идёт пушистый дым:' }
@@ -238,7 +238,7 @@ const RU_CUSTOM_LESSONS = {
   },
   'Ь': {
     tip: 'Мягкий знак ⚪ своего звука не имеет, но делает согласную букву перед собой доброй и мягкой!',
-    syllables: ['КОНЬ', 'ДЕНЬ', 'ТЕНЬ', 'СОЛЬ', 'ПЕНЬ'],
+    syllables: ['КОНЬ', 'ДЕНЬ', 'ТЕНЬ', 'СОЛЬ', 'ПЕНЬ', 'МЫШЬ'],
     comic: [
       { avatar: '🐴', scene: '☀️', bubble: 'Добрый конь!', spoken: 'Добрый конь!', caption: 'Быстрый конь скачет в солнечный день:' },
       { avatar: '🦌', scene: '🌲', bubble: 'Олень и пень!', spoken: 'Олень и пень!', caption: 'Лесной олень отдыхает у старого пня:' }
@@ -246,7 +246,7 @@ const RU_CUSTOM_LESSONS = {
   },
   'Э': {
     tip: 'Открой ротик в широкой улыбке, язычок внизу, пропоём: «Э-Э-Э!» — гласный звук 🔴.',
-    syllables: ['ЭЙ', 'ЭХ', 'ЭХО', 'МЭР', 'ЭРА'],
+    syllables: ['ЭЙ', 'ЭХ', 'МЭР', 'СЭР', 'ЭХО', 'ЭРА'],
     comic: [
       { avatar: '🏔️', scene: '🗣️', bubble: 'Э-Э-ЭХО!', spoken: 'Эхо в горах!', caption: 'В высоких горах громко звучит эхо:' },
       { avatar: '🚜', scene: '🏗️', bubble: 'Экскаватор!', spoken: 'Экскаватор!', caption: 'Большой экскаватор копает песок ковшом:' }
@@ -254,7 +254,7 @@ const RU_CUSTOM_LESSONS = {
   },
   'Ю': {
     tip: 'Вытяни губки трубочкой и пропоём мягко: «ЙУ-Ю-Ю!», как крутится юла — гласный звук 🔴.',
-    syllables: ['МЮ', 'ЛЮ', 'НЮ', 'СЮ', 'ЮЛА'],
+    syllables: ['МЮ', 'ЛЮ', 'НЮ', 'СЮ', 'ЮГ', 'ЮЛА'],
     comic: [
       { avatar: '👧', scene: '🪀', bubble: 'Ю-ю, юла!', spoken: 'Юла крутится!', caption: 'Юля раскрутила быструю яркую юлу:' },
       { avatar: '👗', scene: '🏖️', bubble: 'Едем на юг!', spoken: 'Едем на юг!', caption: 'Красивая юбка для поездки на тёплый юг:' }
@@ -262,7 +262,7 @@ const RU_CUSTOM_LESSONS = {
   },
   'Я': {
     tip: 'Улыбнись и широко открой ротик, пропоём звонко: «ЙА-Я-Я!» — гласный звук 🔴.',
-    syllables: ['МЯ', 'ЛЯ', 'НЯ', 'СЯ', 'ЯМА'],
+    syllables: ['МЯ', 'ЛЯ', 'НЯ', 'СЯ', 'РЯ', 'ЯМА'],
     comic: [
       { avatar: '🧒', scene: '🍎', bubble: 'Я ем яблоко!', spoken: 'Я ем яблоко!', caption: 'Яша сорвал в саду спелое красное яблоко:' },
       { avatar: '⛵', scene: '⚓', bubble: 'Яхта и якорь!', spoken: 'Яхта и якорь!', caption: 'Белая яхта бросила якорь у берега:' }
@@ -347,16 +347,6 @@ export function getLetterLesson(letter, lang = 'ru') {
     if (custom) {
       tipText = custom.tip;
       syllables = [...custom.syllables];
-      // Расширяем дорожку слогов до 6–7 элементов для лучшего закрепления
-      if (syllables.length < 6) {
-        const extraSyl = isSign
-          ? ['СЪЕЗД', 'ОБЪЯСНИ', 'ПОДЪЁМ'].filter(() => upper === 'Ъ').concat(['ПЕНЬ', 'МЫШЬ'].filter(() => upper === 'Ь'))
-          : (isVowel ? [`${upper}С`, `Р${upper}`] : [`А${upper}`, `О${upper}`]);
-        for (const s of extraSyl) {
-          if (syllables.length >= 6) break;
-          if (!syllables.includes(s)) syllables.push(s);
-        }
-      }
       comic = custom.comic;
     } else {
       tipText = isVowel
@@ -373,10 +363,26 @@ export function getLetterLesson(letter, lang = 'ru') {
     tipText = isVowel
       ? `Otwórz buzię i zaśpiewaj dźwięcznie głoskę «${upper}-${upper}-${upper}!» jak w słowie «${letterItem.word}».`
       : `Wymów wyraźnie głoskę «${upper}» na początku lub w środku słowa «${letterItem.word}» ${letterItem.emoji}.`;
-    if (isVowel) {
+    const PL_CUSTOM_SYLLABLES = {
+      'Ą': ['MĄ', 'WĄ', 'BĄ', 'SĄ', 'DĄB', 'ZĄB'],
+      'Ć': ['ĆMA', 'NIĆ', 'SIEĆ', 'LIŚĆ', 'KOŚĆ', 'PIĘĆ'],
+      'Ę': ['RĘ', 'BĘ', 'TĘ', 'GĘ', 'MĘ', 'SĘ'],
+      'Ł': ['ŁA', 'ŁO', 'ŁU', 'ŁE', 'ŁY', 'ŁÓDŹ'],
+      'Ń': ['KOŃ', 'SŁOŃ', 'CIEŃ', 'DZIEŃ', 'DŁOŃ', 'OGIEŃ'],
+      'Ó': ['BÓ', 'GÓ', 'KÓ', 'MÓ', 'RÓ', 'ŻÓŁW'],
+      'Ś': ['ŚNIEG', 'MIŚ', 'GĘŚ', 'OŚ', 'ŚLIWA', 'ŚWIAT'],
+      'Ź': ['ŹLE', 'WEŹ', 'ŹREBIĘ', 'GAŁĄŹ', 'RZEŹBA', 'KUŹNIA'],
+      'Ż': ['ŻA', 'ŻO', 'ŻU', 'ŻE', 'ŻY', 'JEŻ'],
+      'C': ['CA', 'CO', 'CU', 'CE', 'CY', 'NOC'],
+      'R': ['RA', 'RO', 'RU', 'RE', 'RY', 'SER'],
+      'G': ['GA', 'GO', 'GU', 'GE', 'GI', 'GRZYB'],
+      'H': ['HA', 'HO', 'HU', 'HE', 'HI', 'ECHO'],
+      'Y': ['MY', 'TY', 'LY', 'SY', 'RY', 'MOTYL']
+    };
+    if (PL_CUSTOM_SYLLABLES[upper]) {
+      syllables = PL_CUSTOM_SYLLABLES[upper];
+    } else if (isVowel) {
       syllables = [`M${upper}`, `L${upper}`, `T${upper}`, `K${upper}`, `S${upper}`, letterItem.word.toUpperCase()];
-    } else if (['Ą', 'Ę', 'Ć', 'Ń', 'Ó', 'Ś', 'Ź'].includes(upper)) {
-      syllables = [letterItem.word.toUpperCase(), `${upper}`, `MA`, `LO`, `TA`, `KO`];
     } else {
       syllables = [`${upper}A`, `${upper}O`, `${upper}U`, `${upper}E`, `${upper}I`, `${upper}Y`];
     }
@@ -402,9 +408,20 @@ export function getLetterLesson(letter, lang = 'ru') {
     tipText = isVowel
       ? `Open your mouth and sing the vowel sound "${upper}" cleanly as in "${letterItem.word}" ${letterItem.emoji}!`
       : `Say the crisp sound of letter "${upper}" clearly as in "${letterItem.word}" ${letterItem.emoji}!`;
-    syllables = isVowel
-      ? [`${upper}T`, `${upper}N`, `M${upper}`, `B${upper}`, `S${upper}`, letterItem.word.toUpperCase()]
-      : [`${upper}A`, `${upper}O`, `${upper}E`, `${upper}I`, `${upper}U`, letterItem.word.toUpperCase()];
+    const EN_CUSTOM_SYLLABLES = {
+      'Q': ['QUA', 'QUE', 'QUI', 'QUO', 'SQU', 'QUEEN'],
+      'X': ['AX', 'EX', 'IX', 'OX', 'UX', 'BOX'],
+      'Y': ['YES', 'YAM', 'YUM', 'MY', 'BY', 'FLY'],
+      'W': ['WA', 'WE', 'WI', 'WO', 'WET', 'WEB'],
+      'K': ['KA', 'KE', 'KI', 'KO', 'KU', 'KITE']
+    };
+    if (EN_CUSTOM_SYLLABLES[upper]) {
+      syllables = EN_CUSTOM_SYLLABLES[upper];
+    } else if (isVowel) {
+      syllables = [`${upper}T`, `${upper}N`, `M${upper}`, `B${upper}`, `S${upper}`, letterItem.word.toUpperCase()];
+    } else {
+      syllables = [`${upper}A`, `${upper}O`, `${upper}E`, `${upper}I`, `${upper}U`, letterItem.word.toUpperCase()];
+    }
     comic = [
       {
         avatar: letterItem.emoji,
