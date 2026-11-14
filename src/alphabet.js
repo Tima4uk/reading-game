@@ -1,9 +1,9 @@
 // Модуль «Азбука» для детей 4.5 лет: Говорящая Азбука + Викторина + Конструктор букв
-import { ALPHABET_DATA, shuffleArray } from './data.js?v=19';
-import { sound } from './audio.js?v=19';
-import { LetterPuzzleGame } from './letter-puzzle.js?v=19';
-import { getLetterLesson } from './letter-lessons.js?v=19';
-import { KochamCzytacGame } from './kocham-czytac.js?v=19';
+import { ALPHABET_DATA, shuffleArray } from './data.js?v=21';
+import { sound } from './audio.js?v=21';
+import { LetterPuzzleGame } from './letter-puzzle.js?v=21';
+import { getLetterLesson } from './letter-lessons.js?v=21';
+import { KochamCzytacGame } from './kocham-czytac.js?v=21';
 
 export class AlphabetGame {
   constructor(options = {}) {
@@ -206,6 +206,72 @@ export class AlphabetGame {
     `;
   }
 
+  renderMissingWordHTML(roundObj, revealed = false) {
+    if (!roundObj) return '';
+    return roundObj.word
+      .split('')
+      .map((ch, idx) => {
+        if (idx === roundObj.maskIndex) {
+          return revealed
+            ? `<span class="primer-word-hl">${ch}</span>`
+            : `<span class="primer-missing-slot">?</span>`;
+        }
+        return ch;
+      })
+      .join('');
+  }
+
+  renderPosBodyHTML(lesson, state) {
+    const isRu = this.lang === 'ru';
+    const isPl = this.lang === 'pl';
+    const rounds = lesson.positionRounds || [];
+    if (state.posRewarded || state.posRoundIdx >= rounds.length) {
+      const doneMsg = isRu ? '🎉 Отлично! Все позиции найдены!' : (isPl ? '🎉 Brawo! Wszystkie pozycje znalezione!' : '🎉 Great! All positions found!');
+      return `<div class="primer-mini-done">${doneMsg}</div>`;
+    }
+    const r = rounds[state.posRoundIdx];
+    const labels = isRu
+      ? { start: '🚂 В начале', middle: '🚃 В середине', end: '🚋 В конце' }
+      : (isPl
+        ? { start: '🚂 Na początku', middle: '🚃 W środku', end: '🚋 Na końcu' }
+        : { start: '🚂 Beginning', middle: '🚃 Middle', end: '🚋 End' });
+    return `
+      <button class="primer-pos-word-card" id="primer-pos-word-speak" data-word="${r.word}">
+        <span class="primer-pos-emoji">${r.emoji}</span>
+        <span class="primer-pos-word">${r.word}</span>
+        <span class="primer-pos-audio">🔊</span>
+      </button>
+      <div class="primer-pos-btns">
+        <button class="primer-pos-btn" data-pos="start">${labels.start}</button>
+        <button class="primer-pos-btn" data-pos="middle">${labels.middle}</button>
+        <button class="primer-pos-btn" data-pos="end">${labels.end}</button>
+      </div>
+    `;
+  }
+
+  renderMissingBodyHTML(lesson, state) {
+    const isRu = this.lang === 'ru';
+    const isPl = this.lang === 'pl';
+    const rounds = lesson.missingLetterRounds || [];
+    if (state.missingRewarded || state.missingRoundIdx >= rounds.length) {
+      const doneMsg = isRu ? '🎉 Супер! Все слова починены!' : (isPl ? '🎉 Super! Wszystkie słowa naprawione!' : '🎉 Awesome! All words fixed!');
+      return `<div class="primer-mini-done">${doneMsg}</div>`;
+    }
+    const r = rounds[state.missingRoundIdx];
+    return `
+      <button class="primer-missing-card" id="primer-missing-word-speak" data-word="${r.word}">
+        <span class="primer-missing-emoji">${r.emoji}</span>
+        <span class="primer-missing-word" id="primer-missing-word">${this.renderMissingWordHTML(r, false)}</span>
+        <span class="primer-pos-audio">🔊</span>
+      </button>
+      <div class="primer-missing-options">
+        ${r.options.map(opt => `
+          <button class="primer-missing-btn" data-letter="${opt}">${opt}</button>
+        `).join('')}
+      </div>
+    `;
+  }
+
   renderLetterModalContent(item) {
     const isRu = this.lang === 'ru';
     const isPl = this.lang === 'pl';
@@ -217,7 +283,11 @@ export class AlphabetGame {
       bubblesRewarded: false,
       foundWords: new Set(),
       wordsRewarded: false,
-      activeSyllableIdx: -1
+      activeSyllableIdx: -1,
+      posRoundIdx: 0,
+      posRewarded: false,
+      missingRoundIdx: 0,
+      missingRewarded: false
     };
 
     const speakText = isRu ? 'Слушать' : (isPl ? 'Posłuchaj' : 'Listen');
@@ -234,6 +304,18 @@ export class AlphabetGame {
       : (isPl
         ? `🎯 W których słowach kryje się litera «${lesson.letter}»? (${state.foundWords.size}/${lesson.targetWordsCount})`
         : `🎯 Which words have the letter "${lesson.letter}"? (${state.foundWords.size}/${lesson.targetWordsCount})`);
+    const posDoneCount = Math.min(state.posRoundIdx, (lesson.positionRounds || []).length);
+    const posTaskTitle = isRu
+      ? `🚂 Где стоит буква «${lesson.letter}» в слове? (${posDoneCount}/${(lesson.positionRounds || []).length})`
+      : (isPl
+        ? `🚂 Gdzie jest litera «${lesson.letter}» w słowie? (${posDoneCount}/${(lesson.positionRounds || []).length})`
+        : `🚂 Where is "${lesson.letter}" in the word? (${posDoneCount}/${(lesson.positionRounds || []).length})`);
+    const missDoneCount = Math.min(state.missingRoundIdx, (lesson.missingLetterRounds || []).length);
+    const missTaskTitle = isRu
+      ? `🧩 Почини слово: вставь букву! (${missDoneCount}/${(lesson.missingLetterRounds || []).length})`
+      : (isPl
+        ? `🧩 Napraw słowo: wstaw literę! (${missDoneCount}/${(lesson.missingLetterRounds || []).length})`
+        : `🧩 Fix the word: pick the missing letter! (${missDoneCount}/${(lesson.missingLetterRounds || []).length})`);
 
     const highlightLetterInWord = (word, targetLetter, isFound) => {
       if (!isFound) return word;
@@ -280,7 +362,7 @@ export class AlphabetGame {
           <button class="primer-tip-audio-btn" id="primer-btn-tip-speak" title="${speakText}">🔊</button>
         </div>
 
-        <!-- Сетка разворота: Комикс + Дорожка слогов + 2 Игровых задания -->
+        <!-- Сетка разворота: Комикс + Дорожка слогов + 4 Игровых задания -->
         <div class="primer-spread-grid">
           <!-- БЛОК 1: КОМИКС -->
           <div class="primer-section primer-comic-section">
@@ -366,6 +448,28 @@ export class AlphabetGame {
               }).join('')}
             </div>
           </div>
+
+          <!-- БЛОК 5: ЗАДАНИЕ 3 — ПОЗИЦИЯ БУКВЫ В СЛОВЕ -->
+          <div class="primer-section primer-pos-section ${state.posRewarded ? 'section-completed' : ''}">
+            <div class="primer-section-title">
+              <span id="primer-pos-title">${posTaskTitle}</span>
+              ${state.posRewarded ? '<span class="primer-done-badge">⭐ +1</span>' : ''}
+            </div>
+            <div id="primer-pos-body">
+              ${this.renderPosBodyHTML(lesson, state)}
+            </div>
+          </div>
+
+          <!-- БЛОК 6: ЗАДАНИЕ 4 — ПОЧИНИ СЛОВО -->
+          <div class="primer-section primer-missing-section ${state.missingRewarded ? 'section-completed' : ''}">
+            <div class="primer-section-title">
+              <span id="primer-missing-title">${missTaskTitle}</span>
+              ${state.missingRewarded ? '<span class="primer-done-badge">⭐ +1</span>' : ''}
+            </div>
+            <div id="primer-missing-body">
+              ${this.renderMissingBodyHTML(lesson, state)}
+            </div>
+          </div>
         </div>
       </div>
     `;
@@ -383,7 +487,11 @@ export class AlphabetGame {
       bubblesRewarded: false,
       foundWords: new Set(),
       wordsRewarded: false,
-      activeSyllableIdx: -1
+      activeSyllableIdx: -1,
+      posRoundIdx: 0,
+      posRewarded: false,
+      missingRoundIdx: 0,
+      missingRewarded: false
     };
 
     sound.playLetterClick();
@@ -633,6 +741,156 @@ export class AlphabetGame {
           sound.playError();
           sound.speakWord(word, this.lang);
           setTimeout(() => card.classList.remove('wrong'), 450);
+        }
+      });
+    });
+
+    // 5 и 6. Задания 3 (Позиция буквы) и 4 (Вставь букву)
+    this.attachPosEvents();
+    this.attachMissingEvents();
+  }
+
+  attachPosEvents() {
+    const body = this.container.querySelector('#primer-pos-body');
+    if (!body || !this.lessonState || !this.currentLesson) return;
+
+    const speakWordBtn = body.querySelector('#primer-pos-word-speak');
+    if (speakWordBtn) {
+      speakWordBtn.addEventListener('click', () => {
+        sound.playLetterClick();
+        sound.speakWord(speakWordBtn.dataset.word, this.lang);
+      });
+    }
+
+    let locked = false;
+    body.querySelectorAll('.primer-pos-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (locked || !this.lessonState || !this.currentLesson || this.lessonState.posRewarded) return;
+        const rounds = this.currentLesson.positionRounds || [];
+        const curRound = rounds[this.lessonState.posRoundIdx];
+        if (!curRound) return;
+
+        if (btn.dataset.pos === curRound.pos) {
+          locked = true;
+          btn.classList.add('found');
+          sound.playSuccess();
+          sound.speakWord(curRound.word, this.lang);
+
+          const savedIdx = this.selectedLetterIndex;
+          setTimeout(() => {
+            if (!this.lessonState || this.selectedLetterIndex !== savedIdx) return;
+            this.lessonState.posRoundIdx += 1;
+            const total = rounds.length;
+            const isRu = this.lang === 'ru';
+            const isPl = this.lang === 'pl';
+            const titleEl = this.container.querySelector('#primer-pos-title');
+            if (titleEl) {
+              const done = Math.min(this.lessonState.posRoundIdx, total);
+              titleEl.textContent = isRu
+                ? `🚂 Где стоит буква «${this.currentLesson.letter}» в слове? (${done}/${total})`
+                : (isPl
+                  ? `🚂 Gdzie jest litera «${this.currentLesson.letter}» w słowie? (${done}/${total})`
+                  : `🚂 Where is "${this.currentLesson.letter}" in the word? (${done}/${total})`);
+            }
+            if (this.lessonState.posRoundIdx >= total && !this.lessonState.posRewarded) {
+              this.lessonState.posRewarded = true;
+              this.onStarEarned(1);
+              this.onWinEffect();
+              const sec = this.container.querySelector('.primer-pos-section');
+              if (sec) {
+                sec.classList.add('section-completed');
+                const st = sec.querySelector('.primer-section-title');
+                if (st && !st.querySelector('.primer-done-badge')) {
+                  st.insertAdjacentHTML('beforeend', '<span class="primer-done-badge">⭐ +1</span>');
+                }
+              }
+            }
+            const curBody = this.container.querySelector('#primer-pos-body');
+            if (curBody) {
+              curBody.innerHTML = this.renderPosBodyHTML(this.currentLesson, this.lessonState);
+              this.attachPosEvents();
+            }
+          }, 700);
+        } else {
+          btn.classList.add('wrong');
+          sound.playError();
+          setTimeout(() => btn.classList.remove('wrong'), 450);
+        }
+      });
+    });
+  }
+
+  attachMissingEvents() {
+    const body = this.container.querySelector('#primer-missing-body');
+    if (!body || !this.lessonState || !this.currentLesson) return;
+
+    const speakWordBtn = body.querySelector('#primer-missing-word-speak');
+    if (speakWordBtn) {
+      speakWordBtn.addEventListener('click', () => {
+        sound.playLetterClick();
+        sound.speakWord(speakWordBtn.dataset.word, this.lang);
+      });
+    }
+
+    let locked = false;
+    body.querySelectorAll('.primer-missing-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (locked || !this.lessonState || !this.currentLesson || this.lessonState.missingRewarded) return;
+        const rounds = this.currentLesson.missingLetterRounds || [];
+        const curRound = rounds[this.lessonState.missingRoundIdx];
+        if (!curRound) return;
+
+        const chosen = btn.dataset.letter;
+        if (chosen === curRound.correctLetter) {
+          locked = true;
+          btn.classList.add('found');
+          const wordEl = body.querySelector('#primer-missing-word');
+          if (wordEl) {
+            wordEl.innerHTML = this.renderMissingWordHTML(curRound, true);
+          }
+          sound.playSuccess();
+          sound.speakWord(curRound.word, this.lang);
+
+          const savedIdx = this.selectedLetterIndex;
+          setTimeout(() => {
+            if (!this.lessonState || this.selectedLetterIndex !== savedIdx) return;
+            this.lessonState.missingRoundIdx += 1;
+            const total = rounds.length;
+            const isRu = this.lang === 'ru';
+            const isPl = this.lang === 'pl';
+            const titleEl = this.container.querySelector('#primer-missing-title');
+            if (titleEl) {
+              const done = Math.min(this.lessonState.missingRoundIdx, total);
+              titleEl.textContent = isRu
+                ? `🧩 Почини слово: вставь букву! (${done}/${total})`
+                : (isPl
+                  ? `🧩 Napraw słowo: wstaw literę! (${done}/${total})`
+                  : `🧩 Fix the word: pick the missing letter! (${done}/${total})`);
+            }
+            if (this.lessonState.missingRoundIdx >= total && !this.lessonState.missingRewarded) {
+              this.lessonState.missingRewarded = true;
+              this.onStarEarned(1);
+              this.onWinEffect();
+              const sec = this.container.querySelector('.primer-missing-section');
+              if (sec) {
+                sec.classList.add('section-completed');
+                const st = sec.querySelector('.primer-section-title');
+                if (st && !st.querySelector('.primer-done-badge')) {
+                  st.insertAdjacentHTML('beforeend', '<span class="primer-done-badge">⭐ +1</span>');
+                }
+              }
+            }
+            const curBody = this.container.querySelector('#primer-missing-body');
+            if (curBody) {
+              curBody.innerHTML = this.renderMissingBodyHTML(this.currentLesson, this.lessonState);
+              this.attachMissingEvents();
+            }
+          }, 800);
+        } else {
+          btn.classList.add('wrong');
+          sound.playError();
+          sound.speakLetter(chosen, this.lang);
+          setTimeout(() => btn.classList.remove('wrong'), 450);
         }
       });
     });

@@ -1,7 +1,7 @@
 // Интерактивный «Букварь: Комиксы, слоги, игры и задания» (по мотивам методики В. и А. Мельниковых / АСТ)
 // Поддерживает все буквы RU (33), PL (32), EN (26)
 
-import { ALPHABET_DATA, WORDS_DATA, VOWELS, shuffleArray } from './data.js';
+import { ALPHABET_DATA, WORDS_DATA, WORDS_DATA_HARD, VOWELS, RUSSIAN_ALPHABET, POLISH_ALPHABET, ENGLISH_ALPHABET, shuffleArray } from './data.js?v=21';
 
 const RU_CUSTOM_LESSONS = {
   'А': {
@@ -287,6 +287,44 @@ const SIMILAR_LETTERS = {
   }
 };
 
+// Запас слов для редких букв (минимум 4–6 слов для заданий на позицию и вставку буквы)
+const EXTRA_LETTER_WORDS = {
+  ru: {
+    'А': [{ word: 'АРБУЗ', emoji: '🍉' }, { word: 'БАНАН', emoji: '🍌' }, { word: 'КОЗА', emoji: '🐐' }, { word: 'ШАР', emoji: '🎈' }],
+    'Ё': [{ word: 'ЁЛКА', emoji: '🎄' }, { word: 'МЁД', emoji: '🍯' }, { word: 'ЛЁД', emoji: '🧊' }, { word: 'ЁЖИК', emoji: '🦔' }, { word: 'САМОЛЁТ', emoji: '✈️' }],
+    'Й': [{ word: 'ЙОГУРТ', emoji: '🍦' }, { word: 'ЧАЙ', emoji: '🍵' }, { word: 'ПОПУГАЙ', emoji: '🦜' }, { word: 'ЗАЙКА', emoji: '🐰' }, { word: 'МАЙКА', emoji: '👕' }],
+    'Ф': [{ word: 'ФЛАГ', emoji: '🚩' }, { word: 'ФОКУС', emoji: '🎩' }, { word: 'ЖИРАФ', emoji: '🦒' }, { word: 'ФАРА', emoji: '🔦' }, { word: 'ШКАФ', emoji: '🚪' }],
+    'Х': [{ word: 'ХЛЕБ', emoji: '🍞' }, { word: 'МУХА', emoji: '🪰' }, { word: 'УХО', emoji: '👂' }, { word: 'ПЕТУХ', emoji: '🐓' }, { word: 'ХОМЯК', emoji: '🐹' }],
+    'Ц': [{ word: 'ЦВЕТОК', emoji: '🌸' }, { word: 'ЦЫПЛЁНОК', emoji: '🐤' }, { word: 'ЗАЯЦ', emoji: '🐰' }, { word: 'СОЛНЦЕ', emoji: '☀️' }, { word: 'ЦИРК', emoji: '🎪' }],
+    'Ч': [{ word: 'ЧАЙ', emoji: '🍵' }, { word: 'МЯЧ', emoji: '⚽' }, { word: 'ЧАШКА', emoji: '☕' }, { word: 'ТУЧА', emoji: '☁️' }, { word: 'ЧАСЫ', emoji: '⏰' }],
+    'Ш': [{ word: 'ШАРИК', emoji: '🎈' }, { word: 'ШАРФ', emoji: '🧣' }, { word: 'КАША', emoji: '🥣' }, { word: 'МЫШЬ', emoji: '🐭' }, { word: 'МАШИНА', emoji: '🚗' }],
+    'Щ': [{ word: 'ЩЁТКА', emoji: '🪥' }, { word: 'ЩЕНОК', emoji: '🐶' }, { word: 'ЩУКА', emoji: '🐟' }, { word: 'ПЛАЩ', emoji: '🧥' }, { word: 'ОВОЩИ', emoji: '🥕' }],
+    'Ъ': [{ word: 'ПОДЪЕЗД', emoji: '🏢' }, { word: 'СЪЕЛ', emoji: '🍽️' }, { word: 'ВЪЕЗД', emoji: '🚗' }, { word: 'ОБЪЁМ', emoji: '📦' }, { word: 'СЪЁМКА', emoji: '📷' }],
+    'Ы': [{ word: 'СЫР', emoji: '🧀' }, { word: 'РЫБА', emoji: '🐟' }, { word: 'МЫШЬ', emoji: '🐭' }, { word: 'МЫЛО', emoji: '🧼' }, { word: 'ЧАСЫ', emoji: '⏰' }],
+    'Ь': [{ word: 'КОНЬ', emoji: '🐴' }, { word: 'МЕДВЕДЬ', emoji: '🐻' }, { word: 'СОЛЬ', emoji: '🧂' }, { word: 'ЕЛЬ', emoji: '🌲' }, { word: 'ГУСЬ', emoji: '🦢' }],
+    'Э': [{ word: 'ЭКСКАВАТОР', emoji: '🚜' }, { word: 'ЭХО', emoji: '🏔️' }, { word: 'ЭКРАН', emoji: '📺' }, { word: 'ПОЭТ', emoji: '📖' }, { word: 'ДУЭТ', emoji: '🎶' }],
+    'Ю': [{ word: 'ЮБКА', emoji: '👗' }, { word: 'ЮЛА', emoji: '🪀' }, { word: 'УТЮГ', emoji: '🧺' }, { word: 'КЛЮЧ', emoji: '🔑' }, { word: 'ИНДЮК', emoji: '🦃' }],
+    'Я': [{ word: 'ЯБЛОКО', emoji: '🍎' }, { word: 'ЗАЯЦ', emoji: '🐰' }, { word: 'ЯМА', emoji: '🕳️' }, { word: 'ЗМЕЯ', emoji: '🐍' }, { word: 'ВИШНЯ', emoji: '🍒' }]
+  },
+  pl: {
+    'Ą': [{ word: 'WĄŻ', emoji: '🐍' }, { word: 'PĄCZEK', emoji: '🍩' }, { word: 'MĄKA', emoji: '🌾' }, { word: 'ZĄB', emoji: '🦷' }, { word: 'GOŁĄB', emoji: '🕊️' }],
+    'Ć': [{ word: 'LIŚĆ', emoji: '🍂' }, { word: 'ĆMA', emoji: '🦋' }, { word: 'KOŚĆ', emoji: '🦴' }, { word: 'NIĆ', emoji: '🧵' }, { word: 'SIEĆ', emoji: '🕸️' }],
+    'Ę': [{ word: 'RĘKA', emoji: '✋' }, { word: 'TĘCZA', emoji: '🌈' }, { word: 'GĘŚ', emoji: '🪿' }, { word: 'BĘBEN', emoji: '🥁' }, { word: 'PIĘĆ', emoji: '5️⃣' }],
+    'Ń': [{ word: 'KOŃ', emoji: '🐎' }, { word: 'SŁOŃ', emoji: '🐘' }, { word: 'SŁOŃCE', emoji: '☀️' }, { word: 'CIEŃ', emoji: '👤' }, { word: 'OGIEŃ', emoji: '🔥' }],
+    'Ó': [{ word: 'ŻÓŁW', emoji: '🐢' }, { word: 'ŁÓDKA', emoji: '🚣' }, { word: 'STÓŁ', emoji: '🪑' }, { word: 'OGÓREK', emoji: '🥒' }, { word: 'CHÓD', emoji: '🚶' }],
+    'Ś': [{ word: 'ŚNIEG', emoji: '❄️' }, { word: 'MIŚ', emoji: '🧸' }, { word: 'GĘŚ', emoji: '🪿' }, { word: 'ŚLIMAK', emoji: '🐌' }, { word: 'WIŚNIA', emoji: '🍒' }],
+    'Ź': [{ word: 'ŹREBIĘ', emoji: '🐴' }, { word: 'GAŁĄŹ', emoji: '🌿' }, { word: 'KUŹNIA', emoji: '🔨' }, { word: 'ŹRÓDŁO', emoji: '💧' }, { word: 'RZEŹBA', emoji: '🗿' }],
+    'Ż': [{ word: 'ŻABA', emoji: '🐸' }, { word: 'JEŻ', emoji: '🦔' }, { word: 'ŻYRAFA', emoji: '🦒' }, { word: 'RÓŻA', emoji: '🌹' }, { word: 'PLAŻA', emoji: '🏖️' }]
+  },
+  en: {
+    'Q': [{ word: 'QUEEN', emoji: '👑' }, { word: 'QUILT', emoji: '🛏️' }, { word: 'QUIZ', emoji: '❓' }, { word: 'SQUARE', emoji: '🟦' }, { word: 'SQUIRREL', emoji: '🐿️' }],
+    'V': [{ word: 'VIOLIN', emoji: '🎻' }, { word: 'VAN', emoji: '🚐' }, { word: 'VEST', emoji: '🦺' }, { word: 'WAVE', emoji: '🌊' }, { word: 'FIVE', emoji: '5️⃣' }],
+    'X': [{ word: 'BOX', emoji: '📦' }, { word: 'FOX', emoji: '🦊' }, { word: 'SIX', emoji: '6️⃣' }, { word: 'TAXI', emoji: '🚕' }, { word: 'AXE', emoji: '🪓' }],
+    'Y': [{ word: 'YELLOW', emoji: '💛' }, { word: 'KEY', emoji: '🔑' }, { word: 'BOY', emoji: '👦' }, { word: 'MONKEY', emoji: '🐒' }, { word: 'BABY', emoji: '👶' }],
+    'Z': [{ word: 'ZEBRA', emoji: '🦓' }, { word: 'ZOO', emoji: '🦁' }, { word: 'ZERO', emoji: '0️⃣' }, { word: 'PIZZA', emoji: '🍕' }, { word: 'PRIZE', emoji: '🏆' }]
+  }
+};
+
 export function getLetterLesson(letter, lang = 'ru') {
   const upper = letter.toUpperCase();
   const alphabetList = ALPHABET_DATA[lang] || ALPHABET_DATA['ru'];
@@ -308,13 +346,23 @@ export function getLetterLesson(letter, lang = 'ru') {
     const custom = RU_CUSTOM_LESSONS[upper];
     if (custom) {
       tipText = custom.tip;
-      syllables = custom.syllables;
+      syllables = [...custom.syllables];
+      // Расширяем дорожку слогов до 6–7 элементов для лучшего закрепления
+      if (syllables.length < 6) {
+        const extraSyl = isSign
+          ? ['СЪЕЗД', 'ОБЪЯСНИ', 'ПОДЪЁМ'].filter(() => upper === 'Ъ').concat(['ПЕНЬ', 'МЫШЬ'].filter(() => upper === 'Ь'))
+          : (isVowel ? [`${upper}С`, `Р${upper}`] : [`А${upper}`, `О${upper}`]);
+        for (const s of extraSyl) {
+          if (syllables.length >= 6) break;
+          if (!syllables.includes(s)) syllables.push(s);
+        }
+      }
       comic = custom.comic;
     } else {
       tipText = isVowel
         ? `Спой звук «${upper}-${upper}-${upper}!» — воздух идёт свободно, звук поётся!`
         : `Произнеси чётко звук буквы «${upper}» в слове «${letterItem.word}».`;
-      syllables = isVowel ? [`${upper}М`, `М${upper}`, `П${upper}`, `Т${upper}`, `К${upper}`] : [`${upper}А`, `${upper}О`, `${upper}У`, `${upper}И`, `${upper}Е`];
+      syllables = isVowel ? [`${upper}М`, `М${upper}`, `П${upper}`, `Т${upper}`, `К${upper}`, `${upper}С`] : [`${upper}А`, `${upper}О`, `${upper}У`, `${upper}И`, `${upper}Е`, `А${upper}`];
       comic = [
         { avatar: letterItem.emoji, scene: '✨', bubble: `${upper}! ${letterItem.word}!`, spoken: `${letterItem.word}!`, caption: `Познакомься с буквой ${upper}:` },
         { avatar: '🧒', scene: '📖', bubble: `Читаю: ${syllables[0]}!`, spoken: syllables[0], caption: `Соединяем букву ${upper} в слоги:` }
@@ -326,11 +374,11 @@ export function getLetterLesson(letter, lang = 'ru') {
       ? `Otwórz buzię i zaśpiewaj dźwięcznie głoskę «${upper}-${upper}-${upper}!» jak w słowie «${letterItem.word}».`
       : `Wymów wyraźnie głoskę «${upper}» na początku lub w środku słowa «${letterItem.word}» ${letterItem.emoji}.`;
     if (isVowel) {
-      syllables = [`M${upper}`, `L${upper}`, `T${upper}`, `K${upper}`, letterItem.word.toUpperCase()];
+      syllables = [`M${upper}`, `L${upper}`, `T${upper}`, `K${upper}`, `S${upper}`, letterItem.word.toUpperCase()];
     } else if (['Ą', 'Ę', 'Ć', 'Ń', 'Ó', 'Ś', 'Ź'].includes(upper)) {
-      syllables = [letterItem.word.toUpperCase(), `${upper}`, `M${isVowel ? upper : 'A'}`, `L${isVowel ? upper : 'O'}`];
+      syllables = [letterItem.word.toUpperCase(), `${upper}`, `MA`, `LO`, `TA`, `KO`];
     } else {
-      syllables = [`${upper}A`, `${upper}O`, `${upper}U`, `${upper}E`, `${upper}I`];
+      syllables = [`${upper}A`, `${upper}O`, `${upper}U`, `${upper}E`, `${upper}I`, `${upper}Y`];
     }
     comic = [
       {
@@ -355,8 +403,8 @@ export function getLetterLesson(letter, lang = 'ru') {
       ? `Open your mouth and sing the vowel sound "${upper}" cleanly as in "${letterItem.word}" ${letterItem.emoji}!`
       : `Say the crisp sound of letter "${upper}" clearly as in "${letterItem.word}" ${letterItem.emoji}!`;
     syllables = isVowel
-      ? [`${upper}T`, `${upper}N`, `M${upper}`, `B${upper}`, letterItem.word.toUpperCase()]
-      : [`${upper}A`, `${upper}O`, `${upper}E`, `${upper}I`, letterItem.word.toUpperCase()];
+      ? [`${upper}T`, `${upper}N`, `M${upper}`, `B${upper}`, `S${upper}`, letterItem.word.toUpperCase()]
+      : [`${upper}A`, `${upper}O`, `${upper}E`, `${upper}I`, `${upper}U`, letterItem.word.toUpperCase()];
     comic = [
       {
         avatar: letterItem.emoji,
@@ -375,85 +423,139 @@ export function getLetterLesson(letter, lang = 'ru') {
     ];
   }
 
-  // 2. Задание 1: «Буквенный сыщик» (8 кружков: 3 целевые буквы + 5 букв-ловушек)
-  const simPool = (SIMILAR_LETTERS[lang] && SIMILAR_LETTERS[lang][upper])
-    ? SIMILAR_LETTERS[lang][upper]
-    : alphabetList.map(a => a.letter.toUpperCase()).filter(l => l !== upper);
-  const distractors = shuffleArray(simPool.filter(l => l !== upper)).slice(0, 5);
+  // 2. Задание 1: «Буквенный сыщик» (12 кружков: 5 целевых букв + 7 букв-ловушек)
+  const allAlphabetLetters = alphabetList.map(a => a.letter.toUpperCase()).filter(l => l !== upper);
+  const simPoolRaw = (SIMILAR_LETTERS[lang] && SIMILAR_LETTERS[lang][upper])
+    ? SIMILAR_LETTERS[lang][upper].filter(l => l !== upper)
+    : [];
+  const remainingOthers = shuffleArray(allAlphabetLetters.filter(l => !simPoolRaw.includes(l)));
+  const distractorsPool = [...shuffleArray(simPoolRaw), ...remainingOthers];
+  const distractors = [];
+  for (let i = 0; i < 7; i++) {
+    distractors.push(distractorsPool[i % distractorsPool.length]);
+  }
   const detectiveBubbles = shuffleArray([
     { id: 't1', letter: upper, isTarget: true },
     { id: 't2', letter: upper, isTarget: true },
     { id: 't3', letter: upper, isTarget: true },
+    { id: 't4', letter: upper, isTarget: true },
+    { id: 't5', letter: upper, isTarget: true },
     ...distractors.map((d, idx) => ({ id: `d${idx}`, letter: d, isTarget: false }))
   ]);
 
-  // 3. Задание 2: «В каких словах живёт буква?» (3 слова с этой буквой + 1 слово без неё)
-  const wordsPool = WORDS_DATA[lang] || WORDS_DATA['ru'] || [];
-  const matchingWords = [];
+  // Собираем богатый пул слов с изучаемой буквой (без пробелов/дефисов)
+  const wordsPool = [
+    ...(WORDS_DATA[lang] || WORDS_DATA['ru'] || []),
+    ...((WORDS_DATA_HARD && WORDS_DATA_HARD[lang]) ? WORDS_DATA_HARD[lang] : [])
+  ];
+  const candidateMatches = [];
   const seenWords = new Set();
 
-  // Сначала добавляем главное слово из Азбуки
   const mainWordUpper = letterItem.word.toUpperCase();
-  if (mainWordUpper.includes(upper)) {
-    matchingWords.push({ word: mainWordUpper, emoji: letterItem.emoji, hasLetter: true });
+  if (!mainWordUpper.includes(' ') && !mainWordUpper.includes('-') && mainWordUpper.includes(upper)) {
+    candidateMatches.push({ word: mainWordUpper, emoji: letterItem.emoji, hasLetter: true });
     seenWords.add(mainWordUpper);
   }
 
   const shuffledDict = shuffleArray(wordsPool);
   for (const w of shuffledDict) {
-    if (matchingWords.length >= 3) break;
     const wUp = w.word.toUpperCase();
-    if (wUp.includes(upper) && !seenWords.has(wUp)) {
-      matchingWords.push({ word: wUp, emoji: w.emoji, hasLetter: true });
+    if (!wUp.includes(' ') && !wUp.includes('-') && wUp.includes(upper) && !seenWords.has(wUp)) {
+      candidateMatches.push({ word: wUp, emoji: w.emoji, hasLetter: true });
       seenWords.add(wUp);
     }
   }
 
-  // Если для редких букв (Ё, Щ, Ъ, Ź, Ń и т.д.) в базовом словаре меньше 3 слов — добираем из Азбуки или спец-слов
-  if (matchingWords.length < 3) {
-    const extraFallback = {
-      'Ё': [{ word: 'ЁЛКА', emoji: '🎄' }, { word: 'МЁД', emoji: '🍯' }, { word: 'ЛЁД', emoji: '🧊' }],
-      'Щ': [{ word: 'ЩЁТКА', emoji: '🪥' }, { word: 'ЩЕНОК', emoji: '🐶' }, { word: 'ЩУКА', emoji: '🐟' }],
-      'Ъ': [{ word: 'ПОДЪЕЗД', emoji: '🏢' }, { word: 'СЪЕЛ', emoji: '🍽️' }, { word: 'ВЪЕЗД', emoji: '🚗' }],
-      'Ы': [{ word: 'СЫР', emoji: '🧀' }, { word: 'РЫБА', emoji: '🐟' }, { word: 'МЫШЬ', emoji: '🐭' }],
-      'Ь': [{ word: 'КОНЬ', emoji: '🐴' }, { word: 'МЕДВЕДЬ', emoji: '🐻' }, { word: 'СОЛЬ', emoji: '🧂' }],
-      'Э': [{ word: 'ЭКСКАВАТОР', emoji: '🚜' }, { word: 'ЭХО', emoji: '🏔️' }, { word: 'ЭКРАН', emoji: '📺' }],
-      'Й': [{ word: 'ЙОГУРТ', emoji: '🍦' }, { word: 'ЧАЙ', emoji: '🍵' }, { word: 'ПОПУГАЙ', emoji: '🦜' }],
-      'Ф': [{ word: 'ФЛАГ', emoji: '🚩' }, { word: 'ФОКУС', emoji: '🎩' }, { word: 'ЖИРАФ', emoji: '🦒' }],
-      'Ц': [{ word: 'ЦВЕТОК', emoji: '🌸' }, { word: 'ЦЫПЛЁНОК', emoji: '🐤' }, { word: 'ЗАЯЦ', emoji: '🐰' }]
-    };
-    const extras = extraFallback[upper] || [];
-    for (const ex of extras) {
-      if (matchingWords.length >= 3) break;
-      if (!seenWords.has(ex.word)) {
-        matchingWords.push({ word: ex.word, emoji: ex.emoji, hasLetter: true });
-        seenWords.add(ex.word);
-      }
-    }
-    for (const a of alphabetList) {
-      if (matchingWords.length >= 3) break;
-      const aUp = a.word.toUpperCase();
-      if (aUp.includes(upper) && !seenWords.has(aUp)) {
-        matchingWords.push({ word: aUp, emoji: a.emoji, hasLetter: true });
-        seenWords.add(aUp);
-      }
+  const langExtras = (EXTRA_LETTER_WORDS[lang] && EXTRA_LETTER_WORDS[lang][upper]) ? EXTRA_LETTER_WORDS[lang][upper] : [];
+  for (const ex of langExtras) {
+    if (!seenWords.has(ex.word)) {
+      candidateMatches.push({ word: ex.word, emoji: ex.emoji, hasLetter: true });
+      seenWords.add(ex.word);
     }
   }
 
-  // Подбираем 1 слово-ловушку, в котором НЕТ этой буквы
-  let trapWord = null;
+  for (const a of alphabetList) {
+    const aUp = a.word.toUpperCase();
+    if (!aUp.includes(' ') && !aUp.includes('-') && aUp.includes(upper) && !seenWords.has(aUp)) {
+      candidateMatches.push({ word: aUp, emoji: a.emoji, hasLetter: true });
+      seenWords.add(aUp);
+    }
+  }
+
+  // 3. Задание 2: «В каких словах живёт буква?» (4 слова с буквой + 2 слова-ловушки = 6 карточек)
+  const matchingWords = candidateMatches.slice(0, 4);
+  const trapWords = [];
   for (const w of shuffledDict) {
+    if (trapWords.length >= 2) break;
     const wUp = w.word.toUpperCase();
-    if (!wUp.includes(upper) && !seenWords.has(wUp)) {
-      trapWord = { word: wUp, emoji: w.emoji, hasLetter: false };
-      break;
+    if (!wUp.includes(' ') && !wUp.includes('-') && !wUp.includes(upper) && !seenWords.has(wUp)) {
+      trapWords.push({ word: wUp, emoji: w.emoji, hasLetter: false });
+      seenWords.add(wUp);
     }
   }
-  if (!trapWord) {
-    trapWord = { word: 'ДОМ', emoji: '🏠', hasLetter: false };
+  if (trapWords.length < 2) {
+    const fallbackTraps = lang === 'ru'
+      ? [{ word: 'ДОМ', emoji: '🏠' }, { word: 'КОТ', emoji: '🐱' }, { word: 'ЛУК', emoji: '🧅' }]
+      : (lang === 'pl'
+        ? [{ word: 'DOM', emoji: '🏠' }, { word: 'KOT', emoji: '🐱' }, { word: 'LAS', emoji: '🌲' }]
+        : [{ word: 'DOG', emoji: '🐶' }, { word: 'CAT', emoji: '🐱' }, { word: 'SUN', emoji: '☀️' }]);
+    for (const ft of fallbackTraps) {
+      if (trapWords.length >= 2) break;
+      if (!ft.word.includes(upper) && !seenWords.has(ft.word)) {
+        trapWords.push({ word: ft.word, emoji: ft.emoji, hasLetter: false });
+        seenWords.add(ft.word);
+      }
+    }
   }
+  const wordChoices = shuffleArray([...matchingWords, ...trapWords]);
 
-  const wordChoices = shuffleArray([...matchingWords, trapWord]);
+  // 4. Задание 3 (НОВОЕ): «Где спряталась буква: в начале, в середине или в конце?» (3 слова)
+  const getLetterPos = (wStr, target) => {
+    if (wStr.startsWith(target)) return 'start';
+    if (wStr.endsWith(target)) return 'end';
+    return 'middle';
+  };
+  const posWordsSelected = [];
+  const usedPosWords = new Set();
+  for (const desiredPos of ['start', 'middle', 'end']) {
+    const found = candidateMatches.find(m => !usedPosWords.has(m.word) && getLetterPos(m.word, upper) === desiredPos);
+    if (found) {
+      posWordsSelected.push({ word: found.word, emoji: found.emoji, pos: desiredPos });
+      usedPosWords.add(found.word);
+    }
+  }
+  for (const m of candidateMatches) {
+    if (posWordsSelected.length >= 3) break;
+    if (!usedPosWords.has(m.word)) {
+      posWordsSelected.push({ word: m.word, emoji: m.emoji, pos: getLetterPos(m.word, upper) });
+      usedPosWords.add(m.word);
+    }
+  }
+  const positionRounds = shuffleArray(posWordsSelected.slice(0, 3));
+
+  // 5. Задание 4 (НОВОЕ): «Почини слово: вставь пропущенную букву!» (3 слова)
+  const fullAlpha = lang === 'ru' ? RUSSIAN_ALPHABET : (lang === 'pl' ? POLISH_ALPHABET : ENGLISH_ALPHABET);
+  const missingSource = candidateMatches.slice(0, 3);
+  const missingLetterRounds = missingSource.map((item, rIdx) => {
+    const chars = item.word.split('');
+    // В 1-м и 3-м раунде прячем изучаемую букву, во 2-м раунде прячем другую букву слова (чтобы ребёнок читал, а не жал вслепую)
+    let maskIdx = chars.indexOf(upper);
+    if (rIdx === 1 && chars.length >= 3) {
+      const altIdx = chars.findIndex((c, i) => c !== upper && i > 0);
+      if (altIdx !== -1) maskIdx = altIdx;
+    }
+    if (maskIdx < 0) maskIdx = 0;
+    const correctLetter = chars[maskIdx];
+    const optPool = shuffleArray(fullAlpha.filter(l => l !== correctLetter));
+    const options = shuffleArray([correctLetter, ...optPool.slice(0, 3)]);
+    return {
+      word: item.word,
+      emoji: item.emoji,
+      maskIndex: maskIdx,
+      correctLetter,
+      options
+    };
+  });
 
   return {
     letter: upper,
@@ -465,8 +567,10 @@ export function getLetterLesson(letter, lang = 'ru') {
     comic,
     syllables,
     detectiveBubbles,
-    targetBubblesCount: 3,
+    targetBubblesCount: 5,
     wordChoices,
-    targetWordsCount: matchingWords.length
+    targetWordsCount: matchingWords.length,
+    positionRounds,
+    missingLetterRounds
   };
 }

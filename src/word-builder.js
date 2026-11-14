@@ -1,7 +1,7 @@
 // Игровой режим: «Собери слово» (Word Builder / Ułóż słowo)
-import { WORDS_DATA, WORDS_DATA_HARD, VOWELS, shuffleArray } from './data.js?v=19';
-import { sound } from './audio.js?v=19';
-import { SYLLABLE_WORDS_DATA } from './kocham-czytac.js?v=19';
+import { WORDS_DATA, WORDS_DATA_HARD, VOWELS, shuffleArray } from './data.js?v=21';
+import { sound } from './audio.js?v=21';
+import { SYLLABLE_WORDS_DATA } from './kocham-czytac.js?v=21';
 
 export class WordBuilderGame {
   constructor(options = {}) {
