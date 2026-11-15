@@ -4347,3 +4347,783 @@ body {
     border-radius: 12px;
   }
 }
+
+
+/* ==========================================
+   МОДУЛЬ «ПОСЛЕ БУКВАРЯ» (7 ИСТОРИЙ-КОМИКСОВ)
+   ========================================== */
+.ap-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.ap-top-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.ap-intro-pill {
+  flex: 1 1 260px;
+  background: linear-gradient(135deg, #fef9c3 0%, #ffedd5 100%);
+  border: 2.5px solid #fbbf24;
+  border-radius: 18px;
+  padding: 10px 14px;
+  font-size: 0.94rem;
+  font-weight: 800;
+  color: #78350f;
+}
+
+.ap-mode-switch {
+  display: inline-flex;
+  background: #f1f5f9;
+  border: 2px solid #cbd5e1;
+  border-radius: 16px;
+  padding: 4px;
+  gap: 4px;
+}
+
+.ap-mode-btn {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+
+.ap-mode-btn.active {
+  background: #ffffff;
+  color: #6d28d9;
+  box-shadow: 0 3px 8px rgba(109, 40, 217, 0.16);
+}
+
+/* Словарные чипы для режима «По слогам» */
+.ap-syl-flow {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  line-height: 1.45;
+}
+
+.ap-word-chip {
+  display: inline-flex;
+  align-items: baseline;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1.5px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 2px 7px;
+  font-weight: 900;
+  color: #1e293b;
+}
+
+.ap-syl-dot {
+  color: #ec4899;
+  font-weight: 900;
+  margin: 0 2px;
+}
+
+.ap-plain-text {
+  line-height: 1.5;
+}
+
+/* Навигация по 7 историям */
+.ap-stories-nav {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(112px, 1fr));
+  gap: 8px;
+}
+
+.ap-story-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 16px;
+  border: 2.5px solid #cbd5e1;
+  background: #ffffff;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 4px 0px #cbd5e1;
+  transition: all 0.16s ease;
+}
+
+.ap-story-pill:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0px #cbd5e1;
+}
+
+.ap-story-pill.active {
+  border-color: var(--ap-accent, #8b5cf6);
+  background: #f5f3ff;
+  box-shadow: 0 4px 0px var(--ap-accent, #8b5cf6);
+}
+
+.ap-story-pill.done {
+  border-color: #22c55e;
+  background: #f0fdf4;
+}
+
+.ap-pill-emoji {
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.ap-pill-meta {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.ap-pill-num {
+  font-size: 0.72rem;
+  font-weight: 900;
+  color: #64748b;
+}
+
+.ap-pill-name {
+  font-size: 0.85rem;
+  font-weight: 900;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Основная карточка главы */
+.ap-chapter-card {
+  background: #ffffff;
+  border: 3px solid var(--ap-accent, #8b5cf6);
+  border-radius: 26px;
+  padding: 16px;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.07);
+}
+
+.ap-chapter-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.ap-chapter-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ap-chapter-hero {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.ap-chapter-sub {
+  font-size: 0.82rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: var(--ap-accent, #8b5cf6);
+  letter-spacing: 0.4px;
+}
+
+.ap-chapter-title {
+  margin: 4px 0 0;
+  font-size: clamp(1.05rem, 3vw, 1.35rem);
+  font-weight: 900;
+  color: #0f172a;
+}
+
+/* Индикатор шагов внутри истории */
+.ap-steps-bar {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.ap-step-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 7px 4px;
+  border-radius: 14px;
+  border: 2px solid #e2e8f0;
+  background: #f8fafc;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ap-step-tab.active {
+  background: #ede9fe;
+  border-color: #8b5cf6;
+  color: #5b21b6;
+}
+
+.ap-step-tab.done {
+  background: #dcfce7;
+  border-color: #4ade80;
+  color: #166534;
+}
+
+.ap-step-num {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid currentColor;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.ap-step-lbl {
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+.ap-card {
+  background: #f8fafc;
+  border: 2.5px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 14px;
+  margin-bottom: 12px;
+}
+
+.ap-card.ap-card-done {
+  background: #f0fdf4;
+  border-color: #4ade80;
+}
+
+.ap-sec-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 1rem;
+  font-weight: 900;
+  color: #1e293b;
+  margin-bottom: 10px;
+}
+
+.ap-badge {
+  background: #e0f2fe;
+  color: #0369a1;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.84rem;
+  font-weight: 900;
+}
+
+.ap-star-tag {
+  display: inline-block;
+  margin-left: 6px;
+  background: #fef08a;
+  color: #854d0e;
+  border: 1.5px solid #facc15;
+  border-radius: 10px;
+  padding: 2px 8px;
+  font-size: 0.82rem;
+}
+
+.ap-mini-speak {
+  padding: 6px 10px;
+  border-radius: 12px;
+  border: 2px solid #93c5fd;
+  background: #eff6ff;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: transform 0.12s ease;
+}
+
+.ap-mini-speak:active {
+  transform: scale(0.92);
+}
+
+/* Тренажёр чтения: лесенка слов */
+.ap-ladder {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ap-ladder-rung {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-left: calc(var(--rung-step, 0) * 14px);
+  padding: 10px 14px;
+  border-radius: 16px;
+  border: 2.5px solid #cbd5e1;
+  background: #ffffff;
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow: 0 4px 0px #cbd5e1;
+  transition: all 0.14s ease;
+}
+
+.ap-ladder-rung:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0px #cbd5e1;
+}
+
+.ap-ladder-rung.read {
+  border-color: #4ade80;
+  background: #ecfdf5;
+  box-shadow: 0 4px 0px #86efac;
+}
+
+.ap-rung-emoji {
+  font-size: 1.5rem;
+}
+
+.ap-rung-word {
+  flex: 1;
+  text-align: left;
+  font-size: clamp(1rem, 3vw, 1.25rem);
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.ap-rung-audio {
+  font-size: 1.1rem;
+}
+
+.ap-prompt-box {
+  background: #ffffff;
+  border: 2px dashed #cbd5e1;
+  border-radius: 14px;
+  padding: 10px 12px;
+  font-size: 1.02rem;
+  font-weight: 800;
+  color: #1e293b;
+  margin-bottom: 10px;
+}
+
+.ap-hunt-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.ap-options-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ap-choice-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 2.5px solid #cbd5e1;
+  background: #ffffff;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 800;
+  color: #0f172a;
+  cursor: pointer;
+  box-shadow: 0 4px 0px #cbd5e1;
+  transition: all 0.14s ease;
+}
+
+.ap-choice-btn.wide {
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.ap-choice-btn:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0px #cbd5e1;
+}
+
+.ap-choice-btn.correct,
+.ap-emotion-btn.correct,
+.ap-fact-btn.correct {
+  background: #dcfce7 !important;
+  border-color: #22c55e !important;
+  color: #14532d !important;
+  box-shadow: 0 4px 0px #86efac !important;
+}
+
+.ap-choice-btn.wrong,
+.ap-emotion-btn.wrong,
+.ap-fact-btn.wrong,
+.ap-seq-card.wrong {
+  background: #fee2e2 !important;
+  border-color: #ef4444 !important;
+  animation: shakeAnim 0.4s ease;
+}
+
+.ap-hunt-emoji {
+  font-size: 1.4rem;
+}
+
+/* Комикс-сцена и реплики */
+.ap-comic-box {
+  background: linear-gradient(180deg, #eff6ff 0%, #f5f3ff 100%);
+  border: 2.5px solid #93c5fd;
+  border-radius: 22px;
+  padding: 14px;
+  margin-bottom: 12px;
+}
+
+.ap-comic-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.ap-comic-backdrop {
+  font-size: 1.9rem;
+  letter-spacing: 6px;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 4px 12px;
+  border-radius: 14px;
+}
+
+.ap-scene-speak-btn {
+  padding: 8px 14px;
+  border-radius: 14px;
+  border: 2px solid #3b82f6;
+  background: #ffffff;
+  color: #1d4ed8;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.ap-comic-caption {
+  font-size: 0.98rem;
+  font-weight: 800;
+  color: #334155;
+  margin-bottom: 12px;
+}
+
+.ap-panels {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ap-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.ap-panel.right {
+  align-items: flex-end;
+}
+
+.ap-speaker-tag {
+  font-size: 0.85rem;
+  font-weight: 900;
+  color: #475569;
+  padding: 0 6px;
+}
+
+.ap-speech-bubble {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 92%;
+  background: #ffffff;
+  border: 2.5px solid #60a5fa;
+  border-radius: 18px;
+  padding: 10px 14px;
+  box-shadow: 0 4px 10px rgba(59, 130, 246, 0.12);
+}
+
+.ap-panel.right .ap-speech-bubble {
+  border-color: #a78bfa;
+  background: #faf5ff;
+}
+
+.ap-bubble-text {
+  font-size: clamp(1rem, 2.8vw, 1.14rem);
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.ap-bubble-speak {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid #cbd5e1;
+  background: #f8fafc;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+/* Тренажёр эмоций */
+.ap-emotion-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.ap-emotion-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 10px;
+  border-radius: 18px;
+  border: 2.5px solid #fcd34d;
+  background: #ffffff;
+  font-family: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 0px #fde047;
+  transition: all 0.14s ease;
+}
+
+.ap-emo-face {
+  font-size: 2.2rem;
+  line-height: 1;
+}
+
+.ap-emo-label {
+  font-size: 0.94rem;
+  text-align: center;
+  color: #1e293b;
+}
+
+.ap-empathy-tip {
+  margin-top: 12px;
+  background: #fef9c3;
+  border: 2px solid #facc15;
+  border-radius: 16px;
+  padding: 10px 14px;
+  color: #713f12;
+  font-weight: 800;
+}
+
+.ap-empathy-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+/* Правда или выдумка */
+.ap-facts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ap-fact-row {
+  background: #ffffff;
+  border: 2px solid #cbd5e1;
+  border-radius: 16px;
+  padding: 10px 12px;
+}
+
+.ap-fact-row.solved {
+  border-color: #4ade80;
+  background: #ecfdf5;
+}
+
+.ap-fact-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.ap-fact-text {
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.ap-fact-btns {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.ap-fact-btn {
+  padding: 9px 10px;
+  border-radius: 12px;
+  border: 2px solid #cbd5e1;
+  background: #f8fafc;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+/* Пересказ по порядку */
+.ap-seq-hint {
+  margin: 0 0 10px;
+  font-weight: 800;
+  color: #475569;
+}
+
+.ap-seq-slots {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.ap-seq-slot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  border: 2.5px dashed #94a3b8;
+  background: #ffffff;
+  min-height: 52px;
+}
+
+.ap-seq-slot.filled {
+  border-style: solid;
+  border-color: #22c55e;
+  background: #dcfce7;
+}
+
+.ap-slot-badge {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #6d28d9;
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+}
+
+.ap-seq-slot.filled .ap-slot-badge {
+  background: #16a34a;
+}
+
+.ap-slot-placeholder {
+  color: #94a3b8;
+  font-weight: 800;
+}
+
+.ap-seq-pool {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ap-seq-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 2.5px solid #a78bfa;
+  background: #ffffff;
+  font-family: inherit;
+  font-weight: 800;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 4px 0px #c4b5fd;
+  transition: all 0.14s ease;
+}
+
+.ap-seq-card:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0px #c4b5fd;
+}
+
+.ap-feedback {
+  margin-top: 10px;
+  min-height: 22px;
+  font-weight: 900;
+  text-align: center;
+  color: #15803d;
+}
+
+.ap-next-wrap,
+.ap-victory-box {
+  margin-top: 12px;
+  display: flex;
+  justify-content: center;
+}
+
+.ap-next-btn {
+  padding: 11px 22px;
+  border-radius: 16px;
+  border: none;
+  background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 5px 0px #4c1d95;
+  transition: transform 0.14s ease;
+}
+
+.ap-next-btn.big {
+  font-size: 1.1rem;
+  padding: 13px 26px;
+}
+
+.ap-next-btn:active {
+  transform: translateY(3px);
+}
+
+.ap-all-done-banner {
+  background: linear-gradient(135deg, #fef08a 0%, #bbf7d0 100%);
+  border: 2.5px solid #22c55e;
+  border-radius: 18px;
+  padding: 12px 18px;
+  font-weight: 900;
+  color: #14532d;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .ap-steps-bar {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 4px;
+  }
+  .ap-step-lbl {
+    font-size: 0.66rem;
+  }
+  .ap-ladder-rung {
+    margin-left: calc(var(--rung-step, 0) * 6px);
+  }
+  .ap-speech-bubble {
+    max-width: 100%;
+  }
+}
