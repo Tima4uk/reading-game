@@ -1,8 +1,8 @@
 // Модуль «Первая книга для чтения после букваря» (7 историй с комиксами, мини-квестами, эмоциями и логикой)
 // Поддерживает RU / PL / EN и переключатель «По слогам / Обычный текст».
 
-import { shuffleArray } from './data.js?v=23';
-import { sound } from './audio.js?v=23';
+import { shuffleArray } from './data.js?v=24';
+import { sound } from './audio.js?v=24';
 
 const UI_TEXTS = {
   ru: {
@@ -108,15 +108,15 @@ export const AFTER_PRIMER_STORIES = {
         caption: 'На ле·сной по·ля·не бы·стро на·сту·пал ве·чер.',
         panels: [
           { speaker: '🦔 Ти·ша', text: 'Ой! Я по·те·рял свой жёл·тый фо·на·рик!' },
-          { speaker: '🐿️ Бе·лоч·ка', text: 'Не гру·сти! Мо·жет, он о·стал·ся у ручь·я?' }
+          { speaker: '🐿️ Бе·лоч·ка', text: 'Не гру·сти! Мо·жет, он о·стал·ся у ру·чья?' }
         ],
         questQuestion: 'Ку·да бе·лоч·ка по·со·ве·то·ва·ла спер·ва за·гля·нуть?',
-        questOptions: ['К ручь·ю', 'На кры·шу', 'В нор·ку'],
+        questOptions: ['К ру·чью', 'На кры·шу', 'В нор·ку'],
         correctOptIdx: 0
       },
       scene2: {
         backdrop: '🌊🌿😟',
-        caption: 'У ручь·я фо·на·ри·ка не бы·ло. Ста·ло со·всем тем·но.',
+        caption: 'У ру·чья фо·на·ри·ка не бы·ло. Ста·ло со·всем тем·но.',
         panels: [
           { speaker: '🦔 Ти·ша', text: 'Тут пу·сто... Мне страш·но од·но·му в тем·но·те.' },
           { speaker: '🦉 Со·ва', text: 'Я с то·бой! По·смо·три вон на тот ста·рый пень!' }
@@ -139,11 +139,11 @@ export const AFTER_PRIMER_STORIES = {
         ],
         facts: [
           { statement: 'Фо·на·рик ле·жал на ста·ром пне.', isTrue: true },
-          { statement: 'Фо·на·рик у·та·щи·ла хит·ра·я ли·са.', isTrue: false }
+          { statement: 'Фо·на·рик у·та·щи·ла хи·тра·я ли·са.', isTrue: false }
         ]
       },
       sequence: [
-        'Ти·ша по·те·рял жёл·тый фо·на·рик и по·шёл к ручь·ю.',
+        'Ти·ша по·те·рял жёл·тый фо·на·рик и по·шёл к ру·чью.',
         'Со·ва под·дер·жа·ла ё·жи·ка и за·ме·ти·ла о·го·нёк на пне.',
         'Свет·ля·чок вер·нул фо·на·рик, и все друж·но по·шли до·мой.'
       ]
@@ -168,8 +168,8 @@ export const AFTER_PRIMER_STORIES = {
         backdrop: '☀️🌸☂️',
         caption: 'Ко·тё·нок Пу·шок вы·шел гу·лять с крас·ным зон·том.',
         panels: [
-          { speaker: '🐱 Пу·шок', text: 'По·го·да я·сна·я, за·чем мне этот боль·шой зонт?' },
-          { speaker: '🌧️ Ве·тер', text: 'Ш-ш-ш! На·бе·жа·ла си·ня·я ту·ча, кап-кап-кап!' }
+          { speaker: '🐱 Пу·шок', text: 'По·го·да я·сна·я, за·чем мне э·тот боль·шой зонт?' },
+          { speaker: '🌧️ Ве·тер', text: 'Шу-шу-шу! На·бе·жа·ла си·ня·я ту·ча, кап-кап-кап!' }
         ],
         questQuestion: 'Ка·ко·го цве·та был зонт у ко·тён·ка?',
         questOptions: ['Си·ний', 'Крас·ный', 'Зе·лё·ный'],
@@ -185,7 +185,7 @@ export const AFTER_PRIMER_STORIES = {
         emotionQuestion: 'Как се·бя по·чув·ство·вал Пу·шок, ко·гда по·мог ма·лы·шу?',
         emotions: [
           { emoji: '😠', label: 'Сер·ди·тым' },
-          { emoji: '😊', label: 'Теп·ло и ра·дост·но' },
+          { emoji: '😊', label: 'Те·пло и ра·дост·но' },
           { emoji: '😨', label: 'Ис·пу·ган·ным' }
         ],
         correctEmotionIdx: 1,
@@ -206,7 +206,7 @@ export const AFTER_PRIMER_STORIES = {
       sequence: [
         'Вне·зап·но по·шёл дождь, и Пу·шок от·крыл крас·ный зонт.',
         'Ко·тё·нок у·ви·дел цып·лён·ка и у·крыл е·го от лив·ня.',
-        'Вы·гля·ну·ла ра·ду·га, и друзь·я по·шли пить тёп·лый чай.'
+        'Вы·гля·ну·ла ра·ду·га, и дру·зья по·шли пить тёп·лый чай.'
       ]
     },
     {
@@ -267,7 +267,7 @@ export const AFTER_PRIMER_STORIES = {
       sequence: [
         'Ры·жик на·шёл у бе·рё·зы кар·ту с под·сказ·кой.',
         'От спеш·ки он про·бе·жал ми·мо, но зай·ка по·мог о·ста·но·вить·ся.',
-        'Друзь·я вни·ма·тель·но про·чи·та·ли кар·ту и на·шли ма·ли·ну.'
+        'Дру·зья вни·ма·тель·но про·чи·та·ли кар·ту и на·шли ма·ли·ну.'
       ]
     },
     {
@@ -285,7 +285,7 @@ export const AFTER_PRIMER_STORIES = {
         { syl: 'ПО·СТРО·И·ЛИ', emoji: '🛠️' }
       ],
       wordHuntIdx: 3,
-      wordHuntPrompt: 'Най·ди сло·во, ко·то·ро·е о·зна·ча·ет друзь·я в о·дном де·ле:',
+      wordHuntPrompt: 'Най·ди сло·во — ко·гда дру·зья ра·бо·та·ют вме·сте:',
       scene1: {
         backdrop: '🏞️🪵💧',
         caption: 'По·сле гро·зы че·рез ру·чей сло·мал·ся мо·стик.',
@@ -328,7 +328,7 @@ export const AFTER_PRIMER_STORIES = {
       sequence: [
         'По·сле гро·зы мо·стик че·рез ру·чей сло·мал·ся.',
         'Бам·бук не смог под·нять брев·но о·дин и рас·стро·ил·ся.',
-        'Друзь·я объ·е·ди·ни·лись и по·стро·и·ли но·вый мост.'
+        'Дру·зья объ·е·ди·ни·лись и по·стро·и·ли но·вый мост.'
       ]
     },
     {
@@ -351,8 +351,8 @@ export const AFTER_PRIMER_STORIES = {
         backdrop: '🌌📮🦉',
         caption: 'У со·вён·ка У·ха бы·ло пер·во·е де·жур·ство на поч·те.',
         panels: [
-          { speaker: '🦉 Ух', text: 'У ме·ня в сум·ке три важ·ных пись·ма для звер·ят!' },
-          { speaker: '🦌 О·лень', text: 'Пер·во·е пись·мо — для бар·су·ка под ста·рой ель·ю.' }
+          { speaker: '🦉 Ух', text: 'У ме·ня в сум·ке три важ·ных пись·ма для зве·рят!' },
+          { speaker: '🦌 О·лень', text: 'Пер·во·е пись·мо — для бар·су·ка под ста·рой е·лью.' }
         ],
         questQuestion: 'Сколь·ко пи·сем ле·жа·ло в сум·ке у со·вён·ка?',
         questOptions: ['Три пись·ма', 'Де·сять по·сы·лок', 'Од·на га·зе·та'],
@@ -378,7 +378,7 @@ export const AFTER_PRIMER_STORIES = {
         backdrop: '📬🌟🏅',
         caption: 'К у·тру все пись·ма ле·жа·ли в поч·то·вых я·щи·ках.',
         panels: [
-          { speaker: '🦉 Ух', text: 'Я спра·вил·ся! Каж·до·му звер·ён·ку при·нёс доб·ру·ю весть!' },
+          { speaker: '🦉 Ух', text: 'Я спра·вил·ся! Каж·до·му зве·рён·ку при·нёс доб·ру·ю весть!' },
           { speaker: '🦡 Бар·сук', text: 'Ты луч·ший ноч·ной поч·та·льон в ле·су!' }
         ],
         facts: [
@@ -413,7 +413,7 @@ export const AFTER_PRIMER_STORIES = {
         caption: 'На хол·ме звер·я·та за·пу·ска·ли воз·душ·но·го зме·я.',
         panels: [
           { speaker: '🐇 Кро·лик', text: 'Смо·три, как бы·стро я бе·гу! До·го·няй, Лу·ла!' },
-          { speaker: '💨 Ве·тер', text: 'У-у-у! Ни·точ·ка вы·рва·лась из лап кро·ли·ка!' }
+          { speaker: '💨 Ве·тер', text: 'Фью! Ни·точ·ка вы·рва·лась из лап кро·ли·ка!' }
         ],
         questQuestion: 'Что слу·чи·лось со зме·ем на хол·ме?',
         questOptions: ['Ни·точ·ка вы·рва·лась от вет·ра', 'Змей у·пал в чай', 'На·чал·ся снег'],
@@ -421,12 +421,12 @@ export const AFTER_PRIMER_STORIES = {
       },
       scene2: {
         backdrop: '😔🐢🌪️',
-        caption: 'Лу·ла ша·га·ла ме·длен·но и гля·де·ла на бы·стрых дру·зей.',
+        caption: 'Лу·ла ша·га·ла мед·лен·но и гля·де·ла на бы·стрых дру·зей.',
         panels: [
           { speaker: '🐢 Лу·ла', text: 'Я не у·ме·ю бе·гать стре·лой... Мо·жет, я тут лиш·ня·я?' },
-          { speaker: '🌪️ По·рыв', text: 'Шу-у-у! Ка·туш·ка зме·я по·ле·те·ла пря·мо к Лу·ле!' }
+          { speaker: '🌪️ По·рыв', text: 'Вжух! Ка·туш·ка зме·я по·ле·те·ла пря·мо к Лу·ле!' }
         ],
-        emotionQuestion: 'Ка·ку·ю о·би·ду по·чув·ство·ва·ла че·ре·паш·ка спер·ва?',
+        emotionQuestion: 'Что по·чув·ство·ва·ла че·ре·паш·ка, ко·гда о·ста·лась по·за·ди?',
         emotions: [
           { emoji: '😔', label: 'Со·мне·ни·е в сво·их си·лах' },
           { emoji: '🤩', label: 'Лю·бо·пыт·ство к кни·ге' },
@@ -444,7 +444,7 @@ export const AFTER_PRIMER_STORIES = {
         ],
         facts: [
           { statement: 'Тя·жё·лый пан·цирь по·мог Лу·ле у·дер·жать зме·я.', isTrue: true },
-          { statement: 'Че·ре·паш·ка о·бог·на·ла кро·ли·ка на ста·ди·о·не.', isTrue: false }
+          { statement: 'Че·ре·паш·ка о·бо·гна·ла кро·ли·ка на ста·ди·о·не.', isTrue: false }
         ]
       },
       sequence: [
@@ -484,7 +484,7 @@ export const AFTER_PRIMER_STORIES = {
         backdrop: '🪐✨🧺',
         caption: 'Ра·ке·та при·зем·ли·лась на тёп·лой Лун·ной по·ля·не.',
         panels: [
-          { speaker: '👽 Звер·ёк Пик', text: 'При·вет, го·сти! Бе·ри·те я·го·ды, а я по·мо·гу ме·сить те·сто!' },
+          { speaker: '👽 Зве·рёк Пик', text: 'При·вет, го·сти! Бе·ри·те я·го·ды, а я по·мо·гу ме·сить те·сто!' },
           { speaker: '🧑‍🚀 Марс', text: 'Вот э·то да! Мы да·же не о·жи·да·ли та·ко·го го·сте·при·им·ства!' }
         ],
         emotionQuestion: 'Ка·ку·ю ра·дост·ну·ю э·мо·ци·ю вы·звал по·сту·пок но·во·го дру·га?',
@@ -500,7 +500,7 @@ export const AFTER_PRIMER_STORIES = {
         backdrop: '🥧⭐🎊',
         caption: 'Над сто·лом за·сиял ру·мя·ный пи·рог в фор·ме звез·ды!',
         panels: [
-          { speaker: '🤖 Ро·бот Бип', text: 'Пи-пи-пи! Э·то са·мый вкус·ный сюр·приз во Все·лен·ной!' },
+          { speaker: '🤖 Ро·бот Бип', text: 'Бип-бип! Э·то са·мый вкус·ный сюр·приз во Все·лен·ной!' },
           { speaker: '🧑‍🚀 Марс', text: 'По·здра·вля·ем! Все семь ис·то·рий про·чи·та·ны вме·сте!' }
         ],
         facts: [
@@ -510,7 +510,7 @@ export const AFTER_PRIMER_STORIES = {
       },
       sequence: [
         'В ра·ке·те за·кон·чи·лись я·го·ды для празд·нич·но·го пи·ро·га.',
-        'На Лун·ной по·ля·не звер·ёк Пик по·де·лил·ся я·го·да·ми и по·мог.',
+        'На Лун·ной по·ля·не зве·рёк Пик по·де·лил·ся я·го·да·ми и по·мог.',
         'Весь э·ки·паж у·стро·ил ве·сё·лый пир со звёзд·ным пи·ро·гом!'
       ]
     }
@@ -536,7 +536,7 @@ export const AFTER_PRIMER_STORIES = {
         backdrop: '🌲🌙🦉',
         caption: 'Na le·śnej po·la·nie szyb·ko za·pa·dał zmrok.',
         panels: [
-          { speaker: '🦔 Ta·dek', text: 'Ojej! Zgu·bi·łem mo·ją żół·tą la·tar·kę!' },
+          { speaker: '🦔 Ta·dek', text: 'O·jej! Zgu·bi·łem mo·ją żół·tą la·tar·kę!' },
           { speaker: '🐿️ Wie·wiór·ka', text: 'Sprawdź nad stru·mie·niem, mo·że tam zo·sta·ła?' }
         ],
         questQuestion: 'Gdzie wie·wiór·ka po·ra·dzi·ła naj·pierw zaj·rzeć?',
@@ -598,7 +598,7 @@ export const AFTER_PRIMER_STORIES = {
         caption: 'Ko·tek Pu·szek wy·szedł na spa·cer z czer·wo·nym pa·ra·so·lem.',
         panels: [
           { speaker: '🐱 Pu·szek', text: 'Świe·ci słoń·ce! Po co mi ten wiel·ki pa·ra·sol?' },
-          { speaker: '🌧️ Wiatr', text: 'Sz-sz-sz! Na·pły·nę·ła chmu·ra i pa·da deszcz!' }
+          { speaker: '🌧️ Wiatr', text: 'Szu-szu! Na·pły·nę·ła chmu·ra i pa·da deszcz!' }
         ],
         questQuestion: 'Ja·kie·go ko·lo·ru był pa·ra·sol kot·ka?',
         questOptions: ['Nie·bie·ski', 'Czer·wo·ny', 'Zie·lo·ny'],
@@ -624,7 +624,7 @@ export const AFTER_PRIMER_STORIES = {
         backdrop: '🌈🐾☕',
         caption: 'Deszcz u·stał, a nad o·gro·dem za·świe·ci·ła tę·cza.',
         panels: [
-          { speaker: '🐥 Kur·czak', text: 'Dzię·ki, Pu·szek! Twój pa·ra·sol u·ra·to·wał mnie od u·le·wy!' },
+          { speaker: '🐥 Kur·czak', text: 'Dzię·ki, Pu·szek! Twój pa·ra·sol u·ra·to·wał mnie przed u·le·wą!' },
           { speaker: '🐱 Pu·szek', text: 'Chodź·my na cie·płą her·bat·kę z pier·ni·kiem!' }
         ],
         facts: [
@@ -670,7 +670,7 @@ export const AFTER_PRIMER_STORIES = {
         caption: 'Ru·dek bar·dzo się śpie·szył i mi·nął krzak.',
         panels: [
           { speaker: '🦊 Ru·dek', text: 'Gdzie ten skarb?! Bie·gnę i bie·gnę, a skrzyn·ki brak!' },
-          { speaker: '🐰 Za·jąc', text: 'Nie śpiesz się! Prze·czy·taj ma·pę spo·koj·nie jesz·cze raz.' }
+          { speaker: '🐰 Za·jąc', text: 'Nie spiesz się! Prze·czy·taj ma·pę spo·koj·nie jesz·cze raz.' }
         ],
         emotionQuestion: 'Co zmy·li·ło li·ska pod·czas po·szu·ki·wań?',
         emotions: [
@@ -772,10 +772,10 @@ export const AFTER_PRIMER_STORIES = {
         { syl: 'LIST', emoji: '✉️' },
         { syl: 'SÓW·KA', emoji: '🦉' },
         { syl: 'TOR·BA', emoji: '🎒' },
-        { syl: 'DO·STAR·CZYŁ', emoji: '📬' }
+        { syl: 'DO·STAR·CZY·ŁA', emoji: '📬' }
       ],
       wordHuntIdx: 1,
-      wordHuntPrompt: 'Znajdź sło·wo, któ·re wkładamy do ko·per·ty:',
+      wordHuntPrompt: 'Znajdź sło·wo, któ·re wkła·da·my do ko·per·ty:',
       scene1: {
         backdrop: '🌌📮🦉',
         caption: 'Sów·ka U·hu mia·ła swój pierw·szy dy·żur na pocz·cie.',
@@ -791,7 +791,7 @@ export const AFTER_PRIMER_STORIES = {
         backdrop: '🌲😳✉️',
         caption: 'Przed drzwia·mi bor·su·ka sów·ka tro·chę się za·wsty·dzi·ła.',
         panels: [
-          { speaker: '🦉 U·hu', text: 'A co, je·śli po·my·lę a·dres i wszy·scy się ro·ze·śmieją?' },
+          { speaker: '🦉 U·hu', text: 'A co, je·śli po·my·lę a·dres i wszy·scy się ro·ze·śmie·ją?' },
           { speaker: '🦡 Bor·suk', text: 'Wi·taj, li·sto·no·szu! Tak cze·ka·łem na list od bab·ci!' }
         ],
         emotionQuestion: 'Co czu·ła sów·ka za·nim za·pu·ka·ła do drzwi?',
@@ -842,7 +842,7 @@ export const AFTER_PRIMER_STORIES = {
         caption: 'Na wzgó·rzu zwie·rzę·ta pu·szcza·ły la·taw·ca.',
         panels: [
           { speaker: '🐇 Kró·lik', text: 'Patrz, jak szyb·ko bie·gnę! Goń nas, Lu·la!' },
-          { speaker: '💨 Wiatr', text: 'Fiu-u-u! Sznu·rek wy·rwał się z ła·pek kró·li·ka!' }
+          { speaker: '💨 Wiatr', text: 'Fiu-fiu! Sznu·rek wy·rwał się z ła·pek kró·li·ka!' }
         ],
         questQuestion: 'Co sta·ło się z la·taw·cem na wzgó·rzu?',
         questOptions: ['Sznu·rek wy·rwał się od wia·tru', 'La·ta·wiec wpadł do her·ba·ty', 'Spadł śnieg'],
@@ -853,7 +853,7 @@ export const AFTER_PRIMER_STORIES = {
         caption: 'Lu·la szła po·wo·li i pa·trzy·ła na szyb·kich ko·le·gów.',
         panels: [
           { speaker: '🐢 Lu·la', text: 'Nie u·miem biec jak strza·ła... Mo·że je·stem tu zbęd·na?' },
-          { speaker: '🌪️ Po·dmuch', text: 'Szp-szu! Szpul·ka la·taw·ca po·le·cia·ła pro·sto ku Lu·li!' }
+          { speaker: '🌪️ Po·dmuch', text: 'Szu-szu! Szpul·ka la·taw·ca po·le·cia·ła pro·sto ku Lu·li!' }
         ],
         emotionQuestion: 'Ja·ką przy·krość od·czu·ła Lu·la na po·cząt·ku?',
         emotions: [
@@ -903,7 +903,7 @@ export const AFTER_PRIMER_STORIES = {
         caption: 'Ka·pi·tan Maks pla·no·wał wiel·kie świę·to dla za·ło·gi.',
         panels: [
           { speaker: '🧑‍🚀 Maks', text: 'Dziś wie·czo·rem ma·my ko·smicz·ną ko·la·cję!' },
-          { speaker: '🤖 Ro·bot Bip', text: 'Ojej! Za·bra·kło gwiezd·nych ja·gód na na·sze cia·sto!' }
+          { speaker: '🤖 Ro·bot Bip', text: 'O·jej! Za·bra·kło gwiezd·nych ja·gód na na·sze cia·sto!' }
         ],
         questQuestion: 'Cze·go za·bra·kło ro·bo·to·wi Bi·po·wi do cia·sta?',
         questOptions: ['Gwiezd·nych ja·gód', 'Za·pa·so·wych kół', 'Łó·dek z pa·pie·ru'],
@@ -914,7 +914,7 @@ export const AFTER_PRIMER_STORIES = {
         caption: 'Ra·kie·ta wy·lą·do·wa·ła na cie·płej Księ·ży·co·wej łą·ce.',
         panels: [
           { speaker: '👽 Stwo·rek Pik', text: 'Cześć, go·ście! Weź·cie ja·go·dy, po·mo·gę wam u·gnieść cia·sto!' },
-          { speaker: '🧑‍🚀 Maks', text: 'O rany! Nie spo·dzie·wa·li·śmy się ta·kiej go·ścin·no·ści!' }
+          { speaker: '🧑‍🚀 Maks', text: 'O ra·ny! Nie spo·dzie·wa·li·śmy się ta·kiej go·ścin·no·ści!' }
         ],
         emotionQuestion: 'Ja·ką ra·do·sną e·mo·cję wy·wo·łał gest no·we·go przy·ja·cie·la?',
         emotions: [
@@ -929,7 +929,7 @@ export const AFTER_PRIMER_STORIES = {
         backdrop: '🥧⭐🎊',
         caption: 'Na sto·le po·ja·wił się ru·mia·ny wy·piek w kształ·cie gwiaz·dy!',
         panels: [
-          { speaker: '🤖 Ro·bot Bip', text: 'Pi-pi! To naj·pysz·niej·sza nie·spo·dzian·ka w ca·łym ko·smo·sie!' },
+          { speaker: '🤖 Ro·bot Bip', text: 'Bip-bip! To naj·pysz·niej·sza nie·spo·dzian·ka w ca·łym ko·smo·sie!' },
           { speaker: '🧑‍🚀 Maks', text: 'Bra·wo! Wszyst·kie sie·dem hi·sto·rii prze·czy·ta·ne!' }
         ],
         facts: [
@@ -957,7 +957,7 @@ export const AFTER_PRIMER_STORIES = {
         { syl: 'PATH', emoji: '🥾' },
         { syl: 'LAN·TERN', emoji: '🔦' },
         { syl: 'FOR·EST', emoji: '🌲' },
-        { syl: 'FI·RE·FLY', emoji: '✨' }
+        { syl: 'FIRE·FLY', emoji: '✨' }
       ],
       wordHuntIdx: 2,
       wordHuntPrompt: 'Tap the word that helps light up the dark:',
@@ -966,7 +966,7 @@ export const AFTER_PRIMER_STORIES = {
         caption: 'Dusk fell quick·ly o·ver the qui·et for·est clear·ing.',
         panels: [
           { speaker: '🦔 Tim', text: 'Oh no! I lost my bright yel·low lan·tern!' },
-          { speaker: '🐿️ Squir·rel', text: 'Do not wor·ry! Maybe you left it near the brook?' }
+          { speaker: '🐿️ Squir·rel', text: 'Do not wor·ry! May·be you left it near the brook?' }
         ],
         questQuestion: 'Where did Squir·rel sug·gest look·ing first?',
         questOptions: ['Near the brook', 'On the roof', 'In the cave'],
@@ -982,17 +982,17 @@ export const AFTER_PRIMER_STORIES = {
         emotionQuestion: 'How did Tim feel when the lan·tern was not at the brook?',
         emotions: [
           { emoji: '😟', label: 'Wor·ried and scared' },
-          { emoji: '😂', label: 'Silly laugh·ter' },
-          { emoji: '😴', label: 'Sleepy' }
+          { emoji: '😂', label: 'Sil·ly laugh·ter' },
+          { emoji: '😴', label: 'Slee·py' }
         ],
         correctEmotionIdx: 0,
-        empathyTip: 'When you feel scared, tell a friend! Search·ing to·ge·ther makes you much brav·er.'
+        empathyTip: 'When you feel scared, tell a friend! Search·ing to·geth·er makes you much brav·er.'
       },
       scene3: {
         backdrop: '🪵✨🎉',
         caption: 'A ti·ny gold·en spark winked from top of the old stump!',
         panels: [
-          { speaker: '🐞 Fi·re·fly', text: 'Hel·lo! I kept watch o·ver your lan·tern un·til you came back!' },
+          { speaker: '🐞 Fire·fly', text: 'Hel·lo! I kept watch o·ver your lan·tern un·til you came back!' },
           { speaker: '🦔 Tim', text: 'Thank you! Now we have two bright lights for the walk!' }
         ],
         facts: [
@@ -1003,7 +1003,7 @@ export const AFTER_PRIMER_STORIES = {
       sequence: [
         'Tim lost his yel·low lan·tern and checked near the brook.',
         'Owl com·fort·ed him and spot·ted a glow on a stump.',
-        'Fi·re·fly gave back the lan·tern, and they walked home hap·pi·ly.'
+        'Fire·fly gave back the lan·tern, and they walked home hap·pi·ly.'
       ]
     },
     {
@@ -1027,9 +1027,9 @@ export const AFTER_PRIMER_STORIES = {
         caption: 'Fluf·fy went out for a walk with a big red um·brel·la.',
         panels: [
           { speaker: '🐱 Fluf·fy', text: 'The sky is blue! Why am I car·ry·ing this big um·brel·la?' },
-          { speaker: '🌧️ Wind', text: 'Whoosh! A dark cloud rolled in—drip, drop, splash!' }
+          { speaker: '🌧️ Wind', text: 'Whoosh! A dark cloud rolled in — drip, drop, splash!' }
         ],
-        questQuestion: 'What co·lor was the kit·ten’s um·brel·la?',
+        questQuestion: 'What col·or was the kit·ten’s um·brel·la?',
         questOptions: ['Blue', 'Red', 'Green'],
         correctOptIdx: 1
       },
@@ -1115,7 +1115,7 @@ export const AFTER_PRIMER_STORIES = {
         caption: 'Be·hind the green bush grew ripe, juic·y wild ber·ries!',
         panels: [
           { speaker: '🦊 Rus·ty', text: 'Here is the sweet trea·sure! A full bas·ket of ber·ries!' },
-          { speaker: '🐰 Bun·ny', text: 'Care·ful read·ing leads to the tast·i·est re·wards!' }
+          { speaker: '🐰 Bun·ny', text: 'Care·ful read·ing leads to the tas·ti·est re·wards!' }
         ],
         facts: [
           { statement: 'The trea·sure turned out to be ripe wild ber·ries.', isTrue: true },
@@ -1140,7 +1140,7 @@ export const AFTER_PRIMER_STORIES = {
         { syl: 'BRIDGE', emoji: '🌉' },
         { syl: 'PAN·DA', emoji: '🐼' },
         { syl: 'TEAM·WORK', emoji: '🤝' },
-        { syl: 'TO·GE·THER', emoji: '🛠️' }
+        { syl: 'TO·GETH·ER', emoji: '🛠️' }
       ],
       wordHuntIdx: 3,
       wordHuntPrompt: 'Tap the word that means help·ing each oth·er as a team:',
@@ -1169,11 +1169,11 @@ export const AFTER_PRIMER_STORIES = {
           { emoji: '🤩', label: 'A·maze·ment' }
         ],
         correctEmotionIdx: 0,
-        empathyTip: 'If a job is too big a·lone, ask·ing friends for help is smart—not a sign of weak·ness!'
+        empathyTip: 'If a job is too big a·lone, ask·ing friends for help is smart — not a sign of weak·ness!'
       },
       scene3: {
         backdrop: '🌉🎈🏫',
-        caption: 'Pan·da, Bea·ver, and Bear lift·ed steady as one team.',
+        caption: 'Pan·da, Bea·ver, and Bear lift·ed stead·y as one team.',
         panels: [
           { speaker: '🦫 Bea·ver', text: 'One, two, three! Our stur·dy new bridge is read·y!' },
           { speaker: '🐼 Bam·boo', text: 'Team·work can fix an·y·thing! Off to school we go!' }
@@ -1207,12 +1207,12 @@ export const AFTER_PRIMER_STORIES = {
       wordHuntPrompt: 'Tap the word for what goes in·side an en·ve·lope:',
       scene1: {
         backdrop: '🌌📮🦉',
-        caption: 'Lit·tle owl Hoot had his ver·y first night-post shift.',
+        caption: 'Lit·tle owl Hoot had his ve·ry first night-post shift.',
         panels: [
           { speaker: '🦉 Hoot', text: 'My bag holds three spe·cial let·ters for wood·land friends!' },
           { speaker: '🦌 Deer', text: 'The first let·ter goes to Badg·er un·der the tall pine.' }
         ],
-        questQuestion: 'How man·y let·ters were in Hoot’s post·bag?',
+        questQuestion: 'How ma·ny let·ters were in Hoot’s post·bag?',
         questOptions: ['Three let·ters', 'Ten par·cels', 'One news·pa·per'],
         correctOptIdx: 0
       },
@@ -1220,8 +1220,8 @@ export const AFTER_PRIMER_STORIES = {
         backdrop: '🌲😳✉️',
         caption: 'Out·side Badg·er’s door, Hoot felt a lit·tle shy.',
         panels: [
-          { speaker: '🦉 Hoot', text: 'What if I mix up the house and ev·er·y·one laughs?' },
-          { speaker: '🦡 Badg·er', text: 'Wel·come, post·man! I waited all day for news from Grand·ma!' }
+          { speaker: '🦉 Hoot', text: 'What if I mix up the house and eve·ry·one laughs?' },
+          { speaker: '🦡 Badg·er', text: 'Wel·come, post·man! I wait·ed all day for news from Grand·ma!' }
         ],
         emotionQuestion: 'How did Hoot feel right be·fore knock·ing on the door?',
         emotions: [
@@ -1234,9 +1234,9 @@ export const AFTER_PRIMER_STORIES = {
       },
       scene3: {
         backdrop: '📬🌟🏅',
-        caption: 'By dawn, ev·er·y let·ter sat safe·ly in its mail·box.',
+        caption: 'By dawn, eve·ry let·ter sat safe·ly in its mail·box.',
         panels: [
-          { speaker: '🦉 Hoot', text: 'I did it! Ev·er·y friend got kind news be·fore sun·rise!' },
+          { speaker: '🦉 Hoot', text: 'I did it! Eve·ry friend got kind news be·fore sun·rise!' },
           { speaker: '🦡 Badg·er', text: 'You are the fin·est night post·man in the woods!' }
         ],
         facts: [
@@ -1291,13 +1291,13 @@ export const AFTER_PRIMER_STORIES = {
           { emoji: '🥱', label: 'Yawn·ing' }
         ],
         correctEmotionIdx: 0,
-        empathyTip: 'Ev·er·y·one has their own gift! Speed is not the on·ly strength—be·ing stead·y mat·ters too!'
+        empathyTip: 'Eve·ry·one has their own gift! Speed is not the on·ly strength — be·ing stead·y mat·ters too!'
       },
       scene3: {
         backdrop: '🛡️🪁👏',
         caption: 'Lu·la pinned the spool tight and stood firm a·gainst the gale!',
         panels: [
-          { speaker: '🐢 Lu·la', text: 'My heav·y shell anchored the kite safe·ly in the wind!' },
+          { speaker: '🐢 Lu·la', text: 'My heav·y shell an·chored the kite safe·ly in the wind!' },
           { speaker: '🐇 Rab·bit', text: 'Bra·vo, Lu·la! With·out you, our kite would be gone!' }
         ],
         facts: [
@@ -1307,7 +1307,7 @@ export const AFTER_PRIMER_STORIES = {
       },
       sequence: [
         'A strong gust pulled the kite string out of Rab·bit’s paws.',
-        'Lu·la felt sad for walk·ing more slow·ly than others.',
+        'Lu·la felt sad for walk·ing more slow·ly than oth·ers.',
         'Her stead·y shell held the spool fast and saved the day.'
       ]
     },
@@ -1342,7 +1342,7 @@ export const AFTER_PRIMER_STORIES = {
         backdrop: '🪐✨🧺',
         caption: 'The rock·et land·ed soft·ly on a warm Moon Mead·ow.',
         panels: [
-          { speaker: '👽 Moon Pip', text: 'Wel·come, trav·el·ers! Take these ber·ries—let us bake to·ge·ther!' },
+          { speaker: '👽 Moon Pip', text: 'Wel·come, trav·el·ers! Take these ber·ries — let us bake to·geth·er!' },
           { speaker: '🧑‍🚀 Max', text: 'Wow! We nev·er dreamed of such warm friend·li·ness!' }
         ],
         emotionQuestion: 'What bright feel·ing did Pip’s kind act spark in the crew?',
@@ -1369,7 +1369,7 @@ export const AFTER_PRIMER_STORIES = {
       sequence: [
         'The space crew ran out of star·ber·ries for their feast pie.',
         'On Moon Mead·ow, kind Pip shared ber·ries and helped bake.',
-        'Ev·er·y·one cheered a·round the gold·en star·light pie!'
+        'Eve·ry·one cheered a·round the gold·en star·light pie!'
       ]
     }
   ]
