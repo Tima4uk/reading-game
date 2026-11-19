@@ -5127,3 +5127,231 @@ body {
     max-width: 100%;
   }
 }
+
+
+/* ==========================================
+   PHONICS: ЧИСТЫЕ ЗВУКИ, ФОНЕМЫ И ДИГРАФЫ
+   ========================================== */
+.ab-sound-toggle {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.ab-sound-btn {
+  padding: 8px 16px;
+  border-radius: 14px;
+  border: 2px solid #cbd5e1;
+  background: #ffffff;
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+
+.ab-sound-btn.active {
+  background: linear-gradient(135deg, #ecfeff 0%, #cffafe 100%);
+  border-color: #0891b2;
+  color: #0e7490;
+  box-shadow: 0 3px 10px rgba(8, 145, 178, 0.18);
+}
+
+.ab-card-phoneme {
+  margin-top: 2px;
+  padding: 1px 7px;
+  border-radius: 9px;
+  background: #f1f5f9;
+  color: #0f766e;
+  font-size: 0.72rem;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.ab-digraphs-section {
+  margin-top: 18px;
+  padding: 14px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, #f5f3ff 0%, #eff6ff 100%);
+  border: 2.5px solid #c4b5fd;
+}
+
+.ab-digraphs-title {
+  font-size: 1rem;
+  font-weight: 900;
+  color: #4c1d95;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.ab-digraphs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(125px, 1fr));
+  gap: 10px;
+}
+
+.ab-digraph-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 8px;
+  border-radius: 18px;
+  border: 2.5px solid #a78bfa;
+  background: #ffffff;
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow: 0 4px 0px #c4b5fd;
+  transition: transform 0.14s ease;
+}
+
+.ab-digraph-card:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0px #c4b5fd;
+}
+
+.ab-digraph-code {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #6d28d9;
+  line-height: 1.1;
+}
+
+.ab-digraph-sound {
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: #ede9fe;
+  color: #5b21b6;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.ab-digraph-word {
+  font-size: 0.84rem;
+  font-weight: 800;
+  color: #334155;
+}
+
+.primer-badges-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.primer-phoneme-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 12px;
+  background: #ecfeff;
+  border: 1.5px solid #67e8f9;
+  color: #0e7490;
+  font-size: 0.86rem;
+  font-weight: 900;
+}
+
+.primer-hero-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.primer-phoneme-btn {
+  padding: 12px 18px;
+  border-radius: 18px;
+  border: none;
+  background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 1.05rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 5px 14px rgba(8, 145, 178, 0.28);
+  transition: transform 0.15s ease;
+  white-space: nowrap;
+}
+
+.primer-phoneme-btn:active {
+  transform: scale(0.95);
+}
+
+.primer-phoneme-cue {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px dashed #eab308;
+  color: #713f12;
+  font-size: 0.94rem;
+  font-weight: 800;
+}
+
+/* Модалка диграфов */
+.digraph-modal-box {
+  max-width: 660px;
+}
+
+.digraph-hero-card {
+  border-color: #a78bfa;
+  background: linear-gradient(135deg, #ffffff 0%, #f5f3ff 100%);
+}
+
+.digraph-big-code {
+  color: #6d28d9;
+  min-width: 82px;
+}
+
+.digraph-examples-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.digraph-example-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 2.5px solid #cbd5e1;
+  background: #ffffff;
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow: 0 4px 0px #cbd5e1;
+  transition: transform 0.14s ease;
+}
+
+.digraph-example-btn:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0px #cbd5e1;
+}
+
+.digraph-ex-emoji {
+  font-size: 1.6rem;
+}
+
+.digraph-ex-word {
+  flex: 1;
+  font-size: 1.05rem;
+  font-weight: 900;
+  color: #0f172a;
+  text-align: left;
+}
+
+.digraph-ex-audio {
+  font-size: 1rem;
+}
+
+@media (max-width: 600px) {
+  .primer-hero-actions {
+    width: 100%;
+    justify-content: center;
+  }
+  .ab-digraphs-grid {
+    grid-template-columns: repeat(auto-fill, minmax(105px, 1fr));
+  }
+}

@@ -1,7 +1,7 @@
 // Интерактивный «Букварь: Комиксы, слоги, игры и задания» (по мотивам методики В. и А. Мельниковых / АСТ)
 // Поддерживает все буквы RU (33), PL (32), EN (26)
 
-import { ALPHABET_DATA, WORDS_DATA, WORDS_DATA_HARD, VOWELS, RUSSIAN_ALPHABET, POLISH_ALPHABET, ENGLISH_ALPHABET, shuffleArray } from './data.js?v=24';
+import { ALPHABET_DATA, WORDS_DATA, WORDS_DATA_HARD, VOWELS, RUSSIAN_ALPHABET, POLISH_ALPHABET, ENGLISH_ALPHABET, shuffleArray } from './data.js?v=25';
 
 const RU_CUSTOM_LESSONS = {
   'А': {

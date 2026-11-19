@@ -1,10 +1,11 @@
 // Модуль «Азбука» для детей 4.5 лет: Говорящая Азбука + Викторина + Конструктор букв
-import { ALPHABET_DATA, shuffleArray } from './data.js?v=24';
-import { sound } from './audio.js?v=24';
-import { LetterPuzzleGame } from './letter-puzzle.js?v=24';
-import { getLetterLesson } from './letter-lessons.js?v=24';
-import { KochamCzytacGame } from './kocham-czytac.js?v=24';
-import { AfterPrimerGame } from './after-primer.js?v=24';
+import { ALPHABET_DATA, shuffleArray } from './data.js?v=25';
+import { sound } from './audio.js?v=25';
+import { LetterPuzzleGame } from './letter-puzzle.js?v=25';
+import { getLetterLesson } from './letter-lessons.js?v=25';
+import { KochamCzytacGame } from './kocham-czytac.js?v=25';
+import { AfterPrimerGame } from './after-primer.js?v=25';
+import { PHONICS_DIGRAPHS, getLetterPhonics, getDigraphPhonics } from './phonics.js?v=25';
 
 export class AlphabetGame {
   constructor(options = {}) {
@@ -14,7 +15,9 @@ export class AlphabetGame {
     this.onWinEffect = options.onWinEffect || (() => {});
 
     this.subMode = 'explore'; // 'explore' | 'quiz' | 'puzzle' | 'workbooks' | 'after_primer'
+    this.phonicsMode = true; // true = чистый звук (фонема), false = название буквы
     this.selectedLetterItem = null;
+    this.selectedDigraph = null;
     this.currentLesson = null;
     this.lessonState = null;
 
@@ -64,6 +67,7 @@ export class AlphabetGame {
       }
     }
     this.selectedLetterItem = null;
+    this.selectedDigraph = null;
     if (this.subMode === 'quiz') {
       this.startNewQuizRound();
     } else if (this.subMode === 'puzzle') {
@@ -80,6 +84,7 @@ export class AlphabetGame {
   start() {
     this.stop();
     this.selectedLetterItem = null;
+    this.selectedDigraph = null;
     if (this.subMode === 'quiz') {
       this.startNewQuizRound();
     } else if (this.subMode === 'puzzle') {
@@ -218,9 +223,11 @@ export class AlphabetGame {
             : (this.subMode === 'quiz' ? this.renderQuizHTML() : '')}
         </div>
 
-        <!-- Большое модальное окно для детального просмотра буквы -->
-        <div class="ab-card-modal ${this.selectedLetterItem ? '' : 'hidden'}" id="ab-modal">
-          ${this.selectedLetterItem ? this.renderLetterModalContent(this.selectedLetterItem) : ''}
+        <!-- Большое модальное окно для детального просмотра буквы или диграфа -->
+        <div class="ab-card-modal ${(this.selectedLetterItem || this.selectedDigraph) ? '' : 'hidden'}" id="ab-modal">
+          ${this.selectedLetterItem
+            ? this.renderLetterModalContent(this.selectedLetterItem)
+            : (this.selectedDigraph ? this.renderDigraphModalContent(this.selectedDigraph) : '')}
         </div>
       </div>
     `;
@@ -229,18 +236,51 @@ export class AlphabetGame {
   }
 
   // ==========================================
-  // РЕЖИМ 1: Говорящая Азбука (Все буквы)
+  // РЕЖИМ 1: Говорящая Азбука (Все буквы + Phonics + Диграфы)
   // ==========================================
   renderExploreHTML(data) {
+    const isRu = this.lang === 'ru';
+    const isPl = this.lang === 'pl';
+    const phonicsLabel = isRu ? '🗣️ Звуки (фонемы)' : (isPl ? '🗣️ Głoski (dźwięki)' : '🗣️ Sounds (Phonics)');
+    const namesLabel = isRu ? '🔤 Названия букв' : (isPl ? '🔤 Nazwy liter' : '🔤 Letter Names');
+    const digraphsTitle = isRu
+      ? '✨ Буквосочетания и особые звуки (как карточки Phonics)'
+      : (isPl ? '✨ Dwuznaki i połączenia (karty Phonics)' : '✨ Phonics Digraphs & Teams (Science of Reading)');
+    const digraphs = PHONICS_DIGRAPHS[this.lang] || [];
+
     return `
-      <div class="ab-grid">
-        ${data.map((item, index) => `
-          <button class="ab-letter-card" data-index="${index}">
-            <span class="ab-card-letter">${item.letter}</span>
-            <span class="ab-card-emoji">${item.emoji}</span>
-          </button>
-        `).join('')}
+      <div class="ab-sound-toggle" role="group" aria-label="Phonics sound mode">
+        <button class="ab-sound-btn ${this.phonicsMode ? 'active' : ''}" id="ab-mode-phonics">${phonicsLabel}</button>
+        <button class="ab-sound-btn ${!this.phonicsMode ? 'active' : ''}" id="ab-mode-names">${namesLabel}</button>
       </div>
+
+      <div class="ab-grid">
+        ${data.map((item, index) => {
+          const ph = getLetterPhonics(item.letter, this.lang);
+          return `
+            <button class="ab-letter-card" data-index="${index}">
+              <span class="ab-card-letter">${item.letter}</span>
+              <span class="ab-card-emoji">${item.emoji}</span>
+              ${ph ? `<span class="ab-card-phoneme">${ph.soundLabel}</span>` : ''}
+            </button>
+          `;
+        }).join('')}
+      </div>
+
+      ${digraphs.length ? `
+        <div class="ab-digraphs-section">
+          <div class="ab-digraphs-title">${digraphsTitle}</div>
+          <div class="ab-digraphs-grid">
+            ${digraphs.map(dg => `
+              <button class="ab-digraph-card" data-code="${dg.code}">
+                <span class="ab-digraph-code">${dg.code}</span>
+                <span class="ab-digraph-sound">${dg.soundLabel}</span>
+                <span class="ab-digraph-word">${dg.emoji} ${dg.word}</span>
+              </button>
+            `).join('')}
+          </div>
+        </div>
+      ` : ''}
     `;
   }
 
@@ -328,7 +368,9 @@ export class AlphabetGame {
       missingRewarded: false
     };
 
-    const speakText = isRu ? 'Слушать' : (isPl ? 'Posłuchaj' : 'Listen');
+    const speakText = isRu ? 'Буква' : (isPl ? 'Litera' : 'Letter');
+    const phonemeBtnLabel = isRu ? 'Звук' : (isPl ? 'Głoska' : 'Sound');
+    const phonics = getLetterPhonics(lesson.letter, this.lang);
     const tipTitle = isRu ? 'Совет логопеда:' : (isPl ? 'Wskazówka logopedy:' : 'Speech tip:');
     const comicTitle = isRu ? '📖 Комикс: нажми на облачко со словами!' : (isPl ? '📖 Komiks: kliknij dymek!' : '📖 Comic: tap the speech bubble!');
     const syllablesTitle = isRu ? '👣 Дорожка слогов: прошагай и прочитай все!' : (isPl ? '👣 Ścieżka sylab: przeczytaj wszystkie!' : '👣 Syllable track: tap & read all!');
@@ -377,15 +419,23 @@ export class AlphabetGame {
           <div class="primer-hero-card sound-${lesson.soundType}">
             <div class="primer-letter-big">${lesson.letter}</div>
             <div class="primer-hero-info">
-              <span class="primer-sound-badge ${lesson.soundType}">${lesson.badgeText}</span>
+              <div class="primer-badges-row">
+                <span class="primer-sound-badge ${lesson.soundType}">${lesson.badgeText}</span>
+                ${phonics ? `<span class="primer-phoneme-pill">🗣️ ${phonics.soundLabel}</span>` : ''}
+              </div>
               <div class="primer-key-word">
                 <span class="primer-key-emoji">${lesson.emoji}</span>
                 <span class="primer-key-text">${lesson.word}</span>
               </div>
             </div>
-            <button class="primer-listen-btn" id="ab-btn-speak" title="${speakText}">
-              🔊 ${speakText}
-            </button>
+            <div class="primer-hero-actions">
+              <button class="primer-phoneme-btn" id="ab-btn-phoneme" title="${phonemeBtnLabel}">
+                🗣️ ${phonemeBtnLabel}
+              </button>
+              <button class="primer-listen-btn" id="ab-btn-speak" title="${speakText}">
+                🔊 ${speakText}
+              </button>
+            </div>
           </div>
 
           <button class="ab-action-btn" id="ab-btn-next" title="Следующая буква">▶</button>
@@ -396,6 +446,7 @@ export class AlphabetGame {
           <span class="primer-tip-icon">👩‍⚕️</span>
           <div class="primer-tip-content">
             <strong>${tipTitle}</strong> ${lesson.tipText}
+            ${phonics ? `<div class="primer-phoneme-cue">🎯 ${phonics.cue}</div>` : ''}
           </div>
           <button class="primer-tip-audio-btn" id="primer-btn-tip-speak" title="${speakText}">🔊</button>
         </div>
@@ -515,6 +566,7 @@ export class AlphabetGame {
 
   openLetterModal(index) {
     const data = ALPHABET_DATA[this.lang];
+    this.selectedDigraph = null;
     this.selectedLetterItem = data[index];
     this.selectedLetterIndex = index;
     this.currentLesson = getLetterLesson(this.selectedLetterItem.letter, this.lang);
@@ -533,7 +585,11 @@ export class AlphabetGame {
     };
 
     sound.playLetterClick();
-    sound.speakLetterAndWord(this.selectedLetterItem.letter, this.selectedLetterItem.word, this.lang);
+    if (this.phonicsMode) {
+      sound.speakPhoneme(this.selectedLetterItem.letter, this.lang);
+    } else {
+      sound.speakLetterAndWord(this.selectedLetterItem.letter, this.selectedLetterItem.word, this.lang);
+    }
 
     const modal = this.container.querySelector('#ab-modal');
     if (modal) {
@@ -548,6 +604,117 @@ export class AlphabetGame {
     }
   }
 
+  openDigraphModal(code) {
+    const digraph = getDigraphPhonics(code, this.lang);
+    if (!digraph) return;
+    this.selectedLetterItem = null;
+    this.currentLesson = null;
+    this.lessonState = null;
+    this.selectedDigraph = digraph;
+
+    sound.playLetterClick();
+    sound.speakDigraph(digraph.code, this.lang);
+
+    const modal = this.container.querySelector('#ab-modal');
+    if (modal) {
+      modal.innerHTML = this.renderDigraphModalContent(digraph);
+      modal.classList.remove('hidden');
+      this.attachDigraphModalEvents();
+    }
+  }
+
+  renderDigraphModalContent(dg) {
+    const isRu = this.lang === 'ru';
+    const isPl = this.lang === 'pl';
+    const badgeLabel = isRu ? '✨ Буквосочетание' : (isPl ? '✨ Dwuznak' : '✨ Digraph');
+    const soundBtnLbl = isRu ? 'Звук' : (isPl ? 'Dźwięk' : 'Sound');
+    const wordBtnLbl = isRu ? 'Слово' : (isPl ? 'Słowo' : 'Word');
+    const examplesTitle = isRu
+      ? '🎯 Нажми на слово и послушай этот звук:'
+      : (isPl ? '🎯 Kliknij słowo i posłuchaj tego dźwięku:' : '🎯 Tap a word to hear this sound:');
+
+    return `
+      <div class="ab-modal-backdrop" id="ab-modal-close-bg"></div>
+      <div class="ab-modal-box primer-modal-box digraph-modal-box">
+        <button class="ab-modal-close" id="ab-modal-btn-close" title="Закрыть">✖</button>
+
+        <div class="primer-header">
+          <div class="primer-hero-card digraph-hero-card">
+            <div class="primer-letter-big digraph-big-code">${dg.code}</div>
+            <div class="primer-hero-info">
+              <div class="primer-badges-row">
+                <span class="primer-sound-badge">${badgeLabel}</span>
+                <span class="primer-phoneme-pill">🗣️ ${dg.soundLabel}</span>
+              </div>
+              <div class="primer-key-word">
+                <span class="primer-key-emoji">${dg.emoji}</span>
+                <span class="primer-key-text">${dg.word}</span>
+              </div>
+            </div>
+            <div class="primer-hero-actions">
+              <button class="primer-phoneme-btn" id="dg-btn-phoneme">🗣️ ${soundBtnLbl}</button>
+              <button class="primer-listen-btn" id="dg-btn-word">🔊 ${wordBtnLbl}</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="primer-tip-box">
+          <span class="primer-tip-icon">👩‍🏫</span>
+          <div class="primer-tip-content">${dg.cue}</div>
+          <button class="primer-tip-audio-btn" id="dg-btn-cue-speak">🔊</button>
+        </div>
+
+        <div class="primer-section">
+          <div class="primer-section-title">${examplesTitle}</div>
+          <div class="digraph-examples-grid">
+            ${dg.examples.map(ex => `
+              <button class="digraph-example-btn" data-word="${ex.word}">
+                <span class="digraph-ex-emoji">${ex.emoji}</span>
+                <span class="digraph-ex-word">${ex.word}</span>
+                <span class="digraph-ex-audio">🔊</span>
+              </button>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  attachDigraphModalEvents() {
+    const closeBtn = this.container.querySelector('#ab-modal-btn-close');
+    const closeBg = this.container.querySelector('#ab-modal-close-bg');
+    const phBtn = this.container.querySelector('#dg-btn-phoneme');
+    const wdBtn = this.container.querySelector('#dg-btn-word');
+    const cueBtn = this.container.querySelector('#dg-btn-cue-speak');
+
+    if (closeBtn) closeBtn.addEventListener('click', () => this.closeLetterModal());
+    if (closeBg) closeBg.addEventListener('click', () => this.closeLetterModal());
+    if (phBtn && this.selectedDigraph) {
+      phBtn.addEventListener('click', () => {
+        sound.playLetterClick();
+        sound.speakDigraph(this.selectedDigraph.code, this.lang);
+      });
+    }
+    if (wdBtn && this.selectedDigraph) {
+      wdBtn.addEventListener('click', () => {
+        sound.playLetterClick();
+        sound.speakWord(this.selectedDigraph.word, this.lang);
+      });
+    }
+    if (cueBtn && this.selectedDigraph) {
+      cueBtn.addEventListener('click', () => {
+        sound.playLetterClick();
+        sound.speakExplanation(this.selectedDigraph.cue, this.lang);
+      });
+    }
+    this.container.querySelectorAll('.digraph-example-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        sound.playLetterClick();
+        sound.speakWord(btn.dataset.word, this.lang);
+      });
+    });
+  }
+
   highlightLetterInWord(word, targetLetter, isFound) {
     if (!isFound) return word;
     return word
@@ -560,6 +727,7 @@ export class AlphabetGame {
 
   closeLetterModal() {
     this.selectedLetterItem = null;
+    this.selectedDigraph = null;
     this.currentLesson = null;
     this.lessonState = null;
     sound.stopSpeech();
@@ -581,6 +749,7 @@ export class AlphabetGame {
   attachModalEvents() {
     const closeBtn = this.container.querySelector('#ab-modal-btn-close');
     const closeBg = this.container.querySelector('#ab-modal-close-bg');
+    const phonemeBtn = this.container.querySelector('#ab-btn-phoneme');
     const speakBtn = this.container.querySelector('#ab-btn-speak');
     const tipSpeakBtn = this.container.querySelector('#primer-btn-tip-speak');
     const prevBtn = this.container.querySelector('#ab-btn-prev');
@@ -588,6 +757,13 @@ export class AlphabetGame {
 
     if (closeBtn) closeBtn.addEventListener('click', () => this.closeLetterModal());
     if (closeBg) closeBg.addEventListener('click', () => this.closeLetterModal());
+
+    if (phonemeBtn && this.selectedLetterItem) {
+      phonemeBtn.addEventListener('click', () => {
+        sound.playLetterClick();
+        sound.speakPhoneme(this.selectedLetterItem.letter, this.lang);
+      });
+    }
 
     if (speakBtn && this.selectedLetterItem) {
       speakBtn.addEventListener('click', () => {
@@ -1090,6 +1266,25 @@ export class AlphabetGame {
     if (btnAfterPrimer) btnAfterPrimer.addEventListener('click', () => this.switchSubMode('after_primer'));
 
     if (this.subMode === 'explore') {
+      const btnPhonics = this.container.querySelector('#ab-mode-phonics');
+      const btnNames = this.container.querySelector('#ab-mode-names');
+      if (btnPhonics) {
+        btnPhonics.addEventListener('click', () => {
+          if (this.phonicsMode) return;
+          this.phonicsMode = true;
+          sound.playLetterClick();
+          this.render();
+        });
+      }
+      if (btnNames) {
+        btnNames.addEventListener('click', () => {
+          if (!this.phonicsMode) return;
+          this.phonicsMode = false;
+          sound.playLetterClick();
+          this.render();
+        });
+      }
+
       const cards = this.container.querySelectorAll('.ab-letter-card');
       cards.forEach(card => {
         card.addEventListener('click', () => {
@@ -1097,6 +1292,19 @@ export class AlphabetGame {
           this.openLetterModal(idx);
         });
       });
+
+      const digraphCards = this.container.querySelectorAll('.ab-digraph-card');
+      digraphCards.forEach(card => {
+        card.addEventListener('click', () => {
+          this.openDigraphModal(card.dataset.code);
+        });
+      });
+
+      if (this.selectedLetterItem) {
+        this.attachModalEvents();
+      } else if (this.selectedDigraph) {
+        this.attachDigraphModalEvents();
+      }
     } else if (this.subMode === 'quiz') {
       // Викторина
       const repeatBtn = this.container.querySelector('#ab-quiz-repeat');

@@ -1,4 +1,6 @@
-// Модуль аудио: Синтез звуковых эффектов (Web Audio API) и озвучивание речи (SpeechSynthesis API)
+// Модуль аудио: Синтез звуковых эффектов (Web Audio API), локальные аудиоклипы (assets/audio/) и озвучивание речи (SpeechSynthesis API)
+
+import { getLetterPhonics, getDigraphPhonics } from './phonics.js?v=25';
 
 // Произношение отдельных букв (чтобы согласные не проглатывались как предлоги, а Ъ/Ь не молчали)
 const RU_LETTER_SPOKEN = {
@@ -444,8 +446,25 @@ class SoundEngine {
     this.speechEnabled = true;
     this.voices = [];
     this.speakTimer = null;
+    this.audioManifest = null;
+    this.audioClipCache = new Map();
+    this.activeClip = null;
     this.initAudioContext();
     this.initVoices();
+    this.loadAudioManifest();
+  }
+
+  async loadAudioManifest() {
+    if (typeof window === 'undefined' || typeof fetch !== 'function') return;
+    if (window.location && window.location.protocol === 'file:') return;
+    try {
+      const resp = await fetch('assets/audio/manifest.json?v=25');
+      if (resp && resp.ok) {
+        this.audioManifest = await resp.json();
+      }
+    } catch (e) {
+      // Без манифеста используем стандартный синтезатор речи без ошибок в консоли
+    }
   }
 
   initAudioContext() {
@@ -508,14 +527,82 @@ class SoundEngine {
       clearTimeout(this.speakTimer);
       this.speakTimer = null;
     }
+    if (this.activeClip) {
+      try {
+        this.activeClip.pause();
+        this.activeClip.currentTime = 0;
+      } catch (e) {
+        // Игнорируем ошибку остановки аудиотега
+      }
+      this.activeClip = null;
+    }
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       window.speechSynthesis.cancel();
     }
   }
 
+  // Проигрывание локального аудиофайла по манифесту с запасным переходом на TTS
+  playCustomClip(category, lang, fileKey, onFallback) {
+    if (!this.speechEnabled) return true;
+    const relPath = fileKey &&
+      this.audioManifest &&
+      this.audioManifest[category] &&
+      this.audioManifest[category][lang] &&
+      this.audioManifest[category][lang][fileKey];
+
+    if (!relPath || typeof Audio === 'undefined') {
+      if (onFallback) onFallback();
+      return false;
+    }
+
+    this.stopSpeech();
+    const fullPath = `assets/audio/${relPath}`;
+    let clip = this.audioClipCache.get(fullPath);
+    if (!clip) {
+      clip = new Audio(fullPath);
+      this.audioClipCache.set(fullPath, clip);
+    }
+
+    try {
+      clip.currentTime = 0;
+    } catch (e) {
+      // Игнорируем, если метаданные ещё не загружены
+    }
+    this.activeClip = clip;
+
+    let fellBack = false;
+    const triggerFallback = () => {
+      if (fellBack || this.activeClip !== clip) return;
+      fellBack = true;
+      this.activeClip = null;
+      if (onFallback) onFallback();
+    };
+
+    clip.addEventListener('error', triggerFallback, { once: true });
+    clip.addEventListener('ended', () => {
+      if (this.activeClip === clip) this.activeClip = null;
+    }, { once: true });
+
+    const playPromise = clip.play();
+    if (playPromise && typeof playPromise.catch === 'function') {
+      playPromise.catch(() => triggerFallback());
+    }
+    return true;
+  }
+
   // Безопасный запуск SpeechSynthesis без бага проглатывания после cancel() в браузерах
   _speakUtterance(text, lang, rate = 0.85, pitch = 1.05) {
     if (!this.speechEnabled || typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+
+    if (this.activeClip) {
+      try {
+        this.activeClip.pause();
+        this.activeClip.currentTime = 0;
+      } catch (e) {
+        // Игнорируем ошибку остановки аудиотега
+      }
+      this.activeClip = null;
+    }
 
     if (this.speakTimer) {
       clearTimeout(this.speakTimer);
@@ -627,11 +714,42 @@ class SoundEngine {
         (match, prefix, word) => prefix + (yoMap[word.toLowerCase()] || word));
   }
 
-  // Озвучивание отдельной буквы
+  // Озвучивание отдельной буквы (приоритет локальному клипу, затем TTS)
   speakLetter(letter, lang = 'ru') {
     if (!letter) return;
-    const spokenLetter = this.normalizeLetterForSpeech(letter, lang);
-    this._speakUtterance(spokenLetter, lang, 0.85, 1.05);
+    const info = getLetterPhonics(letter, lang);
+    const fallback = () => {
+      const spokenLetter = this.normalizeLetterForSpeech(letter, lang);
+      this._speakUtterance(spokenLetter, lang, 0.85, 1.05);
+    };
+    if (info && info.fileKey) {
+      this.playCustomClip('letters', lang, info.fileKey, fallback);
+    } else {
+      fallback();
+    }
+  }
+
+  // Озвучивание чистого звука (фонемы) по методике Phonics / Science of Reading
+  speakPhoneme(letter, lang = 'ru') {
+    if (!letter) return;
+    const info = getLetterPhonics(letter, lang);
+    if (!info) {
+      this.speakLetter(letter, lang);
+      return;
+    }
+    this.playCustomClip('phonemes', lang, info.fileKey, () => {
+      this._speakUtterance(info.spoken, lang, 0.85, 1.05);
+    });
+  }
+
+  // Озвучивание звука диграфа / буквосочетания (ck, sh, th, sz, cz, жи, ши и т.д.)
+  speakDigraph(code, lang = 'ru') {
+    if (!code) return;
+    const info = getDigraphPhonics(code, lang);
+    if (!info) return;
+    this.playCustomClip('digraphs', lang, info.fileKey, () => {
+      this._speakUtterance(info.spokenPhoneme, lang, 0.85, 1.05);
+    });
   }
 
   // Озвучивание слова целиком
