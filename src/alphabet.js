@@ -1,11 +1,11 @@
-// Модуль «Азбука» для детей 4.5 лет: Говорящая Азбука + Викторина + Конструктор букв
-import { ALPHABET_DATA, shuffleArray } from './data.js?v=25';
-import { sound } from './audio.js?v=25';
-import { LetterPuzzleGame } from './letter-puzzle.js?v=25';
-import { getLetterLesson } from './letter-lessons.js?v=25';
-import { KochamCzytacGame } from './kocham-czytac.js?v=25';
-import { AfterPrimerGame } from './after-primer.js?v=25';
-import { PHONICS_DIGRAPHS, getLetterPhonics, getDigraphPhonics } from './phonics.js?v=25';
+// Модуль «Букварь» для детей 4.5 лет: Пошаговый Букварь (по методике В. и А. Мельниковых / АСТ) + Викторина + Конструктор букв
+import { shuffleArray } from './data.js?v=26';
+import { sound } from './audio.js?v=26';
+import { LetterPuzzleGame } from './letter-puzzle.js?v=26';
+import { getLetterLesson, BUKVAR_STAGES, getOrderedAlphabetData } from './letter-lessons.js?v=26';
+import { KochamCzytacGame } from './kocham-czytac.js?v=26';
+import { AfterPrimerGame } from './after-primer.js?v=26';
+import { PHONICS_DIGRAPHS, getLetterPhonics, getDigraphPhonics } from './phonics.js?v=26';
 
 export class AlphabetGame {
   constructor(options = {}) {
@@ -15,7 +15,9 @@ export class AlphabetGame {
     this.onWinEffect = options.onWinEffect || (() => {});
 
     this.subMode = 'explore'; // 'explore' | 'quiz' | 'puzzle' | 'workbooks' | 'after_primer'
+    this.orderMode = 'bukvar'; // 'bukvar' | 'alphabet'
     this.phonicsMode = true; // true = чистый звук (фонема), false = название буквы
+    this.masteredLetters = this.loadMasteredLetters(this.lang);
     this.selectedLetterItem = null;
     this.selectedDigraph = null;
     this.currentLesson = null;
@@ -34,6 +36,76 @@ export class AlphabetGame {
     this.afterPrimerGame = null;
     this.quizTimer = null;
     this.speakTimer = null;
+  }
+
+  getMasteredStorageKey(lang = this.lang) {
+    return `reading_game_bukvar_mastered_${lang}`;
+  }
+
+  loadMasteredLetters(lang = this.lang) {
+    try {
+      const raw = localStorage.getItem(this.getMasteredStorageKey(lang));
+      const parsed = raw ? JSON.parse(raw) : [];
+      return new Set(Array.isArray(parsed) ? parsed.map(ch => String(ch).toUpperCase()) : []);
+    } catch (_) {
+      return new Set();
+    }
+  }
+
+  saveMasteredLetters() {
+    try {
+      localStorage.setItem(this.getMasteredStorageKey(this.lang), JSON.stringify([...this.masteredLetters]));
+    } catch (_) {}
+  }
+
+  markLetterMastered(letter) {
+    if (!letter) return false;
+    const upper = String(letter).toUpperCase();
+    if (this.masteredLetters.has(upper)) return false;
+    this.masteredLetters.add(upper);
+    this.saveMasteredLetters();
+    return true;
+  }
+
+  toggleLetterMastered(letter) {
+    if (!letter) return false;
+    const upper = String(letter).toUpperCase();
+    if (this.masteredLetters.has(upper)) {
+      this.masteredLetters.delete(upper);
+      this.saveMasteredLetters();
+      sound.playLetterClick();
+      return false;
+    }
+    this.masteredLetters.add(upper);
+    this.saveMasteredLetters();
+    sound.playSuccess();
+    this.onWinEffect();
+    return true;
+  }
+
+  getActiveAlphabetList() {
+    return getOrderedAlphabetData(this.lang, this.orderMode);
+  }
+
+  speakReadableText(rawText) {
+    if (!rawText) return;
+    const cleanedForSpeech = String(rawText).replace(/-/g, '').trim();
+    const lettersOnly = cleanedForSpeech.replace(/[!?.…,\s—]/g, '').toUpperCase();
+    if (lettersOnly.length >= 1 && new Set(lettersOnly.split('')).size === 1) {
+      const ch = lettersOnly[0];
+      if (ch === 'Ъ' || ch === 'Ь') {
+        sound.speakLetter(ch, this.lang);
+      } else {
+        sound.speakPhoneme(ch, this.lang);
+      }
+      return;
+    }
+    const plainWord = cleanedForSpeech.replace(/[!?.…]/g, '');
+    if (!plainWord.includes(' ')) {
+      sound.speakWord(plainWord, this.lang);
+    } else {
+      sound.speakPhrase(cleanedForSpeech, this.lang);
+    }
   }
 
   stop() {
@@ -60,6 +132,7 @@ export class AlphabetGame {
     this.stop();
     if (this.lang !== lang) {
       this.lang = lang;
+      this.masteredLetters = this.loadMasteredLetters(lang);
       this.usedQuizLetters.clear();
       this.lastQuizLetter = null;
       if (this.puzzleGame) {
@@ -187,9 +260,9 @@ export class AlphabetGame {
   render() {
     const isRu = this.lang === 'ru';
     const isPl = this.lang === 'pl';
-    const data = ALPHABET_DATA[this.lang];
+    const data = this.getActiveAlphabetList();
 
-    const exploreTab = isRu ? 'Все буквы' : (isPl ? 'Wszystkie litery' : 'All Letters');
+    const exploreTab = isRu ? 'Букварь' : (isPl ? 'Elementarz' : 'Primer');
     const quizTab = isRu ? 'Где буква?' : (isPl ? 'Gdzie jest litera?' : 'Where is Letter?');
     const puzzleTab = isRu ? 'Собери букву' : (isPl ? 'Złóż literkę' : 'Build a Letter');
     const workbooksTab = isRu ? 'Тетради' : (isPl ? 'Zeszyty' : 'Workbooks');
@@ -197,10 +270,10 @@ export class AlphabetGame {
 
     this.container.innerHTML = `
       <div class="ab-wrapper">
-        <!-- Мини-переключатель режимов Азбуки -->
+        <!-- Мини-переключатель режимов Букваря -->
         <div class="ab-subnav">
           <button class="ab-subnav-btn ${this.subMode === 'explore' ? 'active' : ''}" id="ab-btn-explore">
-            📖 ${exploreTab}
+            📕 ${exploreTab}
           </button>
           <button class="ab-subnav-btn ${this.subMode === 'quiz' ? 'active' : ''}" id="ab-btn-quiz">
             🎯 ${quizTab}
@@ -235,37 +308,135 @@ export class AlphabetGame {
     this.attachEvents();
   }
 
+  renderLetterCardHTML(item, index) {
+    const ph = getLetterPhonics(item.letter, this.lang);
+    const isMastered = this.masteredLetters.has(item.letter.toUpperCase());
+    return `
+      <button class="ab-letter-card sound-${item.soundType} ${isMastered ? 'is-mastered' : ''}" data-index="${index}">
+        <span class="ab-card-step">#${item.stepNumber}</span>
+        ${isMastered ? '<span class="ab-card-done" title="✓">✓</span>' : ''}
+        <span class="ab-card-letter">${item.letter}</span>
+        <span class="ab-card-emoji">${item.emoji}</span>
+        ${ph ? `<span class="ab-card-phoneme">${ph.soundLabel}</span>` : ''}
+      </button>
+    `;
+  }
+
   // ==========================================
-  // РЕЖИМ 1: Говорящая Азбука (Все буквы + Phonics + Диграфы)
+  // РЕЖИМ 1: Букварь по методике (по ступеням + Phonics + Диграфы)
   // ==========================================
   renderExploreHTML(data) {
     const isRu = this.lang === 'ru';
     const isPl = this.lang === 'pl';
+
+    const orderBukvarLabel = isRu
+      ? '📕 По методике Букваря (шаг за шагом)'
+      : (isPl ? '📕 Kolejność Elementarza (krok po kroku)' : '📕 Primer Order (Step by Step)');
+    const orderAlphabetLabel = isRu
+      ? '🔤 По алфавиту (А–Я)'
+      : (isPl ? '🔤 Alfabetycznie (A–Ż)' : '🔤 Alphabetical (A–Z)');
+
     const phonicsLabel = isRu ? '🗣️ Звуки (фонемы)' : (isPl ? '🗣️ Głoski (dźwięki)' : '🗣️ Sounds (Phonics)');
     const namesLabel = isRu ? '🔤 Названия букв' : (isPl ? '🔤 Nazwy liter' : '🔤 Letter Names');
+
+    const totalCount = data.length;
+    const masteredCount = data.filter(item => this.masteredLetters.has(item.letter.toUpperCase())).length;
+    const progressPct = totalCount > 0 ? Math.round((masteredCount / totalCount) * 100) : 0;
+    const progressLabel = isRu
+      ? `Пройдено шагов Букваря: <strong>${masteredCount}</strong> из <strong>${totalCount}</strong> ⭐`
+      : (isPl
+        ? `Ukończone kroki Elementarza: <strong>${masteredCount}</strong> z <strong>${totalCount}</strong> ⭐`
+        : `Primer steps completed: <strong>${masteredCount}</strong> of <strong>${totalCount}</strong> ⭐`);
+
+    const milestoneHeader = isRu
+      ? '📖 Читаем сами после этой ступени:'
+      : (isPl ? '📖 Czytamy sami po tym etapie:' : '📖 Read on your own after this stage:');
+
     const digraphsTitle = isRu
       ? '✨ Буквосочетания и особые звуки (как карточки Phonics)'
       : (isPl ? '✨ Dwuznaki i połączenia (karty Phonics)' : '✨ Phonics Digraphs & Teams (Science of Reading)');
     const digraphs = PHONICS_DIGRAPHS[this.lang] || [];
 
+    let gridHTML = '';
+    if (this.orderMode === 'bukvar') {
+      const stages = BUKVAR_STAGES[this.lang] || BUKVAR_STAGES.ru;
+      const indexByLetter = new Map(data.map((item, idx) => [item.letter.toUpperCase(), idx]));
+      gridHTML = `
+        <div class="bukvar-stages-list">
+          ${stages.map(stage => {
+            const stageItems = stage.letters
+              .map(l => {
+                const idx = indexByLetter.get(l.toUpperCase());
+                return idx !== undefined ? { item: data[idx], index: idx } : null;
+              })
+              .filter(Boolean);
+            const stageMastered = stageItems.filter(entry =>
+              this.masteredLetters.has(entry.item.letter.toUpperCase())
+            ).length;
+            const isStageComplete = stageItems.length > 0 && stageMastered >= stageItems.length;
+
+            return `
+              <section class="bukvar-stage-card ${isStageComplete ? 'stage-completed' : ''}">
+                <div class="bukvar-stage-header">
+                  <div class="bukvar-stage-meta">
+                    <span class="bukvar-stage-badge">${stage.badge}</span>
+                    <h3 class="bukvar-stage-title">${stage.title}</h3>
+                    <p class="bukvar-stage-goal">${stage.goal}</p>
+                  </div>
+                  <div class="bukvar-stage-counter">${stageMastered}/${stageItems.length} ✓</div>
+                </div>
+
+                <div class="ab-grid bukvar-stage-grid">
+                  ${stageItems.map(entry => this.renderLetterCardHTML(entry.item, entry.index)).join('')}
+                </div>
+
+                ${stage.milestones && stage.milestones.length ? `
+                  <div class="bukvar-milestone-box">
+                    <div class="bukvar-milestone-title">${milestoneHeader}</div>
+                    <div class="bukvar-milestone-chips">
+                      ${stage.milestones.map(ms => `
+                        <button class="bukvar-milestone-chip" data-read="${ms}">
+                          <span>${ms}</span>
+                          <span class="bukvar-chip-audio">🔊</span>
+                        </button>
+                      `).join('')}
+                    </div>
+                  </div>
+                ` : ''}
+              </section>
+            `;
+          }).join('')}
+        </div>
+      `;
+    } else {
+      gridHTML = `
+        <div class="ab-grid">
+          ${data.map((item, index) => this.renderLetterCardHTML(item, index)).join('')}
+        </div>
+      `;
+    }
+
     return `
-      <div class="ab-sound-toggle" role="group" aria-label="Phonics sound mode">
-        <button class="ab-sound-btn ${this.phonicsMode ? 'active' : ''}" id="ab-mode-phonics">${phonicsLabel}</button>
-        <button class="ab-sound-btn ${!this.phonicsMode ? 'active' : ''}" id="ab-mode-names">${namesLabel}</button>
+      <div class="ab-controls-bar">
+        <div class="ab-order-toggle" role="group" aria-label="Order mode">
+          <button class="ab-order-btn ${this.orderMode === 'bukvar' ? 'active' : ''}" id="ab-order-bukvar">${orderBukvarLabel}</button>
+          <button class="ab-order-btn ${this.orderMode === 'alphabet' ? 'active' : ''}" id="ab-order-alphabet">${orderAlphabetLabel}</button>
+        </div>
+
+        <div class="ab-sound-toggle" role="group" aria-label="Phonics sound mode">
+          <button class="ab-sound-btn ${this.phonicsMode ? 'active' : ''}" id="ab-mode-phonics">${phonicsLabel}</button>
+          <button class="ab-sound-btn ${!this.phonicsMode ? 'active' : ''}" id="ab-mode-names">${namesLabel}</button>
+        </div>
+
+        <div class="bukvar-progress-card">
+          <div class="bukvar-progress-label">${progressLabel}</div>
+          <div class="bukvar-progress-bar">
+            <div class="bukvar-progress-fill" style="width: ${progressPct}%"></div>
+          </div>
+        </div>
       </div>
 
-      <div class="ab-grid">
-        ${data.map((item, index) => {
-          const ph = getLetterPhonics(item.letter, this.lang);
-          return `
-            <button class="ab-letter-card" data-index="${index}">
-              <span class="ab-card-letter">${item.letter}</span>
-              <span class="ab-card-emoji">${item.emoji}</span>
-              ${ph ? `<span class="ab-card-phoneme">${ph.soundLabel}</span>` : ''}
-            </button>
-          `;
-        }).join('')}
-      </div>
+      ${gridHTML}
 
       ${digraphs.length ? `
         <div class="ab-digraphs-section">
@@ -370,6 +541,18 @@ export class AlphabetGame {
 
     const speakText = isRu ? 'Буква' : (isPl ? 'Litera' : 'Letter');
     const phonemeBtnLabel = isRu ? 'Звук' : (isPl ? 'Głoska' : 'Sound');
+    const isMastered = this.masteredLetters.has(lesson.letter.toUpperCase());
+    const masterBtnLabel = isMastered
+      ? (isRu ? '✅ Выучено!' : (isPl ? '✅ Umiem!' : '✅ Learned!'))
+      : (isRu ? '☑️ Буква выучена!' : (isPl ? '☑️ Litera poznana!' : '☑️ Mark learned!'));
+    const stepBadgeText = isRu
+      ? `📕 Шаг ${lesson.stepNumber} из ${lesson.totalSteps}`
+      : (isPl ? `📕 Krok ${lesson.stepNumber} z ${lesson.totalSteps}` : `📕 Step ${lesson.stepNumber} of ${lesson.totalSteps}`);
+    const cumulativeTitle = isRu
+      ? '📖 Читаем первые слова и фразы по Букварю (из изученных букв):'
+      : (isPl
+        ? '📖 Czytamy pierwsze słowa i zdania (ze znanych liter):'
+        : '📖 Read words & phrases (using letters learned so far!):');
     const phonics = getLetterPhonics(lesson.letter, this.lang);
     const tipTitle = isRu ? 'Совет логопеда:' : (isPl ? 'Wskazówka logopedy:' : 'Speech tip:');
     const comicTitle = isRu ? '📖 Комикс: нажми на облачко со словами!' : (isPl ? '📖 Komiks: kliknij dymek!' : '📖 Comic: tap the speech bubble!');
@@ -420,6 +603,7 @@ export class AlphabetGame {
             <div class="primer-letter-big">${lesson.letter}</div>
             <div class="primer-hero-info">
               <div class="primer-badges-row">
+                <span class="primer-step-badge">${stepBadgeText}${lesson.stageBadge ? ` • ${lesson.stageBadge}` : ''}</span>
                 <span class="primer-sound-badge ${lesson.soundType}">${lesson.badgeText}</span>
                 ${phonics ? `<span class="primer-phoneme-pill">🗣️ ${phonics.soundLabel}</span>` : ''}
               </div>
@@ -434,6 +618,9 @@ export class AlphabetGame {
               </button>
               <button class="primer-listen-btn" id="ab-btn-speak" title="${speakText}">
                 🔊 ${speakText}
+              </button>
+              <button class="primer-master-btn ${isMastered ? 'is-mastered' : ''}" id="ab-btn-master-letter">
+                ${masterBtnLabel}
               </button>
             </div>
           </div>
@@ -494,6 +681,21 @@ export class AlphabetGame {
               }).join('<span class="primer-track-arrow">➔</span>')}
             </div>
           </div>
+
+          ${lesson.cumulativeWords && lesson.cumulativeWords.length ? `
+            <!-- БЛОК 2.5: ЧИТАЕМ ПЕРВЫЕ СЛОВА И ФРАЗЫ ПО БУКВАРЮ -->
+            <div class="primer-section primer-cumulative-section">
+              <div class="primer-section-title">${cumulativeTitle}</div>
+              <div class="bukvar-milestone-chips">
+                ${lesson.cumulativeWords.map(cw => `
+                  <button class="bukvar-milestone-chip" data-read="${cw}">
+                    <span>${cw}</span>
+                    <span class="bukvar-chip-audio">🔊</span>
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
 
           <!-- БЛОК 3: ЗАДАНИЕ 1 — БУКВЕННЫЙ СЫЩИК -->
           <div class="primer-section primer-detective-section ${state.bubblesRewarded ? 'section-completed' : ''}">
@@ -565,7 +767,7 @@ export class AlphabetGame {
   }
 
   openLetterModal(index) {
-    const data = ALPHABET_DATA[this.lang];
+    const data = this.getActiveAlphabetList();
     this.selectedDigraph = null;
     this.selectedLetterItem = data[index];
     this.selectedLetterIndex = index;
@@ -736,21 +938,43 @@ export class AlphabetGame {
       modal.classList.add('hidden');
       modal.innerHTML = '';
     }
+    if (this.subMode === 'explore') {
+      this.render();
+    }
   }
 
   navigateLetter(offset) {
-    const data = ALPHABET_DATA[this.lang];
+    const data = this.getActiveAlphabetList();
     let nextIndex = this.selectedLetterIndex + offset;
     if (nextIndex < 0) nextIndex = data.length - 1;
     if (nextIndex >= data.length) nextIndex = 0;
     this.openLetterModal(nextIndex);
   }
 
+  updateMasterButtonUI(isMastered) {
+    const btn = this.container.querySelector('#ab-btn-master-letter');
+    if (!btn) return;
+    const isRu = this.lang === 'ru';
+    const isPl = this.lang === 'pl';
+    btn.classList.toggle('is-mastered', isMastered);
+    btn.textContent = isMastered
+      ? (isRu ? '✅ Выучено!' : (isPl ? '✅ Umiem!' : '✅ Learned!'))
+      : (isRu ? '☑️ Буква выучена!' : (isPl ? '☑️ Litera poznana!' : '☑️ Mark learned!'));
+  }
+
+  completeLessonMastery() {
+    if (!this.currentLesson) return;
+    this.markLetterMastered(this.currentLesson.letter);
+    this.updateMasterButtonUI(true);
+  }
+
   attachModalEvents() {
+    const modalEl = this.container.querySelector('#ab-modal');
     const closeBtn = this.container.querySelector('#ab-modal-btn-close');
     const closeBg = this.container.querySelector('#ab-modal-close-bg');
     const phonemeBtn = this.container.querySelector('#ab-btn-phoneme');
     const speakBtn = this.container.querySelector('#ab-btn-speak');
+    const masterBtn = this.container.querySelector('#ab-btn-master-letter');
     const tipSpeakBtn = this.container.querySelector('#primer-btn-tip-speak');
     const prevBtn = this.container.querySelector('#ab-btn-prev');
     const nextBtn = this.container.querySelector('#ab-btn-next');
@@ -772,6 +996,13 @@ export class AlphabetGame {
       });
     }
 
+    if (masterBtn && this.currentLesson) {
+      masterBtn.addEventListener('click', () => {
+        const nowMastered = this.toggleLetterMastered(this.currentLesson.letter);
+        this.updateMasterButtonUI(nowMastered);
+      });
+    }
+
     if (tipSpeakBtn && this.currentLesson) {
       tipSpeakBtn.addEventListener('click', () => {
         sound.playLetterClick();
@@ -782,6 +1013,16 @@ export class AlphabetGame {
 
     if (prevBtn) prevBtn.addEventListener('click', () => this.navigateLetter(-1));
     if (nextBtn) nextBtn.addEventListener('click', () => this.navigateLetter(1));
+
+    // Первые слова и фразы по Букварю внутри урока
+    if (modalEl) {
+      modalEl.querySelectorAll('.bukvar-milestone-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          sound.playLetterClick();
+          this.speakReadableText(chip.dataset.read);
+        });
+      });
+    }
 
     // 1. Облачка комикса (Speech Bubbles)
     const comicBubbles = this.container.querySelectorAll('.primer-speech-bubble');
@@ -805,7 +1046,7 @@ export class AlphabetGame {
         const syl = stone.dataset.syl;
 
         sound.playLetterClick();
-        sound.speakWord(syl, this.lang);
+        this.speakReadableText(syl);
 
         this.lessonState.activeSyllableIdx = idx;
         this.lessonState.readSyllables.add(idx);
@@ -826,6 +1067,7 @@ export class AlphabetGame {
         if (!this.lessonState.syllablesRewarded &&
             this.lessonState.readSyllables.size >= this.currentLesson.syllables.length) {
           this.lessonState.syllablesRewarded = true;
+          this.completeLessonMastery();
           sound.playSuccess();
           this.onStarEarned(1);
           this.onWinEffect();
@@ -877,6 +1119,7 @@ export class AlphabetGame {
           if (!this.lessonState.bubblesRewarded &&
               this.lessonState.foundBubbles.size >= this.currentLesson.targetBubblesCount) {
             this.lessonState.bubblesRewarded = true;
+            this.completeLessonMastery();
             this.onStarEarned(1);
             this.onWinEffect();
 
@@ -938,6 +1181,7 @@ export class AlphabetGame {
           if (!this.lessonState.wordsRewarded &&
               this.lessonState.foundWords.size >= this.currentLesson.targetWordsCount) {
             this.lessonState.wordsRewarded = true;
+            this.completeLessonMastery();
             this.onStarEarned(1);
             this.onWinEffect();
 
@@ -1008,6 +1252,7 @@ export class AlphabetGame {
             }
             if (this.lessonState.posRoundIdx >= total && !this.lessonState.posRewarded) {
               this.lessonState.posRewarded = true;
+              this.completeLessonMastery();
               this.onStarEarned(1);
               this.onWinEffect();
               const sec = this.container.querySelector('.primer-pos-section');
@@ -1083,6 +1328,7 @@ export class AlphabetGame {
             }
             if (this.lessonState.missingRoundIdx >= total && !this.lessonState.missingRewarded) {
               this.lessonState.missingRewarded = true;
+              this.completeLessonMastery();
               this.onStarEarned(1);
               this.onWinEffect();
               const sec = this.container.querySelector('.primer-missing-section');
@@ -1123,7 +1369,7 @@ export class AlphabetGame {
       this.speakTimer = null;
     }
     this.quizAnswered = false;
-    const data = ALPHABET_DATA[this.lang];
+    const data = this.getActiveAlphabetList();
 
     // Выбираем неиспользованную целевую букву (без повторов подряд)
     let available = data.filter(d => !this.usedQuizLetters.has(d.letter) && d.letter !== this.lastQuizLetter);
@@ -1266,6 +1512,26 @@ export class AlphabetGame {
     if (btnAfterPrimer) btnAfterPrimer.addEventListener('click', () => this.switchSubMode('after_primer'));
 
     if (this.subMode === 'explore') {
+      const contentArea = this.container.querySelector('#ab-content-area');
+      const btnOrderBukvar = this.container.querySelector('#ab-order-bukvar');
+      const btnOrderAlphabet = this.container.querySelector('#ab-order-alphabet');
+      if (btnOrderBukvar) {
+        btnOrderBukvar.addEventListener('click', () => {
+          if (this.orderMode === 'bukvar') return;
+          this.orderMode = 'bukvar';
+          sound.playLetterClick();
+          this.render();
+        });
+      }
+      if (btnOrderAlphabet) {
+        btnOrderAlphabet.addEventListener('click', () => {
+          if (this.orderMode === 'alphabet') return;
+          this.orderMode = 'alphabet';
+          sound.playLetterClick();
+          this.render();
+        });
+      }
+
       const btnPhonics = this.container.querySelector('#ab-mode-phonics');
       const btnNames = this.container.querySelector('#ab-mode-names');
       if (btnPhonics) {
@@ -1282,6 +1548,15 @@ export class AlphabetGame {
           this.phonicsMode = false;
           sound.playLetterClick();
           this.render();
+        });
+      }
+
+      if (contentArea) {
+        contentArea.querySelectorAll('.bukvar-milestone-chip').forEach(chip => {
+          chip.addEventListener('click', () => {
+            sound.playLetterClick();
+            this.speakReadableText(chip.dataset.read);
+          });
         });
       }
 

@@ -1,12 +1,12 @@
 // Главный модуль приложения: Управление режимами, языками, звездами и конфетти
-import { WordSearchGame } from './word-search.js?v=25';
-import { WordBuilderGame } from './word-builder.js?v=25';
-import { WordLogicGame } from './word-logic.js?v=25';
-import { AlphabetGame } from './alphabet.js?v=25';
-import { WordTranslateGame } from './word-translate.js?v=25';
-import { sound } from './audio.js?v=25';
-import { PRAISE_PHRASES } from './data.js?v=25';
-import { StickersAlbum } from './stickers.js?v=25';
+import { WordSearchGame } from './word-search.js?v=26';
+import { WordBuilderGame } from './word-builder.js?v=26';
+import { WordLogicGame } from './word-logic.js?v=26';
+import { AlphabetGame } from './alphabet.js?v=26';
+import { WordTranslateGame } from './word-translate.js?v=26';
+import { sound } from './audio.js?v=26';
+import { PRAISE_PHRASES } from './data.js?v=26';
+import { StickersAlbum } from './stickers.js?v=26';
 
 class App {
   constructor() {
@@ -459,8 +459,8 @@ class App {
     }
     if (this.btnModeAlphabet) {
       this.btnModeAlphabet.querySelector('.tab-text').textContent = isRu 
-        ? 'Азбука' 
-        : (isPl ? 'Alfabet' : 'ABC');
+        ? 'Букварь' 
+        : (isPl ? 'Elementarz' : 'Primer');
     }
     if (this.btnModeTranslate) {
       this.btnModeTranslate.querySelector('.tab-text').textContent = isRu 
