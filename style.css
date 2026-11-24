@@ -5841,6 +5841,37 @@ body {
   cursor: crosshair;
 }
 
+.lt-hint-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.lt-miss-dot {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  margin-left: -8px;
+  margin-top: -8px;
+  border-radius: 50%;
+  background: rgba(245, 158, 11, 0.28);
+  border: 2.5px solid #f59e0b;
+  box-shadow: 0 0 0 3px rgba(254, 240, 138, 0.55);
+  animation: ltMissPulse 1.1s ease-in-out infinite;
+}
+
+@keyframes ltMissPulse {
+  0%, 100% {
+    transform: scale(0.86);
+    opacity: 0.78;
+  }
+  50% {
+    transform: scale(1.16);
+    opacity: 1;
+  }
+}
+
 .lt-feedback {
   min-height: 22px;
   font-size: 0.94rem;
@@ -6820,5 +6851,8 @@ body {
   .pl-mirror-glyph,
   .pl-loco-handle {
     transition-duration: 0.01ms;
+  }
+  .lt-miss-dot {
+    animation: none;
   }
 }

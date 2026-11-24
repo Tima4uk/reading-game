@@ -1,13 +1,13 @@
 // Модуль «Букварь» для детей 4.5 лет: Пошаговый Букварь (по методике В. и А. Мельниковых / АСТ) + Викторина + Конструктор букв
-import { shuffleArray } from './data.js?v=27';
-import { sound } from './audio.js?v=27';
-import { LetterPuzzleGame } from './letter-puzzle.js?v=27';
-import { getLetterLesson, BUKVAR_STAGES, getOrderedAlphabetData } from './letter-lessons.js?v=27';
-import { KochamCzytacGame } from './kocham-czytac.js?v=27';
-import { AfterPrimerGame } from './after-primer.js?v=27';
-import { PHONICS_DIGRAPHS, getLetterPhonics, getDigraphPhonics } from './phonics.js?v=27';
-import { PracticeLabGame } from './practice-lab.js?v=27';
-import { LetterTracer } from './letter-tracer.js?v=27';
+import { shuffleArray } from './data.js?v=28';
+import { sound } from './audio.js?v=28';
+import { LetterPuzzleGame } from './letter-puzzle.js?v=28';
+import { getLetterLesson, BUKVAR_STAGES, getOrderedAlphabetData } from './letter-lessons.js?v=28';
+import { KochamCzytacGame } from './kocham-czytac.js?v=28';
+import { AfterPrimerGame } from './after-primer.js?v=28';
+import { PHONICS_DIGRAPHS, getLetterPhonics, getDigraphPhonics } from './phonics.js?v=28';
+import { PracticeLabGame } from './practice-lab.js?v=28';
+import { LetterTracer } from './letter-tracer.js?v=28';
 
 export class AlphabetGame {
   constructor(options = {}) {

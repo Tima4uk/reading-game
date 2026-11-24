@@ -1,6 +1,6 @@
 // Модуль аудио: Синтез звуковых эффектов (Web Audio API), локальные аудиоклипы (assets/audio/) и озвучивание речи (SpeechSynthesis API)
 
-import { getLetterPhonics, getDigraphPhonics } from './phonics.js?v=27';
+import { getLetterPhonics, getDigraphPhonics } from './phonics.js?v=28';
 
 // Произношение отдельных букв (чтобы согласные не проглатывались как предлоги, а Ъ/Ь не молчали)
 const RU_LETTER_SPOKEN = {
@@ -458,7 +458,7 @@ class SoundEngine {
     if (typeof window === 'undefined' || typeof fetch !== 'function') return;
     if (window.location && window.location.protocol === 'file:') return;
     try {
-      const resp = await fetch('assets/audio/manifest.json?v=27');
+      const resp = await fetch('assets/audio/manifest.json?v=28');
       if (resp && resp.ok) {
         this.audioManifest = await resp.json();
       }

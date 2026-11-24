@@ -1,7 +1,7 @@
 // Переиспользуемый модуль «Прописи» (Canvas Letter Tracer)
 // Позволяет обводить букву пальцем или мышкой по пунктирному контуру с проверкой заполнения
 
-import { sound } from './audio.js?v=27';
+import { sound } from './audio.js?v=28';
 
 export const TRACER_COLORS = [
   { hex: '#f43f5e', names: { ru: 'Розовый мелок', pl: 'Różowa kredka', en: 'Pink crayon' } },
@@ -13,6 +13,106 @@ export const TRACER_COLORS = [
 
 const MASK_SIZE = 120;
 const GUIDE_FONT = '900 84px "Nunito", "Comfortaa", Arial, sans-serif';
+const CHECKPOINT_SPACING = 9;
+const VISIBLE_BRUSH_BASE = 12;
+const PAINT_MASK_WIDTH = 13;
+const SETTLE_COMPLETE_MS = 450;
+
+export function extractStrokeCheckpoints(rgbaData, size = MASK_SIZE, spacing = CHECKPOINT_SPACING) {
+  const total = size * size;
+  const dist = new Uint16Array(total);
+  const INF = 65535;
+
+  for (let y = 0; y < size; y++) {
+    const rowOffset = y * size;
+    const isEdgeY = y === 0 || y === size - 1;
+    for (let x = 0; x < size; x++) {
+      const idx = rowOffset + x;
+      if (rgbaData[idx * 4 + 3] > 120) {
+        dist[idx] = (isEdgeY || x === 0 || x === size - 1) ? 3 : INF;
+      }
+    }
+  }
+
+  for (let y = 1; y < size - 1; y++) {
+    const rowOffset = y * size;
+    for (let x = 1; x < size - 1; x++) {
+      const idx = rowOffset + x;
+      if (dist[idx] === 0) continue;
+      let m = dist[idx];
+      const dUp = dist[idx - size] + 3;
+      const dLeft = dist[idx - 1] + 3;
+      const dUpLeft = dist[idx - size - 1] + 4;
+      const dUpRight = dist[idx - size + 1] + 4;
+      if (dUp < m) m = dUp;
+      if (dLeft < m) m = dLeft;
+      if (dUpLeft < m) m = dUpLeft;
+      if (dUpRight < m) m = dUpRight;
+      dist[idx] = m;
+    }
+  }
+
+  for (let y = size - 2; y >= 1; y--) {
+    const rowOffset = y * size;
+    for (let x = size - 2; x >= 1; x--) {
+      const idx = rowOffset + x;
+      if (dist[idx] === 0) continue;
+      let m = dist[idx];
+      const dDown = dist[idx + size] + 3;
+      const dRight = dist[idx + 1] + 3;
+      const dDownRight = dist[idx + size + 1] + 4;
+      const dDownLeft = dist[idx + size - 1] + 4;
+      if (dDown < m) m = dDown;
+      if (dRight < m) m = dRight;
+      if (dDownRight < m) m = dDownRight;
+      if (dDownLeft < m) m = dDownLeft;
+      dist[idx] = m;
+    }
+  }
+
+  const minDistSq = spacing * spacing;
+  const selectFromThreshold = (minDist) => {
+    const candidates = [];
+    for (let y = 0; y < size; y++) {
+      const rowOffset = y * size;
+      const isEdgeY = y === 0 || y === size - 1;
+      for (let x = 0; x < size; x++) {
+        const idx = rowOffset + x;
+        const d = dist[idx];
+        if (d < minDist) continue;
+        const nbrSum = (isEdgeY || x === 0 || x === size - 1)
+          ? 0
+          : dist[idx - 1] + dist[idx + 1] + dist[idx - size] + dist[idx + size];
+        candidates.push({ x, y, d, nbrSum });
+      }
+    }
+
+    candidates.sort((a, b) => (b.d - a.d) || (b.nbrSum - a.nbrSum));
+
+    const picked = [];
+    for (let i = 0; i < candidates.length; i++) {
+      const c = candidates[i];
+      let farEnough = true;
+      for (let j = 0; j < picked.length; j++) {
+        const dx = c.x - picked[j].x;
+        const dy = c.y - picked[j].y;
+        if (dx * dx + dy * dy < minDistSq) {
+          farEnough = false;
+          break;
+        }
+      }
+      if (farEnough) {
+        picked.push({ x: c.x, y: c.y });
+      }
+    }
+    return picked;
+  };
+
+  let checkpoints = selectFromThreshold(9);
+  if (checkpoints.length === 0) checkpoints = selectFromThreshold(6);
+  if (checkpoints.length === 0) checkpoints = selectFromThreshold(3);
+  return checkpoints;
+}
 
 export function loadTracedLetters(lang = 'ru') {
   try {
@@ -97,6 +197,7 @@ export class LetterTracer {
     this.paintCanvas = null;
     this.targetIndices = [];
     this.targetCount = 0;
+    this.checkpoints = [];
     this.toleranceMask = new Uint8Array(MASK_SIZE * MASK_SIZE);
 
     this.canvasEl = null;
@@ -104,6 +205,7 @@ export class LetterTracer {
     this.paintCtx = null;
     this.demoTimer = null;
     this.speakTimer = null;
+    this.settleTimer = null;
     this.guideHighlightActive = false;
 
     if (this.container) {
@@ -116,6 +218,44 @@ export class LetterTracer {
 
   getCopy() {
     return UI_COPY[this.lang] || UI_COPY.ru;
+  }
+
+  clearSettleTimer() {
+    if (this.settleTimer) {
+      clearTimeout(this.settleTimer);
+      this.settleTimer = null;
+    }
+  }
+
+  clearMissedHints() {
+    const layer = this.container && this.container.querySelector('#lt-hint-layer');
+    if (layer) layer.innerHTML = '';
+  }
+
+  renderMissedHints(unhit) {
+    const layer = this.container && this.container.querySelector('#lt-hint-layer');
+    if (!layer) return;
+    if (!unhit || unhit.length === 0) {
+      layer.innerHTML = '';
+      return;
+    }
+
+    const maxDots = 6;
+    const picked = [];
+    if (unhit.length <= maxDots) {
+      picked.push(...unhit);
+    } else {
+      for (let i = 0; i < maxDots; i++) {
+        const idx = Math.min(unhit.length - 1, Math.floor((i * unhit.length) / maxDots));
+        picked.push(unhit[idx]);
+      }
+    }
+
+    layer.innerHTML = picked.map(cp => {
+      const left = ((cp.x / MASK_SIZE) * 100).toFixed(2);
+      const top = ((cp.y / MASK_SIZE) * 100).toFixed(2);
+      return `<span class="lt-miss-dot" style="left: ${left}%; top: ${top}%"></span>`;
+    }).join('');
   }
 
   watchFonts() {
@@ -166,6 +306,7 @@ export class LetterTracer {
 
         <div class="lt-canvas-box" id="lt-canvas-box" style="--lt-size: ${this.displaySize}px">
           <canvas class="lt-canvas" id="lt-canvas" aria-label="${this.letter}"></canvas>
+          <div class="lt-hint-layer" id="lt-hint-layer" aria-hidden="true"></div>
         </div>
 
         <div class="lt-feedback" id="lt-feedback" aria-live="polite">${copy.hintStart}</div>
@@ -226,6 +367,7 @@ export class LetterTracer {
     }
     this.targetIndices = indices;
     this.targetCount = indices.length;
+    this.checkpoints = extractStrokeCheckpoints(gData, MASK_SIZE, CHECKPOINT_SPACING);
 
     const tCtx = this.toleranceCanvas.getContext('2d', { willReadFrequently: true });
     tCtx.clearRect(0, 0, MASK_SIZE, MASK_SIZE);
@@ -348,16 +490,17 @@ export class LetterTracer {
     const maskScale = MASK_SIZE / this.displaySize;
 
     // Видимый штрих на основном холсте
+    const brushWidth = VISIBLE_BRUSH_BASE * scale;
     this.ctx.save();
     this.ctx.strokeStyle = this.activeColor;
     this.ctx.fillStyle = this.activeColor;
     this.ctx.lineCap = 'round';
     this.ctx.lineJoin = 'round';
-    this.ctx.lineWidth = 15 * scale;
+    this.ctx.lineWidth = brushWidth;
 
     if (fromPt.x === toPt.x && fromPt.y === toPt.y) {
       this.ctx.beginPath();
-      this.ctx.arc(toPt.x, toPt.y, (15 * scale) / 2, 0, Math.PI * 2);
+      this.ctx.arc(toPt.x, toPt.y, brushWidth / 2, 0, Math.PI * 2);
       this.ctx.fill();
     } else {
       this.ctx.beginPath();
@@ -378,11 +521,11 @@ export class LetterTracer {
     this.paintCtx.fillStyle = '#000000';
     this.paintCtx.lineCap = 'round';
     this.paintCtx.lineJoin = 'round';
-    this.paintCtx.lineWidth = 15;
+    this.paintCtx.lineWidth = PAINT_MASK_WIDTH;
 
     if (mx1 === mx2 && my1 === my2) {
       this.paintCtx.beginPath();
-      this.paintCtx.arc(mx2, my2, 7.5, 0, Math.PI * 2);
+      this.paintCtx.arc(mx2, my2, PAINT_MASK_WIDTH / 2, 0, Math.PI * 2);
       this.paintCtx.fill();
     } else {
       this.paintCtx.beginPath();
@@ -393,7 +536,57 @@ export class LetterTracer {
     this.paintCtx.restore();
   }
 
-  evaluateCoverage() {
+  completeTracing() {
+    this.clearSettleTimer();
+    this.clearMissedHints();
+
+    const pointerIdToRelease = this.activePointerId;
+    this.completed = true;
+    this.isDrawing = false;
+    this.activePointerId = null;
+    this.lastPt = null;
+
+    if (this.canvasEl && pointerIdToRelease !== null) {
+      try {
+        if (this.canvasEl.hasPointerCapture(pointerIdToRelease)) {
+          this.canvasEl.releasePointerCapture(pointerIdToRelease);
+        }
+      } catch (_) {}
+    }
+
+    this.drawCelebrationFill();
+    markLetterTraced(this.letter, this.lang);
+
+    const pctEl = this.container.querySelector('#lt-pct-val');
+    const fillEl = this.container.querySelector('#lt-progress-fill');
+    if (pctEl) pctEl.textContent = '100%';
+    if (fillEl) fillEl.style.width = '100%';
+    this.onProgress(100);
+
+    const boxEl = this.container.querySelector('#lt-canvas-box');
+    if (boxEl) boxEl.classList.add('is-completed');
+
+    const copy = this.getCopy();
+    const feedbackEl = this.container.querySelector('#lt-feedback');
+    if (feedbackEl) {
+      feedbackEl.textContent = copy.doneText;
+      feedbackEl.classList.remove('is-warn');
+      feedbackEl.classList.add('is-done');
+    }
+
+    sound.playSuccess();
+    if (this.speakTimer) clearTimeout(this.speakTimer);
+    this.speakTimer = setTimeout(() => {
+      this.speakTimer = null;
+      if (!this.destroyed) {
+        sound.speakPhoneme(this.letter, this.lang);
+      }
+    }, 240);
+
+    this.onComplete(this.letter);
+  }
+
+  evaluateCoverage({ allowComplete = false, showHints = false, forceHints = false } = {}) {
     if (!this.paintCtx || this.targetCount === 0) return;
 
     const pData = this.paintCtx.getImageData(0, 0, MASK_SIZE, MASK_SIZE).data;
@@ -413,8 +606,27 @@ export class LetterTracer {
       }
     }
 
+    let hitCount = 0;
+    const unhit = [];
+    for (let j = 0; j < this.checkpoints.length; j++) {
+      const cp = this.checkpoints[j];
+      const idx = cp.y * MASK_SIZE + cp.x;
+      if (pData[idx * 4 + 3] > 60) {
+        hitCount++;
+      } else {
+        unhit.push(cp);
+      }
+    }
+
     const rawCoverage = covered / this.targetCount;
-    const displayPct = this.completed ? 100 : Math.min(100, Math.round((rawCoverage / 0.72) * 100));
+    const offLimit = Math.min(Math.max(this.targetCount * 2.0, 450), 3400);
+    const cpTotal = this.checkpoints.length;
+    const cpRatio = cpTotal > 0 ? hitCount / cpTotal : rawCoverage;
+    const isCompleteReady = (cpTotal > 0 ? hitCount === cpTotal : rawCoverage >= 0.85)
+      && rawCoverage >= 0.55
+      && offTargetCount <= offLimit;
+
+    const displayPct = this.completed ? 100 : Math.min(99, Math.round(cpRatio * 100));
 
     const pctEl = this.container.querySelector('#lt-pct-val');
     const fillEl = this.container.querySelector('#lt-progress-fill');
@@ -427,9 +639,10 @@ export class LetterTracer {
 
     const copy = this.getCopy();
     const feedbackEl = this.container.querySelector('#lt-feedback');
-    const offLimit = Math.max(this.targetCount * 2.6, 500);
 
     if (offTargetCount > offLimit) {
+      this.clearSettleTimer();
+      this.clearMissedHints();
       if (feedbackEl) {
         feedbackEl.textContent = copy.hintOffTrack;
         feedbackEl.classList.remove('is-done');
@@ -438,39 +651,25 @@ export class LetterTracer {
       return;
     }
 
-    if (rawCoverage >= 0.72) {
-      this.completed = true;
-      this.isDrawing = false;
-      this.drawCelebrationFill();
-      markLetterTraced(this.letter, this.lang);
-
-      if (pctEl) pctEl.textContent = '100%';
-      if (fillEl) fillEl.style.width = '100%';
-
-      const boxEl = this.container.querySelector('#lt-canvas-box');
-      if (boxEl) boxEl.classList.add('is-completed');
-
-      if (feedbackEl) {
-        feedbackEl.textContent = copy.doneText;
-        feedbackEl.classList.remove('is-warn');
-        feedbackEl.classList.add('is-done');
+    if (isCompleteReady) {
+      if (allowComplete) {
+        this.completeTracing();
+        return;
       }
+      if (feedbackEl) {
+        feedbackEl.textContent = copy.hintAlmost;
+        feedbackEl.classList.remove('is-warn', 'is-done');
+      }
+      return;
+    }
 
-      sound.playSuccess();
-      if (this.speakTimer) clearTimeout(this.speakTimer);
-      this.speakTimer = setTimeout(() => {
-        this.speakTimer = null;
-        if (!this.destroyed) {
-          sound.speakPhoneme(this.letter, this.lang);
-        }
-      }, 240);
+    this.clearSettleTimer();
+    if (((showHints && cpRatio >= 0.65) || forceHints) && unhit.length > 0) {
+      this.renderMissedHints(unhit);
+    }
 
-      this.onComplete(this.letter);
-    } else if (rawCoverage >= 0.45 && feedbackEl) {
-      feedbackEl.textContent = copy.hintAlmost;
-      feedbackEl.classList.remove('is-warn', 'is-done');
-    } else if (feedbackEl) {
-      feedbackEl.textContent = copy.hintStart;
+    if (feedbackEl) {
+      feedbackEl.textContent = cpRatio >= 0.55 ? copy.hintAlmost : copy.hintStart;
       feedbackEl.classList.remove('is-warn', 'is-done');
     }
   }
@@ -479,7 +678,12 @@ export class LetterTracer {
     sound.playLetterClick();
     sound.speakPhoneme(this.letter, this.lang);
 
-    if (this.completed || this.hasDrawn) return;
+    if (this.completed) return;
+
+    if (this.hasDrawn) {
+      this.evaluateCoverage({ allowComplete: false, forceHints: true });
+      return;
+    }
 
     if (this.demoTimer) clearTimeout(this.demoTimer);
     this.guideHighlightActive = true;
@@ -498,6 +702,8 @@ export class LetterTracer {
   }
 
   clear() {
+    this.clearSettleTimer();
+    this.clearMissedHints();
     if (this.demoTimer) {
       clearTimeout(this.demoTimer);
       this.demoTimer = null;
@@ -534,6 +740,8 @@ export class LetterTracer {
   }
 
   setLetter(letter, soundType = 'consonant') {
+    this.clearSettleTimer();
+    this.clearMissedHints();
     if (this.demoTimer) {
       clearTimeout(this.demoTimer);
       this.demoTimer = null;
@@ -592,11 +800,23 @@ export class LetterTracer {
 
     const canvas = this.canvasEl;
 
+    const scheduleIdleComplete = () => {
+      this.clearSettleTimer();
+      this.settleTimer = setTimeout(() => {
+        this.settleTimer = null;
+        if (!this.destroyed && !this.completed && this.isDrawing) {
+          this.evaluateCoverage({ allowComplete: true });
+        }
+      }, SETTLE_COMPLETE_MS);
+    };
+
     canvas.addEventListener('pointerdown', (e) => {
       if (this.destroyed || this.completed) return;
       if (e.pointerType === 'mouse' && e.button !== 0) return;
 
       e.preventDefault();
+      this.clearSettleTimer();
+      this.clearMissedHints();
       this.isDrawing = true;
       this.hasDrawn = true;
       this.activePointerId = e.pointerId;
@@ -609,12 +829,14 @@ export class LetterTracer {
       const pt = this.getNormalizedPoint(e);
       this.lastPt = pt;
       this.drawStrokeSegment(pt, pt);
-      this.evaluateCoverage();
+      this.evaluateCoverage({ allowComplete: false });
+      scheduleIdleComplete();
     });
 
     canvas.addEventListener('pointermove', (e) => {
       if (!this.isDrawing || this.activePointerId !== e.pointerId || this.completed) return;
       e.preventDefault();
+      this.clearSettleTimer();
 
       const pt = this.getNormalizedPoint(e);
       if (this.lastPt) {
@@ -622,13 +844,15 @@ export class LetterTracer {
       }
       this.lastPt = pt;
       this.moveCount++;
-      if (this.moveCount % 6 === 0) {
-        this.evaluateCoverage();
+      if (this.moveCount % 4 === 0) {
+        this.evaluateCoverage({ allowComplete: false });
       }
+      scheduleIdleComplete();
     });
 
-    const finishStroke = (e) => {
+    const finishStroke = (e, allowComplete = true) => {
       if (!this.isDrawing || (e && e.pointerId !== undefined && this.activePointerId !== e.pointerId)) return;
+      this.clearSettleTimer();
       this.isDrawing = false;
       this.activePointerId = null;
       this.lastPt = null;
@@ -639,16 +863,18 @@ export class LetterTracer {
           }
         } catch (_) {}
       }
-      this.evaluateCoverage();
+      this.evaluateCoverage({ allowComplete, showHints: allowComplete });
     };
 
-    canvas.addEventListener('pointerup', finishStroke);
-    canvas.addEventListener('pointercancel', finishStroke);
-    canvas.addEventListener('lostpointercapture', finishStroke);
+    canvas.addEventListener('pointerup', (e) => finishStroke(e, true));
+    canvas.addEventListener('pointercancel', (e) => finishStroke(e, false));
+    canvas.addEventListener('lostpointercapture', (e) => finishStroke(e, true));
   }
 
   destroy() {
     this.destroyed = true;
+    this.clearSettleTimer();
+    this.clearMissedHints();
     if (this.demoTimer) {
       clearTimeout(this.demoTimer);
       this.demoTimer = null;
