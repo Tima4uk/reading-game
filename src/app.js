@@ -1,12 +1,12 @@
 // Главный модуль приложения: Управление режимами, языками, звездами и конфетти
-import { WordSearchGame } from './word-search.js?v=26';
-import { WordBuilderGame } from './word-builder.js?v=26';
-import { WordLogicGame } from './word-logic.js?v=26';
-import { AlphabetGame } from './alphabet.js?v=26';
-import { WordTranslateGame } from './word-translate.js?v=26';
-import { sound } from './audio.js?v=26';
-import { PRAISE_PHRASES } from './data.js?v=26';
-import { StickersAlbum } from './stickers.js?v=26';
+import { WordSearchGame } from './word-search.js?v=27';
+import { WordBuilderGame } from './word-builder.js?v=27';
+import { WordLogicGame } from './word-logic.js?v=27';
+import { AlphabetGame } from './alphabet.js?v=27';
+import { WordTranslateGame } from './word-translate.js?v=27';
+import { sound } from './audio.js?v=27';
+import { PRAISE_PHRASES } from './data.js?v=27';
+import { StickersAlbum } from './stickers.js?v=27';
 
 class App {
   constructor() {

@@ -1,6 +1,6 @@
 // Модуль аудио: Синтез звуковых эффектов (Web Audio API), локальные аудиоклипы (assets/audio/) и озвучивание речи (SpeechSynthesis API)
 
-import { getLetterPhonics, getDigraphPhonics } from './phonics.js?v=26';
+import { getLetterPhonics, getDigraphPhonics } from './phonics.js?v=27';
 
 // Произношение отдельных букв (чтобы согласные не проглатывались как предлоги, а Ъ/Ь не молчали)
 const RU_LETTER_SPOKEN = {
@@ -458,7 +458,7 @@ class SoundEngine {
     if (typeof window === 'undefined' || typeof fetch !== 'function') return;
     if (window.location && window.location.protocol === 'file:') return;
     try {
-      const resp = await fetch('assets/audio/manifest.json?v=26');
+      const resp = await fetch('assets/audio/manifest.json?v=27');
       if (resp && resp.ok) {
         this.audioManifest = await resp.json();
       }
@@ -832,6 +832,98 @@ class SoundEngine {
 
     osc.start(now);
     osc.stop(now + 0.09);
+  }
+
+  // Тёплый удар бонго / барабана для отбивания слогов
+  playDrumBeat(beatIndex = 0) {
+    if (!this.soundEnabled) return;
+    const ctx = this.ensureContext();
+    if (!ctx) return;
+
+    const now = ctx.currentTime;
+    const startFreq = 210 + (beatIndex % 4) * 35;
+    const endFreq = 95 + (beatIndex % 4) * 18;
+
+    const osc1 = ctx.createOscillator();
+    const osc2 = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc1.type = 'sine';
+    osc1.frequency.setValueAtTime(startFreq, now);
+    osc1.frequency.exponentialRampToValueAtTime(endFreq, now + 0.13);
+
+    osc2.type = 'triangle';
+    osc2.frequency.setValueAtTime(startFreq * 1.4, now);
+    osc2.frequency.exponentialRampToValueAtTime(endFreq * 1.15, now + 0.11);
+
+    gain.gain.setValueAtTime(0.26, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+
+    osc1.connect(gain);
+    osc2.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc1.start(now);
+    osc2.start(now);
+    osc1.stop(now + 0.15);
+    osc2.stop(now + 0.15);
+  }
+
+  // Короткий механический щелчок барабана смены букв
+  playReelTick() {
+    if (!this.soundEnabled) return;
+    const ctx = this.ensureContext();
+    if (!ctx) return;
+
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(680, now);
+    osc.frequency.exponentialRampToValueAtTime(420, now + 0.04);
+
+    gain.gain.setValueAtTime(0.12, now);
+    gain.gain.exponentialRampToValueAtTime(0.005, now + 0.045);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.05);
+  }
+
+  // Магнитный щелчок / слияние с искристым перезвоном
+  playSnap() {
+    if (!this.soundEnabled) return;
+    const ctx = this.ensureContext();
+    if (!ctx) return;
+
+    const now = ctx.currentTime;
+
+    const oscMain = ctx.createOscillator();
+    const gainMain = ctx.createGain();
+    oscMain.type = 'sine';
+    oscMain.frequency.setValueAtTime(480, now);
+    oscMain.frequency.exponentialRampToValueAtTime(880, now + 0.12);
+    gainMain.gain.setValueAtTime(0.18, now);
+    gainMain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+    oscMain.connect(gainMain);
+    gainMain.connect(ctx.destination);
+    oscMain.start(now);
+    oscMain.stop(now + 0.15);
+
+    const oscSparkle = ctx.createOscillator();
+    const gainSparkle = ctx.createGain();
+    oscSparkle.type = 'sine';
+    oscSparkle.frequency.setValueAtTime(1174, now + 0.04);
+    gainSparkle.gain.setValueAtTime(0.001, now);
+    gainSparkle.gain.setValueAtTime(0.14, now + 0.04);
+    gainSparkle.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+    oscSparkle.connect(gainSparkle);
+    gainSparkle.connect(ctx.destination);
+    oscSparkle.start(now + 0.04);
+    oscSparkle.stop(now + 0.16);
   }
 
   // Звук успешного нахождения слова (мажорный перезвон)

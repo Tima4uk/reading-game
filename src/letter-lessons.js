@@ -1,7 +1,7 @@
 // Интерактивный «Букварь: Комиксы, слоги, игры и задания» (по методике В. и А. Мельниковых / АСТ)
 // Поддерживает поэтапное обучение не по алфавиту, а от простого к сложному для RU (33), PL (32), EN (26)
 
-import { ALPHABET_DATA, WORDS_DATA, WORDS_DATA_HARD, VOWELS, RUSSIAN_ALPHABET, POLISH_ALPHABET, ENGLISH_ALPHABET, shuffleArray } from './data.js?v=26';
+import { ALPHABET_DATA, WORDS_DATA, WORDS_DATA_HARD, VOWELS, RUSSIAN_ALPHABET, POLISH_ALPHABET, ENGLISH_ALPHABET, shuffleArray } from './data.js?v=27';
 
 export const BUKVAR_STAGES = {
   ru: [
