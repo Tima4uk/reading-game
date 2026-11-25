@@ -1,7 +1,7 @@
 // Переиспользуемый модуль «Прописи» (Canvas Letter Tracer)
 // Позволяет обводить букву пальцем или мышкой по пунктирному контуру с проверкой заполнения
 
-import { sound } from './audio.js?v=28';
+import { sound } from './audio.js?v=29';
 
 export const TRACER_COLORS = [
   { hex: '#f43f5e', names: { ru: 'Розовый мелок', pl: 'Różowa kredka', en: 'Pink crayon' } },
@@ -12,11 +12,93 @@ export const TRACER_COLORS = [
 ];
 
 const MASK_SIZE = 120;
-const GUIDE_FONT = '900 84px "Nunito", "Comfortaa", Arial, sans-serif';
 const CHECKPOINT_SPACING = 9;
-const VISIBLE_BRUSH_BASE = 12;
-const PAINT_MASK_WIDTH = 13;
 const SETTLE_COMPLETE_MS = 450;
+const TRACER_PREFS_KEY = 'reading_game_tracer_prefs';
+
+export function loadTracerPrefs() {
+  const fallback = { letterCase: 'upper', letterStyle: 'print' };
+  try {
+    if (typeof localStorage === 'undefined') return fallback;
+    const raw = localStorage.getItem(TRACER_PREFS_KEY);
+    if (!raw) return fallback;
+    const parsed = JSON.parse(raw);
+    return {
+      letterCase: parsed && parsed.letterCase === 'lower' ? 'lower' : 'upper',
+      letterStyle: parsed && parsed.letterStyle === 'cursive' ? 'cursive' : 'print'
+    };
+  } catch (_) {
+    return fallback;
+  }
+}
+
+export function saveTracerPrefs({ letterCase, letterStyle } = {}) {
+  const safe = {
+    letterCase: letterCase === 'lower' ? 'lower' : 'upper',
+    letterStyle: letterStyle === 'cursive' ? 'cursive' : 'print'
+  };
+  try {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(TRACER_PREFS_KEY, JSON.stringify(safe));
+    }
+  } catch (_) {}
+  return safe;
+}
+
+export function getLetterRenderSpec(letterCase = 'upper', letterStyle = 'print', lang = 'ru') {
+  const isLower = letterCase === 'lower';
+  const isCursive = letterStyle === 'cursive';
+
+  if (!isCursive) {
+    if (!isLower) {
+      return {
+        fontWeight: '900',
+        fontFamily: '"Nunito", "Comfortaa", Arial, sans-serif',
+        baseFontSize: 82,
+        baselineY: 92,
+        maskExtraStroke: 0,
+        visibleBrush: 12,
+        paintMaskWidth: 13,
+        checkpointSpacing: 9
+      };
+    }
+    return {
+      fontWeight: '900',
+      fontFamily: '"Nunito", "Comfortaa", Arial, sans-serif',
+      baseFontSize: 86,
+      baselineY: 88,
+      maskExtraStroke: 0,
+      visibleBrush: 11,
+      paintMaskWidth: 12,
+      checkpointSpacing: 8
+    };
+  }
+
+  const isPl = lang === 'pl';
+  if (!isLower) {
+    return {
+      fontWeight: '400',
+      fontFamily: isPl ? '"Playwrite PL", "Marck Script", cursive' : '"Marck Script", cursive',
+      baseFontSize: isPl ? 66 : 88,
+      baselineY: isPl ? 84 : 88,
+      maskExtraStroke: 3.5,
+      visibleBrush: 9.5,
+      paintMaskWidth: 10.5,
+      checkpointSpacing: 8
+    };
+  }
+
+  return {
+    fontWeight: '400',
+    fontFamily: isPl ? '"Playwrite PL", "Marck Script", cursive' : '"Marck Script", cursive',
+    baseFontSize: isPl ? 70 : 92,
+    baselineY: isPl ? 82 : 84,
+    maskExtraStroke: 3.5,
+    visibleBrush: 9.5,
+    paintMaskWidth: 10.5,
+    checkpointSpacing: 8
+  };
+}
 
 export function extractStrokeCheckpoints(rgbaData, size = MASK_SIZE, spacing = CHECKPOINT_SPACING) {
   const total = size * size;
@@ -114,6 +196,14 @@ export function extractStrokeCheckpoints(rgbaData, size = MASK_SIZE, spacing = C
   return checkpoints;
 }
 
+export function computeOffTrackLimits(targetCount) {
+  const safeCount = Math.max(0, Number(targetCount) || 0);
+  return {
+    offLimit: Math.max(Math.round(safeCount * 0.25), 140),
+    outsideGlyphLimit: Math.max(Math.round(safeCount * 0.65), 320)
+  };
+}
+
 export function loadTracedLetters(lang = 'ru') {
   try {
     if (typeof localStorage === 'undefined') return new Set();
@@ -138,36 +228,80 @@ export function markLetterTraced(letter, lang = 'ru') {
   return set;
 }
 
+export function loadTracedVariants(lang = 'ru') {
+  try {
+    if (typeof localStorage === 'undefined') return new Set();
+    const raw = localStorage.getItem(`reading_game_traced_variants_${lang}`);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return new Set(Array.isArray(parsed) ? parsed.map(v => String(v)) : []);
+  } catch (_) {
+    return new Set();
+  }
+}
+
+export function markVariantTraced(letter, letterCase = 'upper', letterStyle = 'print', lang = 'ru') {
+  const set = loadTracedVariants(lang);
+  if (!letter) return set;
+  const upper = String(letter).toUpperCase();
+  const safeCase = letterCase === 'lower' ? 'lower' : 'upper';
+  const safeStyle = letterStyle === 'cursive' ? 'cursive' : 'print';
+  set.add(`${upper}_${safeCase}_${safeStyle}`);
+  try {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(`reading_game_traced_variants_${lang}`, JSON.stringify([...set]));
+    }
+  } catch (_) {}
+  return set;
+}
+
 const UI_COPY = {
   ru: {
     hintStart: 'Веди пальцем или мышкой по букве!',
-    hintOffTrack: 'Старайся вести прямо по контуру буквы! ✨',
+    hintOffTrack: 'Ой, вышло за контур! Нажми ↺ и обведи аккуратно по линии ✨',
     hintAlmost: 'Ещё чуть-чуть — докрась контур до конца!',
     doneText: '⭐ Отлично! Буква красиво обведена!',
     clearLabel: 'Очистить',
     guideLabel: 'Подсказка',
     guideTitle: 'Показать контур и послушать звук',
-    progressLabel: 'Обведено'
+    progressLabel: 'Обведено',
+    caseGroupLabel: 'Размер буквы',
+    upperLabel: 'Большая',
+    lowerLabel: 'маленькая',
+    styleGroupLabel: 'Шрифт буквы',
+    printLabel: 'Печатная',
+    cursiveLabel: 'Прописная'
   },
   pl: {
     hintStart: 'Prowadź palcem lub myszką po literze!',
-    hintOffTrack: 'Staraj się prowadzić po śladzie litery! ✨',
+    hintOffTrack: 'Ups, wyszło poza linię! Kliknij ↺ i obrysuj po śladzie ✨',
     hintAlmost: 'Jeszcze troszkę — dokończ cały ślad!',
     doneText: '⭐ Brawo! Litera pięknie napisana!',
     clearLabel: 'Wyczyść',
     guideLabel: 'Podpowiedź',
     guideTitle: 'Pokaż ślad i posłuchaj głoski',
-    progressLabel: 'Ślad'
+    progressLabel: 'Ślad',
+    caseGroupLabel: 'Wielkość litery',
+    upperLabel: 'Wielka',
+    lowerLabel: 'mała',
+    styleGroupLabel: 'Styl pisma',
+    printLabel: 'Drukowana',
+    cursiveLabel: 'Pisana'
   },
   en: {
     hintStart: 'Trace along the dotted letter with your finger or mouse!',
-    hintOffTrack: 'Try to stay right on the letter outline! ✨',
+    hintOffTrack: 'Oops, outside the lines! Tap ↺ and trace neatly along the letter ✨',
     hintAlmost: 'Almost there — fill in the rest of the letter!',
     doneText: '⭐ Awesome! Letter traced cleanly!',
     clearLabel: 'Clear',
     guideLabel: 'Guide',
     guideTitle: 'Highlight guide and hear sound',
-    progressLabel: 'Traced'
+    progressLabel: 'Traced',
+    caseGroupLabel: 'Letter case',
+    upperLabel: 'Big',
+    lowerLabel: 'small',
+    styleGroupLabel: 'Letter style',
+    printLabel: 'Print',
+    cursiveLabel: 'Cursive'
   }
 };
 
@@ -180,6 +314,11 @@ export class LetterTracer {
     this.soundType = options.soundType || 'consonant';
     this.onComplete = options.onComplete || (() => {});
     this.onProgress = options.onProgress || (() => {});
+    this.onModeChange = options.onModeChange || (() => {});
+
+    const prefs = loadTracerPrefs();
+    this.letterCase = (options.letterCase === 'lower' || options.letterCase === 'upper') ? options.letterCase : prefs.letterCase;
+    this.letterStyle = (options.letterStyle === 'cursive' || options.letterStyle === 'print') ? options.letterStyle : prefs.letterStyle;
 
     this.displaySize = this.compact ? 220 : 280;
     this.activeColor = this.soundType === 'vowel' ? TRACER_COLORS[0].hex : TRACER_COLORS[1].hex;
@@ -198,6 +337,8 @@ export class LetterTracer {
     this.targetIndices = [];
     this.targetCount = 0;
     this.checkpoints = [];
+    this.glyphLayout = null;
+    this.glyphMask = new Uint8Array(MASK_SIZE * MASK_SIZE);
     this.toleranceMask = new Uint8Array(MASK_SIZE * MASK_SIZE);
 
     this.canvasEl = null;
@@ -218,6 +359,68 @@ export class LetterTracer {
 
   getCopy() {
     return UI_COPY[this.lang] || UI_COPY.ru;
+  }
+
+  getDisplayGlyph() {
+    return this.letterCase === 'lower' ? this.letter.toLowerCase() : this.letter.toUpperCase();
+  }
+
+  getRenderSpec() {
+    return getLetterRenderSpec(this.letterCase, this.letterStyle, this.lang);
+  }
+
+  getCanvasFont(fontSize, spec = this.getRenderSpec()) {
+    return `${spec.fontWeight} ${fontSize}px ${spec.fontFamily}`;
+  }
+
+  isCurrentVariantTraced() {
+    const variantKey = `${this.letter}_${this.letterCase}_${this.letterStyle}`;
+    if (loadTracedVariants(this.lang).has(variantKey)) return true;
+    return this.letterCase === 'upper'
+      && this.letterStyle === 'print'
+      && loadTracedLetters(this.lang).has(this.letter);
+  }
+
+  setMode({ letterCase, letterStyle } = {}) {
+    const nextCase = (letterCase === 'lower' || letterCase === 'upper') ? letterCase : this.letterCase;
+    const nextStyle = (letterStyle === 'cursive' || letterStyle === 'print') ? letterStyle : this.letterStyle;
+    if (nextCase === this.letterCase && nextStyle === this.letterStyle) return;
+
+    this.letterCase = nextCase;
+    this.letterStyle = nextStyle;
+    saveTracerPrefs({ letterCase: this.letterCase, letterStyle: this.letterStyle });
+
+    this.clearSettleTimer();
+    this.clearMissedHints();
+    if (this.demoTimer) {
+      clearTimeout(this.demoTimer);
+      this.demoTimer = null;
+    }
+    if (this.speakTimer) {
+      clearTimeout(this.speakTimer);
+      this.speakTimer = null;
+    }
+    this.completed = false;
+    this.hasDrawn = false;
+    this.isDrawing = false;
+    this.activePointerId = null;
+    this.lastPt = null;
+    this.moveCount = 0;
+    this.guideHighlightActive = false;
+    this.glyphLayout = null;
+
+    if (this.container) {
+      this.render();
+      this.setupCanvases();
+      this.attachEvents();
+      this.watchFonts();
+    }
+    this.onProgress(0);
+    this.onModeChange({
+      letterCase: this.letterCase,
+      letterStyle: this.letterStyle,
+      glyph: this.getDisplayGlyph()
+    });
   }
 
   clearSettleTimer() {
@@ -259,8 +462,16 @@ export class LetterTracer {
   }
 
   watchFonts() {
-    if (typeof document === 'undefined' || !document.fonts || !document.fonts.ready) return;
-    document.fonts.ready.then(() => {
+    if (typeof document === 'undefined' || !document.fonts) return;
+    const spec = this.getRenderSpec();
+    const fontSpec = this.getCanvasFont(spec.baseFontSize, spec);
+    const glyph = this.getDisplayGlyph();
+    const loadPromise = typeof document.fonts.load === 'function'
+      ? document.fonts.load(fontSpec, glyph).catch(() => {})
+      : Promise.resolve();
+    const readyPromise = document.fonts.ready ? document.fonts.ready.catch(() => {}) : Promise.resolve();
+
+    Promise.all([loadPromise, readyPromise]).then(() => {
       if (this.destroyed || this.hasDrawn || this.completed || !this.canvasEl) return;
       this.buildMasks();
       this.drawBaseGuide();
@@ -269,10 +480,52 @@ export class LetterTracer {
 
   render() {
     const copy = this.getCopy();
-    const isPreviouslyTraced = loadTracedLetters(this.lang).has(this.letter);
+    const isPreviouslyTraced = this.isCurrentVariantTraced();
+    const upperChar = this.letter.toUpperCase();
+    const lowerChar = this.letter.toLowerCase();
+    const pairChar = `${upperChar}${lowerChar}`;
+    const glyph = this.getDisplayGlyph();
+    const isCursive = this.letterStyle === 'cursive';
+    const cursiveCls = isCursive ? `is-cursive lang-${this.lang}` : '';
 
     this.container.innerHTML = `
       <div class="lt-wrap ${this.compact ? 'lt-compact' : ''}">
+        <div class="lt-mode-bar">
+          <div class="lt-seg-group" role="group" aria-label="${copy.caseGroupLabel}">
+            <button type="button"
+                    class="lt-seg-btn ${this.letterCase === 'upper' ? 'active' : ''}"
+                    data-case="upper"
+                    aria-pressed="${this.letterCase === 'upper' ? 'true' : 'false'}">
+              <span class="lt-seg-glyph ${cursiveCls}">${upperChar}</span>
+              <span class="lt-seg-text">${copy.upperLabel}</span>
+            </button>
+            <button type="button"
+                    class="lt-seg-btn ${this.letterCase === 'lower' ? 'active' : ''}"
+                    data-case="lower"
+                    aria-pressed="${this.letterCase === 'lower' ? 'true' : 'false'}">
+              <span class="lt-seg-glyph ${cursiveCls}">${lowerChar}</span>
+              <span class="lt-seg-text">${copy.lowerLabel}</span>
+            </button>
+          </div>
+
+          <div class="lt-seg-group" role="group" aria-label="${copy.styleGroupLabel}">
+            <button type="button"
+                    class="lt-seg-btn ${!isCursive ? 'active' : ''}"
+                    data-style="print"
+                    aria-pressed="${!isCursive ? 'true' : 'false'}">
+              <span class="lt-seg-glyph">${pairChar}</span>
+              <span class="lt-seg-text">${copy.printLabel}</span>
+            </button>
+            <button type="button"
+                    class="lt-seg-btn ${isCursive ? 'active' : ''}"
+                    data-style="cursive"
+                    aria-pressed="${isCursive ? 'true' : 'false'}">
+              <span class="lt-seg-glyph is-cursive lang-${this.lang}">${pairChar}</span>
+              <span class="lt-seg-text">${copy.cursiveLabel}</span>
+            </button>
+          </div>
+        </div>
+
         <div class="lt-toolbar">
           <div class="lt-colors" role="group" aria-label="Crayon color">
             ${TRACER_COLORS.map((c, idx) => `
@@ -305,7 +558,7 @@ export class LetterTracer {
         </div>
 
         <div class="lt-canvas-box" id="lt-canvas-box" style="--lt-size: ${this.displaySize}px">
-          <canvas class="lt-canvas" id="lt-canvas" aria-label="${this.letter}"></canvas>
+          <canvas class="lt-canvas" id="lt-canvas" aria-label="${glyph}"></canvas>
           <div class="lt-hint-layer" id="lt-hint-layer" aria-hidden="true"></div>
         </div>
 
@@ -347,40 +600,118 @@ export class LetterTracer {
     this.drawBaseGuide();
   }
 
+  computeFittedGlyphLayout(ctx, glyph, spec) {
+    ctx.save();
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'alphabetic';
+
+    let fontSize = spec.baseFontSize;
+    ctx.font = this.getCanvasFont(fontSize, spec);
+    let m = ctx.measureText(glyph);
+
+    const getBounds = (metrics, fs) => {
+      const left = metrics.actualBoundingBoxLeft !== undefined
+        ? metrics.actualBoundingBoxLeft
+        : (metrics.width || fs * 0.5) / 2;
+      const right = metrics.actualBoundingBoxRight !== undefined
+        ? metrics.actualBoundingBoxRight
+        : (metrics.width || fs * 0.5) / 2;
+      const ascent = metrics.actualBoundingBoxAscent !== undefined
+        ? metrics.actualBoundingBoxAscent
+        : fs * 0.72;
+      const descent = metrics.actualBoundingBoxDescent !== undefined
+        ? metrics.actualBoundingBoxDescent
+        : fs * 0.22;
+      return { left, right, width: left + right, ascent, descent, height: ascent + descent };
+    };
+
+    let bounds = getBounds(m, fontSize);
+    const extra = spec.maskExtraStroke;
+    const maxBox = MASK_SIZE - 16 - extra;
+
+    if (bounds.width > maxBox || bounds.height > maxBox) {
+      const scaleFactor = Math.min(
+        maxBox / Math.max(bounds.width, 1),
+        maxBox / Math.max(bounds.height, 1)
+      );
+      fontSize = Math.max(36, Math.floor(fontSize * scaleFactor));
+      ctx.font = this.getCanvasFont(fontSize, spec);
+      m = ctx.measureText(glyph);
+      bounds = getBounds(m, fontSize);
+    }
+
+    let cx = 60;
+    if (m.actualBoundingBoxLeft !== undefined && m.actualBoundingBoxRight !== undefined) {
+      cx = Math.max(46, Math.min(74, 60 + (m.actualBoundingBoxLeft - m.actualBoundingBoxRight) / 2));
+    }
+
+    let baselineY = spec.baselineY;
+    const minY = 8 + extra / 2;
+    const maxY = MASK_SIZE - 8 - extra / 2;
+    if (baselineY - bounds.ascent < minY) {
+      baselineY = minY + bounds.ascent;
+    }
+    if (baselineY + bounds.descent > maxY) {
+      baselineY = Math.max(minY + bounds.ascent, maxY - bounds.descent);
+    }
+
+    ctx.restore();
+    return { fontSize, cx, baselineY };
+  }
+
   buildMasks() {
     if (!this.guideCanvas || !this.toleranceCanvas) return;
 
+    const glyph = this.getDisplayGlyph();
+    const spec = this.getRenderSpec();
+
     const gCtx = this.guideCanvas.getContext('2d', { willReadFrequently: true });
     gCtx.clearRect(0, 0, MASK_SIZE, MASK_SIZE);
+    const layout = this.computeFittedGlyphLayout(gCtx, glyph, spec);
+    this.glyphLayout = layout;
+
+    gCtx.save();
     gCtx.fillStyle = '#000000';
-    gCtx.font = GUIDE_FONT;
+    gCtx.strokeStyle = '#000000';
+    gCtx.font = this.getCanvasFont(layout.fontSize, spec);
     gCtx.textAlign = 'center';
-    gCtx.textBaseline = 'middle';
-    gCtx.fillText(this.letter, 60, 65);
+    gCtx.textBaseline = 'alphabetic';
+    if (spec.maskExtraStroke > 0) {
+      gCtx.lineJoin = 'round';
+      gCtx.lineCap = 'round';
+      gCtx.lineWidth = spec.maskExtraStroke;
+      gCtx.strokeText(glyph, layout.cx, layout.baselineY);
+    }
+    gCtx.fillText(glyph, layout.cx, layout.baselineY);
+    gCtx.restore();
 
     const gData = gCtx.getImageData(0, 0, MASK_SIZE, MASK_SIZE).data;
     const indices = [];
+    this.glyphMask.fill(0);
     for (let i = 0; i < MASK_SIZE * MASK_SIZE; i++) {
       if (gData[i * 4 + 3] > 120) {
         indices.push(i);
+        this.glyphMask[i] = 1;
       }
     }
     this.targetIndices = indices;
     this.targetCount = indices.length;
-    this.checkpoints = extractStrokeCheckpoints(gData, MASK_SIZE, CHECKPOINT_SPACING);
+    this.checkpoints = extractStrokeCheckpoints(gData, MASK_SIZE, spec.checkpointSpacing);
 
     const tCtx = this.toleranceCanvas.getContext('2d', { willReadFrequently: true });
     tCtx.clearRect(0, 0, MASK_SIZE, MASK_SIZE);
-    tCtx.font = GUIDE_FONT;
+    tCtx.save();
+    tCtx.font = this.getCanvasFont(layout.fontSize, spec);
     tCtx.textAlign = 'center';
-    tCtx.textBaseline = 'middle';
+    tCtx.textBaseline = 'alphabetic';
     tCtx.lineJoin = 'round';
     tCtx.lineCap = 'round';
-    tCtx.lineWidth = 16;
+    tCtx.lineWidth = 6 + spec.maskExtraStroke;
     tCtx.strokeStyle = '#000000';
     tCtx.fillStyle = '#000000';
-    tCtx.strokeText(this.letter, 60, 65);
-    tCtx.fillText(this.letter, 60, 65);
+    tCtx.strokeText(glyph, layout.cx, layout.baselineY);
+    tCtx.fillText(glyph, layout.cx, layout.baselineY);
+    tCtx.restore();
 
     const tData = tCtx.getImageData(0, 0, MASK_SIZE, MASK_SIZE).data;
     this.toleranceMask.fill(0);
@@ -399,17 +730,43 @@ export class LetterTracer {
 
   drawGuidelines(ctx) {
     const s = this.displaySize;
-    const topY = Math.round(s * 0.22);
-    const midY = Math.round(s * 0.54);
-    const baseY = Math.round(s * 0.80);
+    const scale = s / MASK_SIZE;
+    const spec = this.getRenderSpec();
+    const baseY = Math.round(spec.baselineY * scale);
+    const topY = Math.round(Math.max(14, (spec.baselineY - 56) * scale));
+    const midY = Math.round((spec.baselineY - 36) * scale);
+    const descY = Math.round(Math.min(s - 10, (spec.baselineY + 18) * scale));
 
     ctx.save();
-    // Мягкие строки прописи
+    if (this.letterStyle === 'cursive' && this.lang !== 'pl') {
+      // Косые линии прописи (~65°) для русского и английского курсива
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(14, 8, s - 28, s - 16);
+      ctx.clip();
+      const step = Math.round(36 * scale);
+      const slantShift = Math.round(s * 0.44);
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = 'rgba(147, 197, 253, 0.32)';
+      ctx.beginPath();
+      for (let x = -slantShift; x <= s + slantShift; x += step) {
+        ctx.moveTo(x + slantShift * 0.5, 8);
+        ctx.lineTo(x - slantShift * 0.5, s - 8);
+      }
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // Мягкие горизонтальные строки прописи
     ctx.lineWidth = 1.5;
     ctx.strokeStyle = '#dbeafe';
     ctx.beginPath();
     ctx.moveTo(14, topY);
     ctx.lineTo(s - 14, topY);
+    ctx.stroke();
+
+    ctx.strokeStyle = '#bfdbfe';
+    ctx.beginPath();
     ctx.moveTo(14, baseY);
     ctx.lineTo(s - 14, baseY);
     ctx.stroke();
@@ -420,6 +777,15 @@ export class LetterTracer {
     ctx.moveTo(14, midY);
     ctx.lineTo(s - 14, midY);
     ctx.stroke();
+
+    if (this.letterStyle === 'cursive') {
+      ctx.setLineDash([4, 6]);
+      ctx.strokeStyle = '#e2e8f0';
+      ctx.beginPath();
+      ctx.moveTo(14, descY);
+      ctx.lineTo(s - 14, descY);
+      ctx.stroke();
+    }
     ctx.restore();
   }
 
@@ -427,29 +793,42 @@ export class LetterTracer {
     if (!this.ctx) return;
     const s = this.displaySize;
     const scale = s / MASK_SIZE;
-    const cx = 60 * scale;
-    const cy = 65 * scale;
-    const fontPx = Math.round(84 * scale);
+    const spec = this.getRenderSpec();
+    const layout = this.glyphLayout || {
+      fontSize: spec.baseFontSize,
+      cx: 60,
+      baselineY: spec.baselineY
+    };
+    const glyph = this.getDisplayGlyph();
+    const cx = layout.cx * scale;
+    const cy = layout.baselineY * scale;
+    const fontPx = Math.round(layout.fontSize * scale);
 
     this.ctx.clearRect(0, 0, s, s);
     this.drawGuidelines(this.ctx);
 
     this.ctx.save();
-    this.ctx.font = `900 ${fontPx}px "Nunito", "Comfortaa", Arial, sans-serif`;
+    this.ctx.font = this.getCanvasFont(fontPx, spec);
     this.ctx.textAlign = 'center';
-    this.ctx.textBaseline = 'middle';
-
-    // Мягкая заливка-призрак
-    this.ctx.fillStyle = this.guideHighlightActive ? '#fef08a' : '#e2e8f0';
-    this.ctx.fillText(this.letter, cx, cy);
-
-    // Пунктирный контур
+    this.ctx.textBaseline = 'alphabetic';
     this.ctx.lineJoin = 'round';
     this.ctx.lineCap = 'round';
-    this.ctx.lineWidth = this.guideHighlightActive ? 3.5 : 2.5;
-    this.ctx.setLineDash([6, 6]);
+
+    // Мягкая заливка-призрак
+    const ghostFill = this.guideHighlightActive ? '#fef08a' : '#e2e8f0';
+    if (spec.maskExtraStroke > 0) {
+      this.ctx.lineWidth = spec.maskExtraStroke * scale;
+      this.ctx.strokeStyle = ghostFill;
+      this.ctx.strokeText(glyph, cx, cy);
+    }
+    this.ctx.fillStyle = ghostFill;
+    this.ctx.fillText(glyph, cx, cy);
+
+    // Пунктирный контур
+    this.ctx.lineWidth = this.guideHighlightActive ? 3 : 2.2;
+    this.ctx.setLineDash([5, 5]);
     this.ctx.strokeStyle = this.guideHighlightActive ? '#f59e0b' : '#94a3b8';
-    this.ctx.strokeText(this.letter, cx, cy);
+    this.ctx.strokeText(glyph, cx, cy);
     this.ctx.restore();
   }
 
@@ -457,21 +836,45 @@ export class LetterTracer {
     if (!this.ctx) return;
     const s = this.displaySize;
     const scale = s / MASK_SIZE;
-    const cx = 60 * scale;
-    const cy = 65 * scale;
-    const fontPx = Math.round(84 * scale);
+    const spec = this.getRenderSpec();
+    const layout = this.glyphLayout || {
+      fontSize: spec.baseFontSize,
+      cx: 60,
+      baselineY: spec.baselineY
+    };
+    const glyph = this.getDisplayGlyph();
+    const cx = layout.cx * scale;
+    const cy = layout.baselineY * scale;
+    const fontPx = Math.round(layout.fontSize * scale);
 
     this.ctx.save();
-    this.ctx.font = `900 ${fontPx}px "Nunito", "Comfortaa", Arial, sans-serif`;
+    this.ctx.font = this.getCanvasFont(fontPx, spec);
     this.ctx.textAlign = 'center';
-    this.ctx.textBaseline = 'middle';
+    this.ctx.textBaseline = 'alphabetic';
+    this.ctx.lineJoin = 'round';
+    this.ctx.lineCap = 'round';
     this.ctx.shadowColor = 'rgba(16, 185, 129, 0.35)';
     this.ctx.shadowBlur = 12;
-    this.ctx.fillStyle = '#10b981';
-    this.ctx.fillText(this.letter, cx, cy);
-    this.ctx.lineWidth = 3;
-    this.ctx.strokeStyle = '#059669';
-    this.ctx.strokeText(this.letter, cx, cy);
+
+    if (spec.maskExtraStroke > 0) {
+      const ribbonW = Math.max(3, spec.maskExtraStroke * scale);
+      this.ctx.lineWidth = ribbonW + 2.5;
+      this.ctx.strokeStyle = '#059669';
+      this.ctx.strokeText(glyph, cx, cy);
+      this.ctx.shadowBlur = 0;
+      this.ctx.lineWidth = ribbonW;
+      this.ctx.strokeStyle = '#10b981';
+      this.ctx.strokeText(glyph, cx, cy);
+      this.ctx.fillStyle = '#10b981';
+      this.ctx.fillText(glyph, cx, cy);
+    } else {
+      this.ctx.fillStyle = '#10b981';
+      this.ctx.fillText(glyph, cx, cy);
+      this.ctx.shadowBlur = 0;
+      this.ctx.lineWidth = 3;
+      this.ctx.strokeStyle = '#059669';
+      this.ctx.strokeText(glyph, cx, cy);
+    }
     this.ctx.restore();
   }
 
@@ -488,9 +891,10 @@ export class LetterTracer {
     if (!this.ctx || !this.paintCtx) return;
     const scale = this.displaySize / MASK_SIZE;
     const maskScale = MASK_SIZE / this.displaySize;
+    const spec = this.getRenderSpec();
 
     // Видимый штрих на основном холсте
-    const brushWidth = VISIBLE_BRUSH_BASE * scale;
+    const brushWidth = spec.visibleBrush * scale;
     this.ctx.save();
     this.ctx.strokeStyle = this.activeColor;
     this.ctx.fillStyle = this.activeColor;
@@ -521,11 +925,11 @@ export class LetterTracer {
     this.paintCtx.fillStyle = '#000000';
     this.paintCtx.lineCap = 'round';
     this.paintCtx.lineJoin = 'round';
-    this.paintCtx.lineWidth = PAINT_MASK_WIDTH;
+    this.paintCtx.lineWidth = spec.paintMaskWidth;
 
     if (mx1 === mx2 && my1 === my2) {
       this.paintCtx.beginPath();
-      this.paintCtx.arc(mx2, my2, PAINT_MASK_WIDTH / 2, 0, Math.PI * 2);
+      this.paintCtx.arc(mx2, my2, spec.paintMaskWidth / 2, 0, Math.PI * 2);
       this.paintCtx.fill();
     } else {
       this.paintCtx.beginPath();
@@ -556,11 +960,17 @@ export class LetterTracer {
 
     this.drawCelebrationFill();
     markLetterTraced(this.letter, this.lang);
+    markVariantTraced(this.letter, this.letterCase, this.letterStyle, this.lang);
 
     const pctEl = this.container.querySelector('#lt-pct-val');
     const fillEl = this.container.querySelector('#lt-progress-fill');
+    const clearBtn = this.container.querySelector('#lt-btn-clear');
     if (pctEl) pctEl.textContent = '100%';
-    if (fillEl) fillEl.style.width = '100%';
+    if (fillEl) {
+      fillEl.style.width = '100%';
+      fillEl.classList.remove('is-warn');
+    }
+    if (clearBtn) clearBtn.classList.remove('is-pulse');
     this.onProgress(100);
 
     const boxEl = this.container.querySelector('#lt-canvas-box');
@@ -583,7 +993,11 @@ export class LetterTracer {
       }
     }, 240);
 
-    this.onComplete(this.letter);
+    this.onComplete(this.letter, {
+      letterCase: this.letterCase,
+      letterStyle: this.letterStyle,
+      glyph: this.getDisplayGlyph()
+    });
   }
 
   evaluateCoverage({ allowComplete = false, showHints = false, forceHints = false } = {}) {
@@ -600,9 +1014,15 @@ export class LetterTracer {
     }
 
     let offTargetCount = 0;
+    let outsideGlyphCount = 0;
     for (let i = 0; i < MASK_SIZE * MASK_SIZE; i++) {
-      if (pData[i * 4 + 3] > 60 && this.toleranceMask[i] === 0) {
-        offTargetCount++;
+      if (pData[i * 4 + 3] > 60) {
+        if (this.toleranceMask[i] === 0) {
+          offTargetCount++;
+        }
+        if (this.glyphMask[i] === 0) {
+          outsideGlyphCount++;
+        }
       }
     }
 
@@ -619,17 +1039,19 @@ export class LetterTracer {
     }
 
     const rawCoverage = covered / this.targetCount;
-    const offLimit = Math.min(Math.max(this.targetCount * 2.0, 450), 3400);
+    const { offLimit, outsideGlyphLimit } = computeOffTrackLimits(this.targetCount);
+    const isOffTrack = offTargetCount > offLimit || outsideGlyphCount > outsideGlyphLimit;
     const cpTotal = this.checkpoints.length;
     const cpRatio = cpTotal > 0 ? hitCount / cpTotal : rawCoverage;
     const isCompleteReady = (cpTotal > 0 ? hitCount === cpTotal : rawCoverage >= 0.85)
       && rawCoverage >= 0.55
-      && offTargetCount <= offLimit;
+      && !isOffTrack;
 
     const displayPct = this.completed ? 100 : Math.min(99, Math.round(cpRatio * 100));
 
     const pctEl = this.container.querySelector('#lt-pct-val');
     const fillEl = this.container.querySelector('#lt-progress-fill');
+    const clearBtn = this.container.querySelector('#lt-btn-clear');
     if (pctEl) pctEl.textContent = `${displayPct}%`;
     if (fillEl) fillEl.style.width = `${displayPct}%`;
 
@@ -640,9 +1062,11 @@ export class LetterTracer {
     const copy = this.getCopy();
     const feedbackEl = this.container.querySelector('#lt-feedback');
 
-    if (offTargetCount > offLimit) {
+    if (isOffTrack) {
       this.clearSettleTimer();
       this.clearMissedHints();
+      if (fillEl) fillEl.classList.add('is-warn');
+      if (clearBtn) clearBtn.classList.add('is-pulse');
       if (feedbackEl) {
         feedbackEl.textContent = copy.hintOffTrack;
         feedbackEl.classList.remove('is-done');
@@ -650,6 +1074,9 @@ export class LetterTracer {
       }
       return;
     }
+
+    if (fillEl) fillEl.classList.remove('is-warn');
+    if (clearBtn) clearBtn.classList.remove('is-pulse');
 
     if (isCompleteReady) {
       if (allowComplete) {
@@ -726,11 +1153,16 @@ export class LetterTracer {
     const copy = this.getCopy();
     const pctEl = this.container.querySelector('#lt-pct-val');
     const fillEl = this.container.querySelector('#lt-progress-fill');
+    const clearBtn = this.container.querySelector('#lt-btn-clear');
     const feedbackEl = this.container.querySelector('#lt-feedback');
     const boxEl = this.container.querySelector('#lt-canvas-box');
 
     if (pctEl) pctEl.textContent = '0%';
-    if (fillEl) fillEl.style.width = '0%';
+    if (fillEl) {
+      fillEl.style.width = '0%';
+      fillEl.classList.remove('is-warn');
+    }
+    if (clearBtn) clearBtn.classList.remove('is-pulse');
     if (boxEl) boxEl.classList.remove('is-completed', 'guide-flash');
     if (feedbackEl) {
       feedbackEl.textContent = copy.hintStart;
@@ -760,6 +1192,7 @@ export class LetterTracer {
     this.lastPt = null;
     this.moveCount = 0;
     this.guideHighlightActive = false;
+    this.glyphLayout = null;
     if (this.container) {
       this.render();
       this.setupCanvases();
@@ -770,6 +1203,20 @@ export class LetterTracer {
 
   attachEvents() {
     if (!this.container || !this.canvasEl) return;
+
+    this.container.querySelectorAll('[data-case]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        sound.playLetterClick();
+        this.setMode({ letterCase: btn.dataset.case });
+      });
+    });
+
+    this.container.querySelectorAll('[data-style]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        sound.playLetterClick();
+        this.setMode({ letterStyle: btn.dataset.style });
+      });
+    });
 
     this.container.querySelectorAll('.lt-color-btn').forEach(btn => {
       btn.addEventListener('click', () => {

@@ -6,11 +6,11 @@
 // 5. 🥁 Барабан слогов (отстукивание слогов в ритм)
 // 6. 🪞 Буквы-шалунишки (поиск и исправление отзеркаленных букв)
 
-import { VOWELS, shuffleArray } from './data.js?v=28';
-import { sound } from './audio.js?v=28';
-import { getOrderedAlphabetData } from './letter-lessons.js?v=28';
-import { SYLLABLE_WORDS_DATA } from './kocham-czytac.js?v=28';
-import { LetterTracer, loadTracedLetters } from './letter-tracer.js?v=28';
+import { VOWELS, shuffleArray } from './data.js?v=29';
+import { sound, getBlendStretchSound } from './audio.js?v=29';
+import { getOrderedAlphabetData } from './letter-lessons.js?v=29';
+import { SYLLABLE_WORDS_DATA } from './kocham-czytac.js?v=29';
+import { LetterTracer, loadTracedLetters, loadTracerPrefs } from './letter-tracer.js?v=29';
 
 // ==========================================
 // 1. БАЗА ДАННЫХ ДЛЯ «МАГНИТА СЛОГОВ»
@@ -176,7 +176,8 @@ export const BLENDING_SETS = {
         { v: 'O', syl: 'MO', word: 'MO·RZE', emoji: '🌊' },
         { v: 'U', syl: 'MU', word: 'MU·CHA', emoji: '🪰' },
         { v: 'E', syl: 'ME', word: 'ME·DAL', emoji: '🏅' },
-        { v: 'Y', syl: 'MY', word: 'MY·DŁO', emoji: '🧼' }
+        { v: 'Y', syl: 'MY', word: 'MY·DŁO', emoji: '🧼' },
+        { v: 'Ą', syl: 'MĄ', word: 'MĄ·KA', emoji: '🌾' }
       ]
     },
     {
@@ -186,7 +187,8 @@ export const BLENDING_SETS = {
         { v: 'O', syl: 'TO', word: 'TORT', emoji: '🎂' },
         { v: 'U', syl: 'TU', word: 'TU·LI·PAN', emoji: '🌷' },
         { v: 'E', syl: 'TE', word: 'TE·LE·FON', emoji: '📱' },
-        { v: 'Y', syl: 'TY', word: 'TY·GRYS', emoji: '🐯' }
+        { v: 'Y', syl: 'TY', word: 'TY·GRYS', emoji: '🐯' },
+        { v: 'Ę', syl: 'TĘ', word: 'TĘ·CZA', emoji: '🌈' }
       ]
     },
     {
@@ -226,7 +228,8 @@ export const BLENDING_SETS = {
         { v: 'O', syl: 'PO', word: 'PO·MI·DOR', emoji: '🍅' },
         { v: 'U', syl: 'PU', word: 'PU·MA', emoji: '🐆' },
         { v: 'E', syl: 'PE', word: 'PE·LI·KAN', emoji: '🐦' },
-        { v: 'I', syl: 'PI', word: 'PI·ŁA', emoji: '🪚' }
+        { v: 'I', syl: 'PI', word: 'PI·ŁA', emoji: '🪚' },
+        { v: 'Ą', syl: 'PĄ', word: 'PĄ·CZEK', emoji: '🍩' }
       ]
     },
     {
@@ -234,6 +237,7 @@ export const BLENDING_SETS = {
       pairs: [
         { v: 'A', syl: 'BA', word: 'BA·NAN', emoji: '🍌' },
         { v: 'O', syl: 'BO', word: 'BO·CIAN', emoji: '🦢' },
+        { v: 'Ó', syl: 'BÓ', word: 'BÓBR', emoji: '🦫' },
         { v: 'U', syl: 'BU', word: 'BUŁ·KA', emoji: '🥖' },
         { v: 'E', syl: 'BE', word: 'BE·RET', emoji: '👒' },
         { v: 'I', syl: 'BI', word: 'BI·LET', emoji: '🎫' }
@@ -264,6 +268,7 @@ export const BLENDING_SETS = {
       pairs: [
         { v: 'A', syl: 'RA', word: 'RA·KIE·TA', emoji: '🚀' },
         { v: 'O', syl: 'RO', word: 'RO·WER', emoji: '🚲' },
+        { v: 'Ó', syl: 'RÓ', word: 'RÓ·ŻA', emoji: '🌹' },
         { v: 'U', syl: 'RU', word: 'RU·RA', emoji: '🪈' },
         { v: 'E', syl: 'RE', word: 'RE·KIN', emoji: '🦈' },
         { v: 'Y', syl: 'RY', word: 'RY·BA', emoji: '🐟' }
@@ -274,6 +279,7 @@ export const BLENDING_SETS = {
       pairs: [
         { v: 'A', syl: 'WA', word: 'WA·ZON', emoji: '🏺' },
         { v: 'O', syl: 'WO', word: 'WO·DA', emoji: '💧' },
+        { v: 'Ó', syl: 'WÓ', word: 'WÓ·ZEK', emoji: '🛒' },
         { v: 'U', syl: 'WU', word: 'WU·JEK', emoji: '👨' },
         { v: 'E', syl: 'WE', word: 'WEŁ·NA', emoji: '🧶' },
         { v: 'I', syl: 'WI', word: 'WIŚ·NIA', emoji: '🍒' }
@@ -286,7 +292,123 @@ export const BLENDING_SETS = {
         { v: 'O', syl: 'ZO', word: 'ZOO', emoji: '🦁' },
         { v: 'U', syl: 'ZU', word: 'ZU·PA', emoji: '🍲' },
         { v: 'E', syl: 'ZE', word: 'ZE·BRA', emoji: '🦓' },
-        { v: 'I', syl: 'ZI', word: 'ZI·MA', emoji: '❄️' }
+        { v: 'I', syl: 'ZI', word: 'ZI·MA', emoji: '❄️' },
+        { v: 'Ą', syl: 'ZĄ', word: 'ZĄB', emoji: '🦷' }
+      ]
+    },
+    {
+      c: 'G',
+      pairs: [
+        { v: 'A', syl: 'GA', word: 'GA·ZE·TA', emoji: '📰' },
+        { v: 'O', syl: 'GO', word: 'GO·ŁĄB', emoji: '🕊️' },
+        { v: 'Ó', syl: 'GÓ', word: 'GÓ·RA', emoji: '🏔️' },
+        { v: 'U', syl: 'GU', word: 'GU·ZIK', emoji: '🔘' },
+        { v: 'E', syl: 'GE', word: 'GE·PARD', emoji: '🐆' },
+        { v: 'I', syl: 'GI', word: 'GI·TA·RA', emoji: '🎸' }
+      ]
+    },
+    {
+      c: 'F',
+      pairs: [
+        { v: 'A', syl: 'FA', word: 'FA·LA', emoji: '🌊' },
+        { v: 'O', syl: 'FO', word: 'FO·KA', emoji: '🦭' },
+        { v: 'U', syl: 'FU', word: 'FU·TRO', emoji: '🧥' },
+        { v: 'E', syl: 'FE', word: 'FE·RIE', emoji: '⛷️' },
+        { v: 'I', syl: 'FI', word: 'FI·LI·ŻAN·KA', emoji: '☕' }
+      ]
+    },
+    {
+      c: 'J',
+      pairs: [
+        { v: 'A', syl: 'JA', word: 'JA·JO', emoji: '🥚' },
+        { v: 'O', syl: 'JO', word: 'JO·GURT', emoji: '🥛' },
+        { v: 'U', syl: 'JU', word: 'JU·TRO', emoji: '🌅' },
+        { v: 'E', syl: 'JE', word: 'JEŻ', emoji: '🦔' },
+        { v: 'Ę', syl: 'JĘ', word: 'JĘ·ZYK', emoji: '👅' }
+      ]
+    },
+    {
+      c: 'Ł',
+      pairs: [
+        { v: 'A', syl: 'ŁA', word: 'ŁA·PA', emoji: '🐾' },
+        { v: 'O', syl: 'ŁO', word: 'ŁOŚ', emoji: '🫎' },
+        { v: 'Ó', syl: 'ŁÓ', word: 'ŁÓDŹ', emoji: '⛵' },
+        { v: 'U', syl: 'ŁU', word: 'ŁUK', emoji: '🏹' },
+        { v: 'Y', syl: 'ŁY', word: 'ŁYŻ·KA', emoji: '🥄' }
+      ]
+    },
+    {
+      c: 'C',
+      pairs: [
+        { v: 'A', syl: 'CA', word: 'CA·ŁUS', emoji: '😘' },
+        { v: 'O', syl: 'CO', word: 'CO·FAĆ', emoji: '⏪' },
+        { v: 'U', syl: 'CU', word: 'CU·KIER', emoji: '🍬' },
+        { v: 'E', syl: 'CE', word: 'CE·BU·LA', emoji: '🧅' },
+        { v: 'Y', syl: 'CY', word: 'CY·TRY·NA', emoji: '🍋' }
+      ]
+    },
+    {
+      c: 'H',
+      pairs: [
+        { v: 'A', syl: 'HA', word: 'HA·MAK', emoji: '🏝️' },
+        { v: 'O', syl: 'HO', word: 'HO·KEJ', emoji: '🏒' },
+        { v: 'U', syl: 'HU', word: 'HUŚ·TAW·KA', emoji: '🛝' },
+        { v: 'E', syl: 'HE', word: 'HER·BA·TA', emoji: '🍵' },
+        { v: 'I', syl: 'HI', word: 'HI·PO·PO·TAM', emoji: '🦛' }
+      ]
+    },
+    {
+      c: 'Ż',
+      pairs: [
+        { v: 'A', syl: 'ŻA', word: 'ŻA·BA', emoji: '🐸' },
+        { v: 'O', syl: 'ŻO', word: 'ŻO·ŁĄDŹ', emoji: '🌰' },
+        { v: 'Ó', syl: 'ŻÓ', word: 'ŻÓŁW', emoji: '🐢' },
+        { v: 'U', syl: 'ŻU', word: 'ŻUK', emoji: '🪲' },
+        { v: 'Y', syl: 'ŻY', word: 'ŻY·RA·FA', emoji: '🦒' }
+      ]
+    },
+    {
+      c: 'Ś',
+      mode: 'vc',
+      pairs: [
+        { v: 'I', syl: 'IŚ', word: 'MIŚ', emoji: '🐻' },
+        { v: 'A', syl: 'AŚ', word: 'JAŚ', emoji: '👦' },
+        { v: 'O', syl: 'OŚ', word: 'ŁOŚ', emoji: '🫎' },
+        { v: 'Ę', syl: 'ĘŚ', word: 'GĘŚ', emoji: '🪿' },
+        { v: 'U', syl: 'UŚ', word: 'UŚ·MIECH', emoji: '😊' }
+      ]
+    },
+    {
+      c: 'Ć',
+      mode: 'vc',
+      pairs: [
+        { v: 'A', syl: 'AĆ', word: 'SPAĆ', emoji: '😴' },
+        { v: 'E', syl: 'EĆ', word: 'SIEĆ', emoji: '🕸️' },
+        { v: 'I', syl: 'IĆ', word: 'NIĆ', emoji: '🧵' },
+        { v: 'Y', syl: 'YĆ', word: 'MYĆ', emoji: '🧼' },
+        { v: 'U', syl: 'UĆ', word: 'CZUĆ', emoji: '👃' }
+      ]
+    },
+    {
+      c: 'Ń',
+      mode: 'vc',
+      pairs: [
+        { v: 'O', syl: 'OŃ', word: 'KOŃ', emoji: '🐴' },
+        { v: 'A', syl: 'AŃ', word: 'BAŃ·KA', emoji: '🫧' },
+        { v: 'E', syl: 'EŃ', word: 'JE·LEŃ', emoji: '🦌' },
+        { v: 'Y', syl: 'YŃ', word: 'PŁYŃ', emoji: '🏊' },
+        { v: 'U', syl: 'UŃ', word: 'U·SUŃ', emoji: '🧹' }
+      ]
+    },
+    {
+      c: 'Ź',
+      mode: 'vc',
+      pairs: [
+        { v: 'A', syl: 'AŹ', word: 'ŁAŹ·NIA', emoji: '🛁' },
+        { v: 'E', syl: 'EŹ', word: 'WEŹ', emoji: '🤲' },
+        { v: 'O', syl: 'OŹ', word: 'GWOŹ·DZIE', emoji: '🔨' },
+        { v: 'U', syl: 'UŹ', word: 'KUŹ·NIA', emoji: '🔥' },
+        { v: 'Ó', syl: 'ÓŹ', word: 'PÓŹ·NO', emoji: '🌙' }
       ]
     }
   ],
@@ -775,6 +897,7 @@ export class PracticeLabGame {
     this.blendCompleted = false;
     this.completedBlends = new Set();
     this.blendPhonemeSpoken = false;
+    this.blendLeftSpokenAudio = false;
 
     // 3. Elastic strings state
     this.stringsSubMode = 'syllables'; // 'syllables' | 'pic_start'
@@ -869,6 +992,9 @@ export class PracticeLabGame {
       this.traceLetterIdx = 0;
       this.blendConsIdx = 0;
       this.blendPairIdx = 0;
+      this.blendCompleted = false;
+      this.blendPhonemeSpoken = false;
+      this.blendLeftSpokenAudio = false;
       this.reelDeck = [];
       this.drumDeck = [];
       this.stringPairs = [];
@@ -975,6 +1101,11 @@ export class PracticeLabGame {
     this.traceLetterIdx = safeIdx;
     const current = list[safeIdx];
     const tracedSet = loadTracedLetters(this.lang);
+    const prefs = loadTracerPrefs();
+    const heroGlyph = prefs.letterCase === 'lower'
+      ? current.letter.toLowerCase()
+      : current.letter.toUpperCase();
+    const heroCursiveCls = prefs.letterStyle === 'cursive' ? `is-cursive lang-${this.lang}` : '';
 
     return `
       <div class="pl-game-card">
@@ -983,7 +1114,7 @@ export class PracticeLabGame {
         <div class="pl-trace-nav-row">
           <button type="button" class="pl-circle-btn" id="pl-trace-prev" aria-label="Previous letter">◀</button>
           <button type="button" class="pl-trace-hero sound-${current.soundType}" id="pl-trace-speak">
-            <span class="pl-trace-big">${current.letter}</span>
+            <span class="pl-trace-big ${heroCursiveCls}" id="pl-trace-hero-glyph">${heroGlyph}</span>
             <span class="pl-trace-word">${current.emoji} ${current.word}</span>
             <span class="pl-trace-audio" aria-hidden="true">🔊</span>
           </button>
@@ -1056,8 +1187,16 @@ export class PracticeLabGame {
         lang: this.lang,
         compact: false,
         soundType: current.soundType,
-        onComplete: (ltr) => {
-          const rewardKey = `${this.lang}_${ltr}`;
+        onModeChange: ({ letterStyle, glyph }) => {
+          const heroEl = this.container.querySelector('#pl-trace-hero-glyph');
+          if (!heroEl) return;
+          heroEl.textContent = glyph;
+          const isCursive = letterStyle === 'cursive';
+          heroEl.classList.toggle('is-cursive', isCursive);
+          heroEl.classList.toggle(`lang-${this.lang}`, isCursive);
+        },
+        onComplete: (ltr, meta = {}) => {
+          const rewardKey = `${this.lang}_${ltr}_${meta.letterCase || 'upper'}_${meta.letterStyle || 'print'}`;
           if (!this.traceRewardedSession.has(rewardKey)) {
             this.traceRewardedSession.add(rewardKey);
             this.onStarEarned(1);
@@ -1076,6 +1215,26 @@ export class PracticeLabGame {
   // ==========================================
   // ИГРА 2: 🚂 МАГНИТ СЛОГОВ
   // ==========================================
+  getBlendTrailText(leftChar, rightChar, syl, mode, progressPct, fused) {
+    if (fused) {
+      if (mode === 'vc') {
+        return `${leftChar.toLowerCase().repeat(4)}...${rightChar.toLowerCase()} ➔ ${syl}!`;
+      }
+      if (getBlendStretchSound(leftChar, this.lang)) {
+        return `${leftChar.toLowerCase().repeat(4)}...${rightChar.toLowerCase().repeat(4)} ➔ ${syl}!`;
+      }
+      return `${leftChar.toLowerCase()}${rightChar.toLowerCase().repeat(4)} ➔ ${syl}!`;
+    }
+    if (progressPct >= 0.12) {
+      if (getBlendStretchSound(leftChar, this.lang)) {
+        const count = Math.max(2, Math.min(6, Math.round(2 + progressPct * 5)));
+        return `${leftChar.toLowerCase().repeat(count)}...`;
+      }
+      return `${leftChar} ➔ ${rightChar}...`;
+    }
+    return this.getCopy().blendRailHint;
+  }
+
   renderBlendHTML() {
     const copy = this.getCopy();
     const sets = BLENDING_SETS[this.lang] || BLENDING_SETS.ru;
@@ -1085,6 +1244,13 @@ export class PracticeLabGame {
     const pairIdx = Math.min(this.blendPairIdx, consObj.pairs.length - 1);
     this.blendPairIdx = pairIdx;
     const pair = consObj.pairs[pairIdx];
+    const mode = consObj.mode || 'cv';
+    const isVC = mode === 'vc';
+    const leftChar = isVC ? pair.v : consObj.c;
+    const rightChar = isVC ? consObj.c : pair.v;
+    const initialRailText = this.blendCompleted
+      ? this.getBlendTrailText(leftChar, rightChar, pair.syl, mode, 1, true)
+      : copy.blendRailHint;
 
     return `
       <div class="pl-game-card">
@@ -1116,22 +1282,22 @@ export class PracticeLabGame {
 
         <div class="pl-blend-track ${this.blendCompleted ? 'is-fused' : ''}" id="pl-blend-track">
           <div class="pl-rail-line">
-            <span class="pl-rail-whisper" id="pl-rail-whisper">${copy.blendRailHint}</span>
+            <span class="pl-rail-whisper" id="pl-rail-whisper">${initialRailText}</span>
           </div>
 
           <button type="button"
-                  class="pl-loco-handle"
+                  class="pl-loco-handle ${isVC ? 'is-vowel' : ''}"
                   id="pl-loco-handle"
-                  aria-label="${consObj.c} → ${pair.v} (ArrowRight)">
+                  aria-label="${leftChar} → ${rightChar} (ArrowRight)">
             <span class="pl-loco-train" aria-hidden="true">🚂</span>
-            <span class="pl-loco-letter">${consObj.c}</span>
+            <span class="pl-loco-letter">${leftChar}</span>
           </button>
 
           <button type="button"
-                  class="pl-vowel-station ${this.blendCompleted ? 'fused' : ''}"
+                  class="pl-vowel-station ${isVC ? 'is-cons' : ''} ${this.blendCompleted ? 'fused' : ''}"
                   id="pl-vowel-station"
                   aria-label="${pair.syl}">
-            ${this.blendCompleted ? `<span class="pl-fused-syl">${pair.syl}</span>` : `<span class="pl-station-vowel">${pair.v}</span>`}
+            ${this.blendCompleted ? `<span class="pl-fused-syl">${pair.syl}</span>` : `<span class="pl-station-vowel">${rightChar}</span>`}
           </button>
         </div>
 
@@ -1155,11 +1321,20 @@ export class PracticeLabGame {
     if (this.blendCompleted) return;
     this.blendCompleted = true;
     const copy = this.getCopy();
+    const mode = consObj.mode || 'cv';
+    const isVC = mode === 'vc';
+    const leftChar = isVC ? pair.v : consObj.c;
+    const rightChar = isVC ? consObj.c : pair.v;
 
     const track = this.container.querySelector('#pl-blend-track');
     const handle = this.container.querySelector('#pl-loco-handle');
     const station = this.container.querySelector('#pl-vowel-station');
+    const whisper = this.container.querySelector('#pl-rail-whisper');
     const resultEl = this.container.querySelector('#pl-blend-result');
+
+    if (whisper) {
+      whisper.textContent = this.getBlendTrailText(leftChar, rightChar, pair.syl, mode, 1, true);
+    }
 
     if (track && handle && station) {
       const maxTravel = Math.max(0, track.clientWidth - handle.offsetWidth - station.offsetWidth - 16);
@@ -1177,10 +1352,18 @@ export class PracticeLabGame {
     }
     this.onWinEffect();
 
+    const alreadySpokeLeft = this.blendLeftSpokenAudio;
     sound.playSnap();
     this.addTimer(() => {
-      sound.speakWord(pair.syl, this.lang);
-    }, 180);
+      sound.speakSyllableBlend({
+        left: leftChar,
+        right: rightChar,
+        syl: pair.syl,
+        lang: this.lang,
+        mode,
+        alreadySpokeLeft
+      });
+    }, 140);
 
     const activeVBtn = this.container.querySelector(`[data-blend-v="${this.blendPairIdx}"]`);
     if (activeVBtn && !activeVBtn.classList.contains('done')) {
@@ -1213,27 +1396,36 @@ export class PracticeLabGame {
   }
 
   attachBlendEvents() {
+    const copy = this.getCopy();
     const sets = BLENDING_SETS[this.lang] || BLENDING_SETS.ru;
     const consObj = sets[this.blendConsIdx] || sets[0];
     const pair = consObj.pairs[this.blendPairIdx] || consObj.pairs[0];
+    const mode = consObj.mode || 'cv';
+    const isVC = mode === 'vc';
+    const leftChar = isVC ? pair.v : consObj.c;
+    const rightChar = isVC ? consObj.c : pair.v;
 
     this.container.querySelectorAll('[data-blend-c]').forEach(btn => {
       btn.addEventListener('click', () => {
+        sound.stopSpeech();
         sound.playLetterClick();
         this.blendConsIdx = parseInt(btn.dataset.blendC, 10) || 0;
         this.blendPairIdx = 0;
         this.blendCompleted = false;
         this.blendPhonemeSpoken = false;
+        this.blendLeftSpokenAudio = false;
         this.render();
       });
     });
 
     this.container.querySelectorAll('[data-blend-v]').forEach(btn => {
       btn.addEventListener('click', () => {
+        sound.stopSpeech();
         sound.playLetterClick();
         this.blendPairIdx = parseInt(btn.dataset.blendV, 10) || 0;
         this.blendCompleted = false;
         this.blendPhonemeSpoken = false;
+        this.blendLeftSpokenAudio = false;
         this.render();
       });
     });
@@ -1258,7 +1450,14 @@ export class PracticeLabGame {
         this.completeBlend(consObj, pair);
       } else {
         sound.playLetterClick();
-        sound.speakWord(pair.syl, this.lang);
+        sound.speakSyllableBlend({
+          left: leftChar,
+          right: rightChar,
+          syl: pair.syl,
+          lang: this.lang,
+          mode,
+          alreadySpokeLeft: false
+        });
       }
     };
 
@@ -1276,10 +1475,26 @@ export class PracticeLabGame {
     let startX = 0;
     let moved = false;
 
+    const resetEarlyDrag = () => {
+      handle.style.transform = 'translate3d(0px, 0, 0)';
+      this.blendPhonemeSpoken = false;
+      this.blendLeftSpokenAudio = false;
+      const whisper = this.container.querySelector('#pl-rail-whisper');
+      if (whisper) whisper.textContent = copy.blendRailHint;
+      sound.stopSpeech();
+    };
+
     handle.addEventListener('pointerdown', (e) => {
       if (e.pointerType === 'mouse' && e.button !== 0) return;
       if (this.blendCompleted) {
-        sound.speakWord(pair.syl, this.lang);
+        sound.speakSyllableBlend({
+          left: leftChar,
+          right: rightChar,
+          syl: pair.syl,
+          lang: this.lang,
+          mode,
+          alreadySpokeLeft: false
+        });
         return;
       }
       e.preventDefault();
@@ -1306,9 +1521,14 @@ export class PracticeLabGame {
       handle.style.transform = `translate3d(${clampedX}px, 0, 0)`;
 
       const pct = maxTravel > 0 ? clampedX / maxTravel : 0;
-      if (pct >= 0.15 && !this.blendPhonemeSpoken) {
+      const whisper = this.container.querySelector('#pl-rail-whisper');
+      if (whisper) {
+        whisper.textContent = this.getBlendTrailText(leftChar, rightChar, pair.syl, mode, pct, false);
+      }
+
+      if (pct >= 0.12 && !this.blendPhonemeSpoken) {
         this.blendPhonemeSpoken = true;
-        sound.speakPhoneme(consObj.c, this.lang);
+        this.blendLeftSpokenAudio = sound.speakBlendStart(leftChar, this.lang);
       }
       if (pct >= 0.78) {
         dragActive = false;
@@ -1323,9 +1543,10 @@ export class PracticeLabGame {
       handle.classList.remove('dragging');
       if (!moved) {
         sound.playLetterClick();
-        sound.speakPhoneme(consObj.c, this.lang);
+        const spoke = sound.speakBlendStart(leftChar, this.lang);
+        if (!spoke) sound.speakLetter(leftChar, this.lang);
       } else if (!this.blendCompleted) {
-        handle.style.transform = 'translate3d(0px, 0, 0)';
+        resetEarlyDrag();
       }
     };
 
@@ -1336,7 +1557,7 @@ export class PracticeLabGame {
         dragActive = false;
         handle.classList.remove('dragging');
         if (!this.blendCompleted) {
-          handle.style.transform = 'translate3d(0px, 0, 0)';
+          resetEarlyDrag();
         }
       }
     });

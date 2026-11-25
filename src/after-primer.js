@@ -1,8 +1,8 @@
 // Модуль «Первая книга для чтения после букваря» (7 историй с комиксами, мини-квестами, эмоциями и логикой)
 // Поддерживает RU / PL / EN и переключатель «По слогам / Обычный текст».
 
-import { shuffleArray } from './data.js?v=28';
-import { sound } from './audio.js?v=28';
+import { shuffleArray } from './data.js?v=29';
+import { sound } from './audio.js?v=29';
 
 const UI_TEXTS = {
   ru: {

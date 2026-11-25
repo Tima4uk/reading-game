@@ -1,6 +1,6 @@
 // Модуль аудио: Синтез звуковых эффектов (Web Audio API), локальные аудиоклипы (assets/audio/) и озвучивание речи (SpeechSynthesis API)
 
-import { getLetterPhonics, getDigraphPhonics } from './phonics.js?v=28';
+import { getLetterPhonics, getDigraphPhonics } from './phonics.js?v=29';
 
 // Произношение отдельных букв (чтобы согласные не проглатывались как предлоги, а Ъ/Ь не молчали)
 const RU_LETTER_SPOKEN = {
@@ -373,6 +373,19 @@ const PL_SPOKEN_OVERRIDES = {
   'ŁA': 'ła', 'ŁO': 'ło', 'ŁU': 'łu',
   'SIA': 'sia', 'SIO': 'sio', 'CIA': 'cia', 'CIO': 'cio', 'ZIA': 'zia', 'NIA': 'nia',
   'MĄ': 'mą', 'MĘ': 'mę', 'KĄ': 'ką', 'KĘ': 'kę', 'SĄ': 'są', 'SĘ': 'sę',
+  'PĄ': 'pą', 'ZĄ': 'zą', 'TĘ': 'tę', 'GĘ': 'gę', 'JĘ': 'ję',
+  'GÓ': 'gu', 'ŁÓ': 'łu', 'ŻÓ': 'żu', 'BÓ': 'bu', 'RÓ': 'ru', 'WÓ': 'wu', 'ÓŹ': 'uź',
+  'ŁY': 'ły', 'ŻE': 'że',
+  'CA': 'ca', 'CO': 'co', 'CU': 'cu', 'CY': 'cy',
+  'FA': 'fa', 'FO': 'fo', 'FU': 'fu', 'FE': 'fe', 'FI': 'fi',
+  'GA': 'ga', 'GO': 'go', 'GU': 'gu',
+  'HA': 'ha', 'HO': 'ho', 'HU': 'hu', 'HE': 'he', 'HI': 'hi',
+  'JA': 'ja', 'JO': 'jo', 'JU': 'ju', 'JE': 'je',
+  // Мягкие обратные слоги (VC)
+  'AĆ': 'ać', 'EĆ': 'eć', 'IĆ': 'ić', 'YĆ': 'yć', 'UĆ': 'uć',
+  'AŃ': 'ań', 'EŃ': 'eń', 'OŃ': 'oń', 'YŃ': 'yń', 'UŃ': 'uń',
+  'AŚ': 'aś', 'IŚ': 'iś', 'OŚ': 'oś', 'ĘŚ': 'ęś', 'UŚ': 'uś',
+  'AŹ': 'aź', 'EŹ': 'eź', 'OŹ': 'oź', 'UŹ': 'uź',
   'CHÓD': 'chut', 'BUŁ': 'buł', 'DŁO': 'dło', 'KIE': 'kie',
   'TYL': 'tyl', 'DOR': 'dor', 'LOT': 'lot', 'NAN': 'nan', 'LON': 'lon', 'GAR': 'gar',
   'TEK': 'tek', 'SEK': 'sek',
@@ -439,6 +452,137 @@ const EN_SPOKEN_OVERRIDES = {
   'FOX / BOX': 'box'
 };
 
+// Чистые протяжные звуки для плавного чтения по слогам («ммм» + «ааа» -> «ма») без посторонних слов-примеров
+const BLEND_STRETCH_SOUNDS = {
+  ru: {
+    'А': 'ааа', 'О': 'ооо', 'У': 'ууу', 'И': 'иии', 'Ы': 'ыыы',
+    'Е': 'еее', 'Ё': 'ёёё', 'Э': 'эээ', 'Ю': 'ююю', 'Я': 'яяя',
+    'М': 'ммм', 'С': 'ссс', 'Х': 'ххх', 'Л': 'ллл', 'Н': 'ннн',
+    'Ш': 'шшш', 'Р': 'ррр', 'В': 'ввв', 'З': 'ззз', 'Ж': 'жжж',
+    'Ф': 'ффф', 'Щ': 'щщщ'
+  },
+  pl: {
+    'A': 'aaa', 'Ą': 'ąąą', 'E': 'eee', 'Ę': 'ęęę', 'I': 'iii',
+    'O': 'ooo', 'Ó': 'uuu', 'U': 'uuu', 'Y': 'yyy',
+    'L': 'lll', 'M': 'mmm', 'N': 'nnn', 'R': 'rrr', 'S': 'sss',
+    'Z': 'zzz', 'Ż': 'żżż'
+  },
+  en: {
+    'A': 'aaah', 'E': 'eeeh', 'I': 'iiih', 'O': 'oooh', 'U': 'uuuh',
+    'S': 'sss', 'M': 'mmm', 'N': 'nnn', 'Z': 'zzz'
+  }
+};
+
+export function getBlendStretchSound(letter, lang = 'ru') {
+  if (!letter) return null;
+  const upper = String(letter).trim().toUpperCase();
+  const table = BLEND_STRETCH_SOUNDS[lang] || BLEND_STRETCH_SOUNDS.ru;
+  return table[upper] || null;
+}
+
+export function normalizeWordText(word, lang = 'ru') {
+  if (!word) return '';
+  const raw = String(word).trim().replace(/·/g, '');
+  const upper = raw.toUpperCase();
+
+  if (lang === 'ru' && RU_SPOKEN_OVERRIDES[upper]) {
+    return RU_SPOKEN_OVERRIDES[upper];
+  }
+  if (lang === 'pl' && PL_SPOKEN_OVERRIDES[upper]) {
+    return PL_SPOKEN_OVERRIDES[upper];
+  }
+  if (lang === 'en' && EN_SPOKEN_OVERRIDES[upper]) {
+    return EN_SPOKEN_OVERRIDES[upper];
+  }
+
+  const lower = raw.toLowerCase();
+  // Для любого короткого русского слога (2–3 буквы) с одной гласной ставим ударение,
+  // чтобы TTS не редуцировал О->А и не читал слог как аббревиатуру
+  if (lang === 'ru' && /^[а-яё]{2,3}$/.test(lower) && !lower.includes('ё')) {
+    const vowels = lower.match(/[аеиоуыэюя]/g);
+    if (vowels && vowels.length === 1) {
+      return lower.replace(/([аеиоуыэюя])/, '$1\u0301');
+    }
+  }
+  return lower;
+}
+
+export function stretchSyllableText(syl, spokenSyl, lang = 'ru', mode = 'cv') {
+  const base = spokenSyl || normalizeWordText(syl, lang);
+  if (!base) return '';
+
+  if (lang === 'ru') {
+    if (mode !== 'vc') {
+      return base.replace(/([аеёиоуыэюя])(\u0301?)/, '$1$2$1$1');
+    }
+    return base.replace(/^([аеёиоуыэюя])(\u0301?)/, '$1$2$1$1');
+  }
+
+  if (lang === 'pl') {
+    if (mode === 'vc') {
+      return base.replace(/^([aąeęioóuy])/, '$1$1$1');
+    }
+    return base.replace(/([aąeęioóuy])/, '$1$1$1');
+  }
+
+  return base.replace(/([aeiouy])/, '$1$1$1');
+}
+
+export function buildBlendSpeechPlan({ left, right, syl, lang = 'ru', mode = 'cv', alreadySpokeLeft = false } = {}) {
+  const leftStretch = getBlendStretchSound(left, lang);
+  const rightStretch = getBlendStretchSound(right, lang);
+  const spokenSyl = normalizeWordText(syl, lang);
+  const stretchedSyl = stretchSyllableText(syl, spokenSyl, lang, mode);
+
+  if (mode === 'vc') {
+    if (alreadySpokeLeft && leftStretch) {
+      return {
+        cancelFirst: false,
+        items: [
+          { text: stretchedSyl, rate: 0.62, pitch: 1.06 },
+          { text: spokenSyl, rate: 0.82, pitch: 1.08 }
+        ]
+      };
+    }
+    return {
+      cancelFirst: true,
+      items: [
+        ...(leftStretch ? [{ text: leftStretch, rate: 0.56, pitch: 1.02 }] : []),
+        { text: stretchedSyl, rate: 0.62, pitch: 1.06 },
+        { text: spokenSyl, rate: 0.82, pitch: 1.08 }
+      ]
+    };
+  }
+
+  if (leftStretch && rightStretch) {
+    if (alreadySpokeLeft) {
+      return {
+        cancelFirst: false,
+        items: [
+          { text: rightStretch, rate: 0.58, pitch: 1.06 },
+          { text: spokenSyl, rate: 0.80, pitch: 1.08 }
+        ]
+      };
+    }
+    return {
+      cancelFirst: true,
+      items: [
+        { text: leftStretch, rate: 0.56, pitch: 1.02 },
+        { text: rightStretch, rate: 0.58, pitch: 1.06 },
+        { text: spokenSyl, rate: 0.80, pitch: 1.08 }
+      ]
+    };
+  }
+
+  return {
+    cancelFirst: true,
+    items: [
+      { text: stretchedSyl, rate: 0.60, pitch: 1.04 },
+      { text: spokenSyl, rate: 0.82, pitch: 1.08 }
+    ]
+  };
+}
+
 class SoundEngine {
   constructor() {
     this.ctx = null;
@@ -446,6 +590,7 @@ class SoundEngine {
     this.speechEnabled = true;
     this.voices = [];
     this.speakTimer = null;
+    this.pendingUtterances = [];
     this.audioManifest = null;
     this.audioClipCache = new Map();
     this.activeClip = null;
@@ -458,7 +603,7 @@ class SoundEngine {
     if (typeof window === 'undefined' || typeof fetch !== 'function') return;
     if (window.location && window.location.protocol === 'file:') return;
     try {
-      const resp = await fetch('assets/audio/manifest.json?v=28');
+      const resp = await fetch('assets/audio/manifest.json?v=29');
       if (resp && resp.ok) {
         this.audioManifest = await resp.json();
       }
@@ -523,6 +668,7 @@ class SoundEngine {
 
   // Полная остановка текущей и запланированной озвучки
   stopSpeech() {
+    this.pendingUtterances = [];
     if (this.speakTimer) {
       clearTimeout(this.speakTimer);
       this.speakTimer = null;
@@ -590,6 +736,87 @@ class SoundEngine {
     return true;
   }
 
+  // Очередь последовательных фраз (например «ммм» -> «ааа» -> «ма») без обрыва уже звучащей части
+  _queueUtterances(items, lang, { cancelFirst = true } = {}) {
+    if (!this.speechEnabled || typeof window === 'undefined' || !('speechSynthesis' in window) || !Array.isArray(items) || items.length === 0) {
+      return;
+    }
+
+    const synth = window.speechSynthesis;
+    const voice = this.getVoice(lang);
+    const enqueueList = (list) => {
+      for (let i = 0; i < list.length; i++) {
+        const item = list[i];
+        const utterance = new SpeechSynthesisUtterance(item.text);
+        utterance.lang = this.getLangTag(lang);
+        utterance.rate = item.rate ?? 0.85;
+        utterance.pitch = item.pitch ?? 1.05;
+        if (voice) utterance.voice = voice;
+        synth.speak(utterance);
+      }
+    };
+
+    if (!cancelFirst) {
+      if (this.speakTimer) {
+        this.pendingUtterances.push(...items);
+      } else {
+        enqueueList(items);
+      }
+      return;
+    }
+
+    if (this.activeClip) {
+      try {
+        this.activeClip.pause();
+        this.activeClip.currentTime = 0;
+      } catch (e) {
+        // Игнорируем ошибку остановки аудиотега
+      }
+      this.activeClip = null;
+    }
+
+    if (this.speakTimer) {
+      clearTimeout(this.speakTimer);
+      this.speakTimer = null;
+    }
+
+    this.pendingUtterances = [...items];
+    const wasBusy = synth.speaking || synth.pending;
+    synth.cancel();
+
+    const flushPending = () => {
+      this.speakTimer = null;
+      const list = this.pendingUtterances;
+      this.pendingUtterances = [];
+      if (!this.speechEnabled || list.length === 0) return;
+      enqueueList(list);
+    };
+
+    if (wasBusy) {
+      this.speakTimer = setTimeout(flushPending, 35);
+    } else {
+      flushPending();
+    }
+  }
+
+  // Плавное начало тянущегося звука при движении паровозика
+  speakBlendStart(letter, lang = 'ru') {
+    const stretch = getBlendStretchSound(letter, lang);
+    if (stretch) {
+      this._queueUtterances([{ text: stretch, rate: 0.56, pitch: 1.02 }], lang, { cancelFirst: true });
+      return true;
+    }
+    this.playReelTick();
+    return false;
+  }
+
+  // Плавное слияние слога в «Магните слогов» («ммм...ааа -> ма»)
+  speakSyllableBlend({ left, right, syl, lang = 'ru', mode = 'cv', alreadySpokeLeft = false } = {}) {
+    const plan = buildBlendSpeechPlan({ left, right, syl, lang, mode, alreadySpokeLeft });
+    if (!plan || !plan.items || plan.items.length === 0) return;
+    this._queueUtterances(plan.items, lang, { cancelFirst: plan.cancelFirst });
+  }
+
   // Безопасный запуск SpeechSynthesis без бага проглатывания после cancel() в браузерах
   _speakUtterance(text, lang, rate = 0.85, pitch = 1.05) {
     if (!this.speechEnabled || typeof window === 'undefined' || !('speechSynthesis' in window)) return;
@@ -652,30 +879,7 @@ class SoundEngine {
 
   // Нормализация слова или слога перед отправкой в TTS
   normalizeWordForSpeech(word, lang = 'ru') {
-    if (!word) return '';
-    const raw = String(word).trim().replace(/·/g, '');
-    const upper = raw.toUpperCase();
-
-    if (lang === 'ru' && RU_SPOKEN_OVERRIDES[upper]) {
-      return RU_SPOKEN_OVERRIDES[upper];
-    }
-    if (lang === 'pl' && PL_SPOKEN_OVERRIDES[upper]) {
-      return PL_SPOKEN_OVERRIDES[upper];
-    }
-    if (lang === 'en' && EN_SPOKEN_OVERRIDES[upper]) {
-      return EN_SPOKEN_OVERRIDES[upper];
-    }
-
-    const lower = raw.toLowerCase();
-    // Для любого короткого русского слога (2–3 буквы) с одной гласной ставим ударение,
-    // чтобы TTS не редуцировал О->А и не читал слог как аббревиатуру
-    if (lang === 'ru' && /^[а-яё]{2,3}$/.test(lower) && !lower.includes('ё')) {
-      const vowels = lower.match(/[аеиоуыэюя]/g);
-      if (vowels && vowels.length === 1) {
-        return lower.replace(/([аеиоуыэюя])/, '$1\u0301');
-      }
-    }
-    return lower;
+    return normalizeWordText(word, lang);
   }
 
   // Нормализация фраз (очистка слоговых разделителей, мягкие паузы вместо тире и Е -> Ё для RU)
