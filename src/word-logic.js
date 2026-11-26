@@ -1,6 +1,6 @@
 // Модуль «Умные слова»: «Найди рифму», «Лишнее слово» и «Прочитай сам (Слово ➔ Картинка)»
-import { RHYMES_DATA, ODD_ONE_OUT_DATA, WORDS_DATA, shuffleArray } from './data.js';
-import { sound } from './audio.js';
+import { RHYMES_DATA, ODD_ONE_OUT_DATA, WORDS_DATA, shuffleArray } from './data.js?v=30';
+import { sound } from './audio.js?v=30';
 
 export class WordLogicGame {
   constructor(options = {}) {
@@ -9,7 +9,8 @@ export class WordLogicGame {
     this.onStarEarned = options.onStarEarned || (() => {});
     this.onWinEffect = options.onWinEffect || (() => {});
 
-    this.subMode = 'rhyme'; // 'rhyme' | 'odd' | 'read'
+    this.showSubnav = options.showSubnav !== false;
+    this.subMode = options.initialSubMode || 'rhyme'; // 'rhyme' | 'odd' | 'read'
     this.currentRhymeIndex = 0;
     this.currentOddIndex = 0;
     this.currentReadIndex = 0;
@@ -71,6 +72,16 @@ export class WordLogicGame {
     this.render();
   }
 
+  openSubMode(mode) {
+    this.stop();
+    this.subMode = mode;
+    this.roundAnswered = false;
+    if (this.shuffledRhymes.length === 0) {
+      this.resetDecks();
+    }
+    this.render();
+  }
+
   render() {
     const isRu = this.lang === 'ru';
     const isPl = this.lang === 'pl';
@@ -81,18 +92,20 @@ export class WordLogicGame {
 
     this.container.innerHTML = `
       <div class="wl-wrapper">
-        <!-- Переключатель подрежимов -->
-        <div class="wl-subnav">
-          <button class="wl-subnav-btn ${this.subMode === 'rhyme' ? 'active' : ''}" id="wl-btn-rhyme">
-            🎵 ${rhymeTab}
-          </button>
-          <button class="wl-subnav-btn ${this.subMode === 'odd' ? 'active' : ''}" id="wl-btn-odd">
-            🧠 ${oddTab}
-          </button>
-          <button class="wl-subnav-btn ${this.subMode === 'read' ? 'active' : ''}" id="wl-btn-read">
-            👁️ ${readTab}
-          </button>
-        </div>
+        ${this.showSubnav ? `
+          <!-- Переключатель подрежимов -->
+          <div class="wl-subnav">
+            <button class="wl-subnav-btn ${this.subMode === 'rhyme' ? 'active' : ''}" id="wl-btn-rhyme">
+              🎵 ${rhymeTab}
+            </button>
+            <button class="wl-subnav-btn ${this.subMode === 'odd' ? 'active' : ''}" id="wl-btn-odd">
+              🧠 ${oddTab}
+            </button>
+            <button class="wl-subnav-btn ${this.subMode === 'read' ? 'active' : ''}" id="wl-btn-read">
+              👁️ ${readTab}
+            </button>
+          </div>
+        ` : ''}
 
         <div class="wl-content">
           ${this.subMode === 'rhyme' 

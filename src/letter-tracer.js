@@ -1,7 +1,7 @@
 // Переиспользуемый модуль «Прописи» (Canvas Letter Tracer)
 // Позволяет обводить букву пальцем или мышкой по пунктирному контуру с проверкой заполнения
 
-import { sound } from './audio.js?v=29';
+import { sound } from './audio.js?v=30';
 
 export const TRACER_COLORS = [
   { hex: '#f43f5e', names: { ru: 'Розовый мелок', pl: 'Różowa kredka', en: 'Pink crayon' } },

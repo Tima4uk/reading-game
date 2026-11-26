@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@600;700&family=Marck+Script&family=Nunito:wght@700;800;900&family=Playwrite+PL:wght@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=29">
+  <link rel="stylesheet" href="style.css?v=30">
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
 </head>
@@ -44,21 +44,17 @@
 
       <!-- Вкладки режимов игры -->
       <nav class="mode-nav">
-        <button class="mode-tab active" id="tab-search" title="Сетка слов">
-          <span class="tab-icon">🔍</span>
-          <span class="tab-text">Сетка</span>
-        </button>
-        <button class="mode-tab" id="tab-builder" title="Собери слово">
-          <span class="tab-icon">🧩</span>
-          <span class="tab-text">Слово</span>
-        </button>
-        <button class="mode-tab" id="tab-logic" title="Умные слова">
-          <span class="tab-icon">🧠</span>
-          <span class="tab-text">Логика</span>
-        </button>
-        <button class="mode-tab" id="tab-alphabet" title="Букварь">
+        <button class="mode-tab" id="tab-letters" title="Буквы и прописи">
           <span class="tab-icon">📕</span>
-          <span class="tab-text">Букварь</span>
+          <span class="tab-text">Буквы</span>
+        </button>
+        <button class="mode-tab" id="tab-reading" title="Учимся читать слоги и тексты">
+          <span class="tab-icon">📖</span>
+          <span class="tab-text">Чтение</span>
+        </button>
+        <button class="mode-tab active" id="tab-words" title="Игры со словами и логика">
+          <span class="tab-icon">🧩</span>
+          <span class="tab-text">Слова</span>
         </button>
         <button class="mode-tab" id="tab-translate" title="Перевод слов">
           <span class="tab-icon">🌍</span>
@@ -168,6 +164,6 @@
   <!-- Модальное окно альбома наклеек -->
   <div class="modal-overlay hidden" id="album-modal"></div>
 
-  <script type="module" src="src/app.js?v=29"></script>
+  <script type="module" src="src/app.js?v=30"></script>
 </body>
 </html>

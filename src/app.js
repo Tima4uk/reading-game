@@ -1,17 +1,16 @@
 // Главный модуль приложения: Управление режимами, языками, звездами и конфетти
-import { WordSearchGame } from './word-search.js?v=29';
-import { WordBuilderGame } from './word-builder.js?v=29';
-import { WordLogicGame } from './word-logic.js?v=29';
-import { AlphabetGame } from './alphabet.js?v=29';
-import { WordTranslateGame } from './word-translate.js?v=29';
-import { sound } from './audio.js?v=29';
-import { PRAISE_PHRASES } from './data.js?v=29';
-import { StickersAlbum } from './stickers.js?v=29';
+import { AlphabetGame } from './alphabet.js?v=30';
+import { ReadingHubGame } from './reading-hub.js?v=30';
+import { WordsHubGame } from './words-hub.js?v=30';
+import { WordTranslateGame } from './word-translate.js?v=30';
+import { sound } from './audio.js?v=30';
+import { PRAISE_PHRASES } from './data.js?v=30';
+import { StickersAlbum } from './stickers.js?v=30';
 
 class App {
   constructor() {
-    this.currentMode = 'search'; // 'search' | 'builder' | 'logic' | 'alphabet'
-    this.currentLang = 'ru'; // 'ru' | 'pl'
+    this.currentMode = 'words'; // 'letters' | 'reading' | 'words' | 'translate'
+    this.currentLang = 'ru'; // 'ru' | 'pl' | 'en'
     this.praiseTimer = null;
     
     this.initProfiles();
@@ -21,7 +20,7 @@ class App {
     this.updateLanguageUI();
     this.updateProfilesUI();
     this.updateAlbumBadge();
-    this.switchMode('search');
+    this.switchMode('words');
   }
 
   initProfiles() {
@@ -138,10 +137,9 @@ class App {
     this.btnLangRu = document.getElementById('btn-lang-ru');
     this.btnLangPl = document.getElementById('btn-lang-pl');
     this.btnLangEn = document.getElementById('btn-lang-en');
-    this.btnModeSearch = document.getElementById('tab-search');
-    this.btnModeBuilder = document.getElementById('tab-builder');
-    this.btnModeLogic = document.getElementById('tab-logic');
-    this.btnModeAlphabet = document.getElementById('tab-alphabet');
+    this.btnModeLetters = document.getElementById('tab-letters');
+    this.btnModeReading = document.getElementById('tab-reading');
+    this.btnModeWords = document.getElementById('tab-words');
     this.btnModeTranslate = document.getElementById('tab-translate');
     this.btnSound = document.getElementById('btn-sound');
     this.btnFullscreen = document.getElementById('btn-fullscreen');
@@ -159,44 +157,7 @@ class App {
   }
 
   initGames() {
-    // Режим Сетка-поиск
-    this.wordSearch = new WordSearchGame({
-      container: this.gameContainer,
-      lang: this.currentLang,
-      gridSize: 6,
-      onWordFound: (word) => {
-        this.addStars(1);
-        this.launchMiniConfetti();
-      },
-      onGameComplete: () => {
-        this.addStars(3);
-        this.celebrateRoundWin();
-      }
-    });
-
-    // Режим Собери слово
-    this.wordBuilder = new WordBuilderGame({
-      container: this.gameContainer,
-      lang: this.currentLang,
-      onWordCompleted: (word) => {
-        this.addStars(2);
-        this.launchMiniConfetti();
-      }
-    });
-
-    // Режим Умные слова (для 7 лет: Рифмы + Лишнее слово)
-    this.wordLogic = new WordLogicGame({
-      container: this.gameContainer,
-      lang: this.currentLang,
-      onStarEarned: (count) => {
-        this.addStars(count);
-      },
-      onWinEffect: () => {
-        this.launchMiniConfetti();
-      }
-    });
-
-    // Режим Азбука (для 4.5 лет)
+    // Режим «Буквы» (Букварь, Прописи, Собери букву, Где буква?, Шалунишки)
     this.alphabetGame = new AlphabetGame({
       container: this.gameContainer,
       lang: this.currentLang,
@@ -204,6 +165,42 @@ class App {
         this.addStars(count);
       },
       onWinEffect: () => {
+        this.launchMiniConfetti();
+      }
+    });
+
+    // Режим «Чтение» (Паровозик, Ниточки, Ритм слогов, Тетради, Сказки)
+    this.readingHub = new ReadingHubGame({
+      container: this.gameContainer,
+      lang: this.currentLang,
+      onStarEarned: (count) => {
+        this.addStars(count);
+      },
+      onWinEffect: () => {
+        this.launchMiniConfetti();
+      }
+    });
+
+    // Режим «Слова» (Сетка, Собери слово, Барабан слов, Прочитай сам, Рифмы, Лишнее)
+    this.wordsHub = new WordsHubGame({
+      container: this.gameContainer,
+      lang: this.currentLang,
+      onStarEarned: (count) => {
+        this.addStars(count);
+      },
+      onWinEffect: () => {
+        this.launchMiniConfetti();
+      },
+      onWordFound: () => {
+        this.addStars(1);
+        this.launchMiniConfetti();
+      },
+      onWordSearchComplete: () => {
+        this.addStars(3);
+        this.celebrateRoundWin();
+      },
+      onWordBuilt: () => {
+        this.addStars(2);
         this.launchMiniConfetti();
       }
     });
@@ -230,13 +227,14 @@ class App {
     }
 
     // Переключение режимов игры
-    this.btnModeSearch.addEventListener('click', () => this.switchMode('search'));
-    this.btnModeBuilder.addEventListener('click', () => this.switchMode('builder'));
-    if (this.btnModeLogic) {
-      this.btnModeLogic.addEventListener('click', () => this.switchMode('logic'));
+    if (this.btnModeLetters) {
+      this.btnModeLetters.addEventListener('click', () => this.switchMode('letters'));
     }
-    if (this.btnModeAlphabet) {
-      this.btnModeAlphabet.addEventListener('click', () => this.switchMode('alphabet'));
+    if (this.btnModeReading) {
+      this.btnModeReading.addEventListener('click', () => this.switchMode('reading'));
+    }
+    if (this.btnModeWords) {
+      this.btnModeWords.addEventListener('click', () => this.switchMode('words'));
     }
     if (this.btnModeTranslate) {
       this.btnModeTranslate.addEventListener('click', () => this.switchMode('translate'));
@@ -266,14 +264,12 @@ class App {
       nextRoundBtn.addEventListener('click', () => {
         this.stopAllGames();
         this.celebrationModal.classList.add('hidden');
-        if (this.currentMode === 'search') {
-          this.wordSearch.startNewGame();
-        } else if (this.currentMode === 'builder') {
-          this.wordBuilder.startNewWord();
-        } else if (this.currentMode === 'logic') {
-          this.wordLogic.start();
-        } else if (this.currentMode === 'alphabet') {
+        if (this.currentMode === 'words') {
+          this.wordsHub.restartCurrentGame();
+        } else if (this.currentMode === 'letters') {
           this.alphabetGame.start();
+        } else if (this.currentMode === 'reading') {
+          this.readingHub.start();
         } else if (this.currentMode === 'translate') {
           this.wordTranslate.start();
         }
@@ -358,10 +354,9 @@ class App {
       this.praiseTimer = null;
     }
     sound.stopSpeech();
-    if (this.wordSearch && this.wordSearch.stop) this.wordSearch.stop();
-    if (this.wordBuilder && this.wordBuilder.stop) this.wordBuilder.stop();
-    if (this.wordLogic && this.wordLogic.stop) this.wordLogic.stop();
     if (this.alphabetGame && this.alphabetGame.stop) this.alphabetGame.stop();
+    if (this.readingHub && this.readingHub.stop) this.readingHub.stop();
+    if (this.wordsHub && this.wordsHub.stop) this.wordsHub.stop();
     if (this.wordTranslate && this.wordTranslate.stop) this.wordTranslate.stop();
   }
 
@@ -383,22 +378,19 @@ class App {
       this.stickersAlbum.render();
     }
 
-    this.wordSearch.lang = lang;
-    this.wordBuilder.lang = lang;
-    this.wordLogic.lang = lang;
     this.alphabetGame.lang = lang;
+    this.readingHub.lang = lang;
+    this.wordsHub.lang = lang;
     if (this.wordTranslate) {
       this.wordTranslate.lang = lang;
     }
 
-    if (this.currentMode === 'search') {
-      this.wordSearch.setLanguage(lang);
-    } else if (this.currentMode === 'builder') {
-      this.wordBuilder.setLanguage(lang);
-    } else if (this.currentMode === 'logic') {
-      this.wordLogic.setLanguage(lang);
-    } else if (this.currentMode === 'alphabet') {
+    if (this.currentMode === 'letters') {
       this.alphabetGame.setLanguage(lang);
+    } else if (this.currentMode === 'reading') {
+      this.readingHub.setLanguage(lang);
+    } else if (this.currentMode === 'words') {
+      this.wordsHub.setLanguage(lang);
     } else if (this.currentMode === 'translate') {
       this.wordTranslate.setLanguage(lang);
     }
@@ -409,26 +401,25 @@ class App {
     this.currentMode = mode;
     sound.playLetterClick();
 
-    this.btnModeSearch.classList.toggle('active', mode === 'search');
-    this.btnModeBuilder.classList.toggle('active', mode === 'builder');
-    if (this.btnModeLogic) {
-      this.btnModeLogic.classList.toggle('active', mode === 'logic');
+    if (this.btnModeLetters) {
+      this.btnModeLetters.classList.toggle('active', mode === 'letters');
     }
-    if (this.btnModeAlphabet) {
-      this.btnModeAlphabet.classList.toggle('active', mode === 'alphabet');
+    if (this.btnModeReading) {
+      this.btnModeReading.classList.toggle('active', mode === 'reading');
+    }
+    if (this.btnModeWords) {
+      this.btnModeWords.classList.toggle('active', mode === 'words');
     }
     if (this.btnModeTranslate) {
       this.btnModeTranslate.classList.toggle('active', mode === 'translate');
     }
 
-    if (mode === 'search') {
-      this.wordSearch.setLanguage(this.currentLang);
-    } else if (mode === 'builder') {
-      this.wordBuilder.setLanguage(this.currentLang);
-    } else if (mode === 'logic') {
-      this.wordLogic.setLanguage(this.currentLang);
-    } else if (mode === 'alphabet') {
+    if (mode === 'letters') {
       this.alphabetGame.setLanguage(this.currentLang);
+    } else if (mode === 'reading') {
+      this.readingHub.setLanguage(this.currentLang);
+    } else if (mode === 'words') {
+      this.wordsHub.setLanguage(this.currentLang);
     } else if (mode === 'translate') {
       this.wordTranslate.setLanguage(this.currentLang);
     }
@@ -444,23 +435,20 @@ class App {
       ? 'Словознайка' 
       : (isPl ? 'Słowotwórca' : 'WordQuest');
 
-    this.btnModeSearch.querySelector('.tab-text').textContent = isRu 
-      ? 'Сетка' 
-      : (isPl ? 'Wykreślanka' : 'Search');
-
-    this.btnModeBuilder.querySelector('.tab-text').textContent = isRu 
-      ? 'Слово' 
-      : (isPl ? 'Słowa' : 'Builder');
-
-    if (this.btnModeLogic) {
-      this.btnModeLogic.querySelector('.tab-text').textContent = isRu 
-        ? 'Логика' 
-        : (isPl ? 'Logika' : 'Logic');
+    if (this.btnModeLetters) {
+      this.btnModeLetters.querySelector('.tab-text').textContent = isRu
+        ? 'Буквы'
+        : (isPl ? 'Litery' : 'Letters');
     }
-    if (this.btnModeAlphabet) {
-      this.btnModeAlphabet.querySelector('.tab-text').textContent = isRu 
-        ? 'Букварь' 
-        : (isPl ? 'Elementarz' : 'Primer');
+    if (this.btnModeReading) {
+      this.btnModeReading.querySelector('.tab-text').textContent = isRu
+        ? 'Чтение'
+        : (isPl ? 'Czytanie' : 'Reading');
+    }
+    if (this.btnModeWords) {
+      this.btnModeWords.querySelector('.tab-text').textContent = isRu
+        ? 'Слова'
+        : (isPl ? 'Słowa' : 'Words');
     }
     if (this.btnModeTranslate) {
       this.btnModeTranslate.querySelector('.tab-text').textContent = isRu 

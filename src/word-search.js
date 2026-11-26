@@ -1,5 +1,5 @@
-import { WORDS_DATA, WORDS_DATA_HARD, POLISH_ALPHABET, RUSSIAN_ALPHABET, ENGLISH_ALPHABET, VOWELS, shuffleArray } from './data.js';
-import { sound } from './audio.js';
+import { WORDS_DATA, WORDS_DATA_HARD, POLISH_ALPHABET, RUSSIAN_ALPHABET, ENGLISH_ALPHABET, VOWELS, shuffleArray } from './data.js?v=30';
+import { sound } from './audio.js?v=30';
 
 export class WordSearchGame {
   constructor(options = {}) {

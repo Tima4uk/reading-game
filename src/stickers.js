@@ -1,5 +1,5 @@
 // Модуль «Альбом наклеек» (Stickers Collection)
-import { sound } from './audio.js?v=29';
+import { sound } from './audio.js?v=30';
 
 export const STICKERS_CATALOG = [
   // 🦖 Динозавры

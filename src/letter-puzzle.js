@@ -1,6 +1,6 @@
 // Модуль «Конструктор букв» для малышей 4.5 лет (Развивающий пазл букв с Drag-and-Drop)
-import { LETTER_PUZZLES_DATA, shuffleArray } from './data.js';
-import { sound } from './audio.js';
+import { LETTER_PUZZLES_DATA, shuffleArray } from './data.js?v=30';
+import { sound } from './audio.js?v=30';
 
 export class LetterPuzzleGame {
   constructor(options = {}) {

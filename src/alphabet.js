@@ -1,13 +1,11 @@
-// Модуль «Букварь» для детей 4.5 лет: Пошаговый Букварь (по методике В. и А. Мельниковых / АСТ) + Викторина + Конструктор букв
-import { shuffleArray } from './data.js?v=29';
-import { sound } from './audio.js?v=29';
-import { LetterPuzzleGame } from './letter-puzzle.js?v=29';
-import { getLetterLesson, BUKVAR_STAGES, getOrderedAlphabetData } from './letter-lessons.js?v=29';
-import { KochamCzytacGame } from './kocham-czytac.js?v=29';
-import { AfterPrimerGame } from './after-primer.js?v=29';
-import { PHONICS_DIGRAPHS, getLetterPhonics, getDigraphPhonics } from './phonics.js?v=29';
-import { PracticeLabGame } from './practice-lab.js?v=29';
-import { LetterTracer } from './letter-tracer.js?v=29';
+// Модуль «Буквы» (для 4–6 лет): Букварь, Прописи, Собери букву, Где буква?, Буквы-шалунишки
+import { shuffleArray } from './data.js?v=30';
+import { sound } from './audio.js?v=30';
+import { LetterPuzzleGame } from './letter-puzzle.js?v=30';
+import { getLetterLesson, BUKVAR_STAGES, getOrderedAlphabetData } from './letter-lessons.js?v=30';
+import { PHONICS_DIGRAPHS, getLetterPhonics, getDigraphPhonics } from './phonics.js?v=30';
+import { PracticeLabGame } from './practice-lab.js?v=30';
+import { LetterTracer } from './letter-tracer.js?v=30';
 
 export class AlphabetGame {
   constructor(options = {}) {
@@ -16,7 +14,7 @@ export class AlphabetGame {
     this.onStarEarned = options.onStarEarned || (() => {});
     this.onWinEffect = options.onWinEffect || (() => {});
 
-    this.subMode = 'explore'; // 'explore' | 'practice' | 'quiz' | 'puzzle' | 'workbooks' | 'after_primer'
+    this.subMode = 'explore'; // 'explore' | 'trace' | 'puzzle' | 'quiz' | 'mirror'
     this.orderMode = 'bukvar'; // 'bukvar' | 'alphabet'
     this.phonicsMode = true; // true = чистый звук (фонема), false = название буквы
     this.masteredLetters = this.loadMasteredLetters(this.lang);
@@ -32,12 +30,10 @@ export class AlphabetGame {
     this.usedQuizLetters = new Set();
     this.lastQuizLetter = null;
 
-    // Конструктор букв, Практика, Тетради Kocham Czytać и После букваря
+    // Конструктор букв и тренажёры (Прописи, Шалунишки)
     this.practiceGame = null;
     this.modalTracer = null;
     this.puzzleGame = null;
-    this.workbooksGame = null;
-    this.afterPrimerGame = null;
     this.quizTimer = null;
     this.speakTimer = null;
   }
@@ -135,12 +131,6 @@ export class AlphabetGame {
     if (this.puzzleGame && this.puzzleGame.destroy) {
       this.puzzleGame.destroy();
     }
-    if (this.workbooksGame && this.workbooksGame.stop) {
-      this.workbooksGame.stop();
-    }
-    if (this.afterPrimerGame && this.afterPrimerGame.stop) {
-      this.afterPrimerGame.stop();
-    }
   }
 
   setLanguage(lang) {
@@ -150,22 +140,15 @@ export class AlphabetGame {
       this.masteredLetters = this.loadMasteredLetters(lang);
       this.usedQuizLetters.clear();
       this.lastQuizLetter = null;
-      if (this.puzzleGame) {
-        this.puzzleGame.setLanguage(lang);
-      }
     }
     this.selectedLetterItem = null;
     this.selectedDigraph = null;
-    if (this.subMode === 'practice') {
-      this.startPracticeMode();
+    if (this.subMode === 'trace' || this.subMode === 'mirror') {
+      this.startPracticeTool(this.subMode);
     } else if (this.subMode === 'quiz') {
       this.startNewQuizRound();
     } else if (this.subMode === 'puzzle') {
       this.startPuzzleMode();
-    } else if (this.subMode === 'workbooks') {
-      this.startWorkbooksMode();
-    } else if (this.subMode === 'after_primer') {
-      this.startAfterPrimerMode();
     } else {
       this.render();
     }
@@ -175,16 +158,12 @@ export class AlphabetGame {
     this.stop();
     this.selectedLetterItem = null;
     this.selectedDigraph = null;
-    if (this.subMode === 'practice') {
-      this.startPracticeMode();
+    if (this.subMode === 'trace' || this.subMode === 'mirror') {
+      this.startPracticeTool(this.subMode);
     } else if (this.subMode === 'quiz') {
       this.startNewQuizRound();
     } else if (this.subMode === 'puzzle') {
       this.startPuzzleMode();
-    } else if (this.subMode === 'workbooks') {
-      this.startWorkbooksMode();
-    } else if (this.subMode === 'after_primer') {
-      this.startAfterPrimerMode();
     } else {
       this.render();
     }
@@ -195,22 +174,18 @@ export class AlphabetGame {
     sound.stopSpeech();
     this.subMode = mode;
     sound.playLetterClick();
-    if (mode === 'practice') {
-      this.startPracticeMode();
+    if (mode === 'trace' || mode === 'mirror') {
+      this.startPracticeTool(mode);
     } else if (mode === 'quiz') {
       this.startNewQuizRound();
     } else if (mode === 'puzzle') {
       this.startPuzzleMode();
-    } else if (mode === 'workbooks') {
-      this.startWorkbooksMode();
-    } else if (mode === 'after_primer') {
-      this.startAfterPrimerMode();
     } else {
       this.render();
     }
   }
 
-  startPracticeMode() {
+  startPracticeTool(toolMode) {
     this.render();
     const contentArea = this.container.querySelector('#ab-content-area');
     if (contentArea) {
@@ -218,6 +193,8 @@ export class AlphabetGame {
         this.practiceGame = new PracticeLabGame({
           container: contentArea,
           lang: this.lang,
+          showTabs: false,
+          initialMode: toolMode,
           onStarEarned: this.onStarEarned,
           onWinEffect: this.onWinEffect
         });
@@ -225,55 +202,10 @@ export class AlphabetGame {
       } else {
         this.practiceGame.container = contentArea;
         if (this.practiceGame.lang !== this.lang) {
+          this.practiceGame.gameMode = toolMode;
           this.practiceGame.setLanguage(this.lang);
         } else {
-          this.practiceGame.start();
-        }
-      }
-    }
-  }
-
-  startWorkbooksMode() {
-    this.render();
-    const contentArea = this.container.querySelector('#ab-content-area');
-    if (contentArea) {
-      if (!this.workbooksGame) {
-        this.workbooksGame = new KochamCzytacGame({
-          container: contentArea,
-          lang: this.lang,
-          onStarEarned: this.onStarEarned,
-          onWinEffect: this.onWinEffect
-        });
-        this.workbooksGame.start();
-      } else {
-        this.workbooksGame.container = contentArea;
-        if (this.workbooksGame.lang !== this.lang) {
-          this.workbooksGame.setLanguage(this.lang);
-        } else {
-          this.workbooksGame.start();
-        }
-      }
-    }
-  }
-
-  startAfterPrimerMode() {
-    this.render();
-    const contentArea = this.container.querySelector('#ab-content-area');
-    if (contentArea) {
-      if (!this.afterPrimerGame) {
-        this.afterPrimerGame = new AfterPrimerGame({
-          container: contentArea,
-          lang: this.lang,
-          onStarEarned: this.onStarEarned,
-          onWinEffect: this.onWinEffect
-        });
-        this.afterPrimerGame.start();
-      } else {
-        this.afterPrimerGame.container = contentArea;
-        if (this.afterPrimerGame.lang !== this.lang) {
-          this.afterPrimerGame.setLanguage(this.lang);
-        } else {
-          this.afterPrimerGame.start();
+          this.practiceGame.openMode(toolMode);
         }
       }
     }
@@ -307,33 +239,29 @@ export class AlphabetGame {
     const data = this.getActiveAlphabetList();
 
     const exploreTab = isRu ? 'Букварь' : (isPl ? 'Elementarz' : 'Primer');
-    const practiceTab = isRu ? 'Практика' : (isPl ? 'Ćwiczenia' : 'Practice');
-    const quizTab = isRu ? 'Где буква?' : (isPl ? 'Gdzie jest litera?' : 'Where is Letter?');
-    const puzzleTab = isRu ? 'Собери букву' : (isPl ? 'Złóż literkę' : 'Build a Letter');
-    const workbooksTab = isRu ? 'Тетради' : (isPl ? 'Zeszyty' : 'Workbooks');
-    const afterPrimerTab = isRu ? 'После букваря' : (isPl ? 'Po elementarzu' : 'First Reader');
+    const traceTab = isRu ? 'Прописи' : (isPl ? 'Pisanie' : 'Tracing');
+    const puzzleTab = isRu ? 'Собери букву' : (isPl ? 'Złóż literkę' : 'Build Letter');
+    const quizTab = isRu ? 'Где буква?' : (isPl ? 'Gdzie litera?' : 'Find Letter');
+    const mirrorTab = isRu ? 'Шалунишки' : (isPl ? 'Lustrzane' : 'Mirror Fix');
 
     this.container.innerHTML = `
       <div class="ab-wrapper">
-        <!-- Мини-переключатель режимов Букваря -->
+        <!-- Переключатель режимов раздела Буквы -->
         <div class="ab-subnav">
           <button class="ab-subnav-btn ${this.subMode === 'explore' ? 'active' : ''}" id="ab-btn-explore">
             📕 ${exploreTab}
           </button>
-          <button class="ab-subnav-btn ${this.subMode === 'practice' ? 'active' : ''}" id="ab-btn-practice">
-            🎮 ${practiceTab}
-          </button>
-          <button class="ab-subnav-btn ${this.subMode === 'quiz' ? 'active' : ''}" id="ab-btn-quiz">
-            🎯 ${quizTab}
+          <button class="ab-subnav-btn ${this.subMode === 'trace' ? 'active' : ''}" id="ab-btn-trace">
+            ✏️ ${traceTab}
           </button>
           <button class="ab-subnav-btn ${this.subMode === 'puzzle' ? 'active' : ''}" id="ab-btn-puzzle">
             🧩 ${puzzleTab}
           </button>
-          <button class="ab-subnav-btn ${this.subMode === 'workbooks' ? 'active' : ''}" id="ab-btn-workbooks">
-            📚 ${workbooksTab}
+          <button class="ab-subnav-btn ${this.subMode === 'quiz' ? 'active' : ''}" id="ab-btn-quiz">
+            🎯 ${quizTab}
           </button>
-          <button class="ab-subnav-btn ${this.subMode === 'after_primer' ? 'active' : ''}" id="ab-btn-after-primer">
-            🦉 ${afterPrimerTab}
+          <button class="ab-subnav-btn ${this.subMode === 'mirror' ? 'active' : ''}" id="ab-btn-mirror">
+            🪞 ${mirrorTab}
           </button>
         </div>
 
@@ -1597,18 +1525,16 @@ export class AlphabetGame {
   attachEvents() {
     // Переключение подрежимов
     const btnExplore = this.container.querySelector('#ab-btn-explore');
-    const btnPractice = this.container.querySelector('#ab-btn-practice');
-    const btnQuiz = this.container.querySelector('#ab-btn-quiz');
+    const btnTrace = this.container.querySelector('#ab-btn-trace');
     const btnPuzzle = this.container.querySelector('#ab-btn-puzzle');
-    const btnWorkbooks = this.container.querySelector('#ab-btn-workbooks');
-    const btnAfterPrimer = this.container.querySelector('#ab-btn-after-primer');
+    const btnQuiz = this.container.querySelector('#ab-btn-quiz');
+    const btnMirror = this.container.querySelector('#ab-btn-mirror');
 
     if (btnExplore) btnExplore.addEventListener('click', () => this.switchSubMode('explore'));
-    if (btnPractice) btnPractice.addEventListener('click', () => this.switchSubMode('practice'));
-    if (btnQuiz) btnQuiz.addEventListener('click', () => this.switchSubMode('quiz'));
+    if (btnTrace) btnTrace.addEventListener('click', () => this.switchSubMode('trace'));
     if (btnPuzzle) btnPuzzle.addEventListener('click', () => this.switchSubMode('puzzle'));
-    if (btnWorkbooks) btnWorkbooks.addEventListener('click', () => this.switchSubMode('workbooks'));
-    if (btnAfterPrimer) btnAfterPrimer.addEventListener('click', () => this.switchSubMode('after_primer'));
+    if (btnQuiz) btnQuiz.addEventListener('click', () => this.switchSubMode('quiz'));
+    if (btnMirror) btnMirror.addEventListener('click', () => this.switchSubMode('mirror'));
 
     if (this.subMode === 'explore') {
       const contentArea = this.container.querySelector('#ab-content-area');

@@ -6,11 +6,11 @@
 // 5. 🥁 Барабан слогов (отстукивание слогов в ритм)
 // 6. 🪞 Буквы-шалунишки (поиск и исправление отзеркаленных букв)
 
-import { VOWELS, shuffleArray } from './data.js?v=29';
-import { sound, getBlendStretchSound } from './audio.js?v=29';
-import { getOrderedAlphabetData } from './letter-lessons.js?v=29';
-import { SYLLABLE_WORDS_DATA } from './kocham-czytac.js?v=29';
-import { LetterTracer, loadTracedLetters, loadTracerPrefs } from './letter-tracer.js?v=29';
+import { VOWELS, shuffleArray } from './data.js?v=30';
+import { sound, getBlendStretchSound } from './audio.js?v=30';
+import { getOrderedAlphabetData } from './letter-lessons.js?v=30';
+import { SYLLABLE_WORDS_DATA } from './kocham-czytac.js?v=30';
+import { LetterTracer, loadTracedLetters, loadTracerPrefs } from './letter-tracer.js?v=30';
 
 // ==========================================
 // 1. БАЗА ДАННЫХ ДЛЯ «МАГНИТА СЛОГОВ»
@@ -883,7 +883,8 @@ export class PracticeLabGame {
     this.onStarEarned = options.onStarEarned || (() => {});
     this.onWinEffect = options.onWinEffect || (() => {});
 
-    this.gameMode = 'trace'; // 'trace' | 'blend' | 'strings' | 'reel' | 'drum' | 'mirror'
+    this.showTabs = options.showTabs !== false;
+    this.gameMode = options.initialMode || 'trace'; // 'trace' | 'blend' | 'strings' | 'reel' | 'drum' | 'mirror'
 
     // 1. Tracing state
     this.tracer = null;
@@ -1020,6 +1021,13 @@ export class PracticeLabGame {
     this.render();
   }
 
+  openMode(mode) {
+    this.stop();
+    this.gameMode = mode;
+    this.ensureGameState();
+    this.render();
+  }
+
   ensureGameState() {
     if (this.gameMode === 'blend') {
       this.blendProgress = 0;
@@ -1055,18 +1063,20 @@ export class PracticeLabGame {
       <div class="pl-wrapper">
         <div class="sr-only" aria-live="polite" id="pl-live-region"></div>
 
-        <div class="pl-tabs" role="tablist" aria-label="Practice games">
-          ${copy.games.map(g => `
-            <button type="button"
-                    role="tab"
-                    aria-selected="${this.gameMode === g.id ? 'true' : 'false'}"
-                    class="pl-tab ${this.gameMode === g.id ? 'active' : ''}"
-                    data-game="${g.id}">
-              <span class="pl-tab-icon" aria-hidden="true">${g.icon}</span>
-              <span class="pl-tab-lbl">${g.label}</span>
-            </button>
-          `).join('')}
-        </div>
+        ${this.showTabs ? `
+          <div class="pl-tabs" role="tablist" aria-label="Practice games">
+            ${copy.games.map(g => `
+              <button type="button"
+                      role="tab"
+                      aria-selected="${this.gameMode === g.id ? 'true' : 'false'}"
+                      class="pl-tab ${this.gameMode === g.id ? 'active' : ''}"
+                      data-game="${g.id}">
+                <span class="pl-tab-icon" aria-hidden="true">${g.icon}</span>
+                <span class="pl-tab-lbl">${g.label}</span>
+              </button>
+            `).join('')}
+          </div>
+        ` : ''}
 
         <div class="pl-stage" id="pl-stage">
           ${bodyHTML}
