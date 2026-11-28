@@ -6,11 +6,11 @@
 // 5. 🥁 Барабан слогов (отстукивание слогов в ритм)
 // 6. 🪞 Буквы-шалунишки (поиск и исправление отзеркаленных букв)
 
-import { VOWELS, shuffleArray } from './data.js?v=30';
-import { sound, getBlendStretchSound } from './audio.js?v=30';
-import { getOrderedAlphabetData } from './letter-lessons.js?v=30';
-import { SYLLABLE_WORDS_DATA } from './kocham-czytac.js?v=30';
-import { LetterTracer, loadTracedLetters, loadTracerPrefs } from './letter-tracer.js?v=30';
+import { VOWELS, shuffleArray } from './data.js?v=31';
+import { sound, getBlendStretchSound } from './audio.js?v=31';
+import { getOrderedAlphabetData } from './letter-lessons.js?v=31';
+import { SYLLABLE_WORDS_DATA } from './kocham-czytac.js?v=31';
+import { LetterTracer, loadTracedLetters, loadTracerPrefs } from './letter-tracer.js?v=31';
 
 // ==========================================
 // 1. БАЗА ДАННЫХ ДЛЯ «МАГНИТА СЛОГОВ»

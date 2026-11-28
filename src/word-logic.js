@@ -1,6 +1,6 @@
 // Модуль «Умные слова»: «Найди рифму», «Лишнее слово» и «Прочитай сам (Слово ➔ Картинка)»
-import { RHYMES_DATA, ODD_ONE_OUT_DATA, WORDS_DATA, shuffleArray } from './data.js?v=30';
-import { sound } from './audio.js?v=30';
+import { RHYMES_DATA, ODD_ONE_OUT_DATA, WORDS_DATA, shuffleArray } from './data.js?v=31';
+import { sound } from './audio.js?v=31';
 
 export class WordLogicGame {
   constructor(options = {}) {

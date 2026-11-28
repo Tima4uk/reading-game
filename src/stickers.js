@@ -1,5 +1,5 @@
 // Модуль «Альбом наклеек» (Stickers Collection)
-import { sound } from './audio.js?v=30';
+import { sound } from './audio.js?v=31';
 
 export const STICKERS_CATALOG = [
   // 🦖 Динозавры
@@ -74,6 +74,14 @@ export class StickersAlbum {
     return STICKERS_CATALOG.length;
   }
 
+  getNextStickerPrice() {
+    const unlockedCount = this.getUnlockedCount();
+    if (unlockedCount < 3) return 3;
+    if (unlockedCount < 6) return 6;
+    if (unlockedCount < 9) return 9;
+    return 10;
+  }
+
   open() {
     sound.playLetterClick();
     this.render();
@@ -86,7 +94,8 @@ export class StickersAlbum {
 
   buyPack() {
     if (this.isRevealing) return;
-    if (this.app.stars < 10) {
+    const price = this.getNextStickerPrice();
+    if (this.app.stars < price) {
       sound.playError();
       return;
     }
@@ -107,8 +116,8 @@ export class StickersAlbum {
       isNew = false;
     }
 
-    // Списываем 10 звезд
-    this.app.stars -= 10;
+    // Списываем звёзды по текущей цене
+    this.app.stars -= price;
     this.activeProfile.stars = this.app.stars;
     if (isNew) {
       this.activeProfile.stickers.push(chosenSticker.id);
@@ -116,6 +125,9 @@ export class StickersAlbum {
     this.app.saveProfile(this.app.activePlayerId);
     this.app.updateStarsDisplay();
     this.app.updateProfilesUI();
+    if (this.app.updateAlbumBadge) {
+      this.app.updateAlbumBadge();
+    }
 
     // Анимация открытия
     this.revealSticker(chosenSticker, isNew);
@@ -172,12 +184,13 @@ export class StickersAlbum {
     const unlockedCount = unlocked.size;
     const totalCount = STICKERS_CATALOG.length;
     const stars = this.app.stars;
-    const canAfford = stars >= 10;
+    const price = this.getNextStickerPrice();
+    const canAfford = stars >= price;
 
     const titleText = isRu ? 'Мой альбом наклеек' : (isPl ? 'Mój album naklejek' : 'My Sticker Album');
     const buyBtnText = isRu 
-      ? `🎁 Открыть наклейку (10 ⭐)` 
-      : (isPl ? `🎁 Otwórz naklejkę (10 ⭐)` : `🎁 Open Sticker (10 ⭐)`);
+      ? `🎁 Открыть наклейку (${price} ⭐)` 
+      : (isPl ? `🎁 Otwórz naklejkę (${price} ⭐)` : `🎁 Open Sticker (${price} ⭐)`);
 
     const filtered = this.currentCat === 'all' 
       ? STICKERS_CATALOG 
@@ -201,7 +214,7 @@ export class StickersAlbum {
           </button>
           ${!canAfford ? `
             <div class="album-buy-hint">
-              ${isRu ? `Нужно ещё ${10 - stars} ⭐` : (isPl ? `Potrzebujesz jeszcze ${10 - stars} ⭐` : `Need ${10 - stars} more ⭐`)}
+              ${isRu ? `Нужно ещё ${price - stars} ⭐` : (isPl ? `Potrzebujesz jeszcze ${price - stars} ⭐` : `Need ${price - stars} more ⭐`)}
             </div>
           ` : ''}
         </div>

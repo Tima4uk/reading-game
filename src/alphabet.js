@@ -1,11 +1,11 @@
 // Модуль «Буквы» (для 4–6 лет): Букварь, Прописи, Собери букву, Где буква?, Буквы-шалунишки
-import { shuffleArray } from './data.js?v=30';
-import { sound } from './audio.js?v=30';
-import { LetterPuzzleGame } from './letter-puzzle.js?v=30';
-import { getLetterLesson, BUKVAR_STAGES, getOrderedAlphabetData } from './letter-lessons.js?v=30';
-import { PHONICS_DIGRAPHS, getLetterPhonics, getDigraphPhonics } from './phonics.js?v=30';
-import { PracticeLabGame } from './practice-lab.js?v=30';
-import { LetterTracer } from './letter-tracer.js?v=30';
+import { shuffleArray } from './data.js?v=31';
+import { sound } from './audio.js?v=31';
+import { LetterPuzzleGame } from './letter-puzzle.js?v=31';
+import { getLetterLesson, BUKVAR_STAGES, getOrderedAlphabetData } from './letter-lessons.js?v=31';
+import { PHONICS_DIGRAPHS, getLetterPhonics, getDigraphPhonics } from './phonics.js?v=31';
+import { PracticeLabGame } from './practice-lab.js?v=31';
+import { LetterTracer } from './letter-tracer.js?v=31';
 
 export class AlphabetGame {
   constructor(options = {}) {

@@ -1,8 +1,8 @@
 // Раздел «Чтение»: Паровозик (слияние слогов), Ниточки, Ритм слогов, Тетради и Сказки
-import { sound } from './audio.js?v=30';
-import { PracticeLabGame } from './practice-lab.js?v=30';
-import { KochamCzytacGame } from './kocham-czytac.js?v=30';
-import { AfterPrimerGame } from './after-primer.js?v=30';
+import { sound } from './audio.js?v=31';
+import { PracticeLabGame } from './practice-lab.js?v=31';
+import { KochamCzytacGame } from './kocham-czytac.js?v=31';
+import { AfterPrimerGame } from './after-primer.js?v=31';
 
 export class ReadingHubGame {
   constructor(options = {}) {

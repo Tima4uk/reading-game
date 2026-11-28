@@ -215,6 +215,34 @@ export const PHONICS_DIGRAPHS = {
         { word: 'QUILT', emoji: '🛏️' },
         { word: 'QUACK', emoji: '🦆' }
       ]
+    },
+    {
+      code: 'OO',
+      fileKey: 'oo',
+      soundLabel: '/uː/',
+      emoji: '🌙',
+      word: 'Moon',
+      spokenPhoneme: 'ooo',
+      cue: 'Two Os together round your lips like the full moon: smooth /uː/ (or short /ʊ/ in book)!',
+      examples: [
+        { word: 'MOON', emoji: '🌙' },
+        { word: 'BOOK', emoji: '📖' },
+        { word: 'ZOO', emoji: '🦁' }
+      ]
+    },
+    {
+      code: 'EE',
+      fileKey: 'ee',
+      soundLabel: '/iː/',
+      emoji: '🐝',
+      word: 'Bee',
+      spokenPhoneme: 'eee',
+      cue: 'Double E smiles wide together to say its long name /iː/ like a busy bee!',
+      examples: [
+        { word: 'BEE', emoji: '🐝' },
+        { word: 'TREE', emoji: '🌳' },
+        { word: 'FEET', emoji: '🦶' }
+      ]
     }
   ],
   pl: [

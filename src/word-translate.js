@@ -8,8 +8,8 @@
 // Направления: EN<->RU, PL<->RU, EN<->PL
 // Сложность: Легкий (базовая лексика) и Мастер (продвинутые слова и фразы)
 
-import { TRANSLATIONS_DATA, RUSSIAN_ALPHABET, POLISH_ALPHABET, ENGLISH_ALPHABET, shuffleArray } from './data.js?v=30';
-import { sound } from './audio.js?v=30';
+import { TRANSLATIONS_DATA, RUSSIAN_ALPHABET, POLISH_ALPHABET, ENGLISH_ALPHABET, shuffleArray } from './data.js?v=31';
+import { sound } from './audio.js?v=31';
 
 export class WordTranslateGame {
   constructor(options = {}) {
@@ -852,6 +852,7 @@ export class WordTranslateGame {
                   data-card-id="${card.id}"
                   ${card.matched ? 'disabled' : ''}>
             <div class="wt-card-badge">${card.tag}</div>
+            ${this.difficulty === 'easy' && card.type === 'source' ? `<div class="wt-card-emoji">${card.emoji}</div>` : ''}
             <div class="wt-card-text">${card.text}</div>
           </button>
         `).join('')}
@@ -884,6 +885,7 @@ export class WordTranslateGame {
       <div class="wt-quiz-container">
         <div class="wt-quiz-card">
           <div class="wt-quiz-hint">${questionHint}</div>
+          ${this.difficulty === 'easy' ? `<div class="wt-quiz-emoji">${this.quizQuestion.emoji}</div>` : ''}
           <div class="wt-quiz-source">${this.quizQuestion.sourceWord}</div>
           <button type="button" class="wb-listen-btn" id="wt-listen-btn" title="${listenTitle}">
             🔊 ${listenTitle}

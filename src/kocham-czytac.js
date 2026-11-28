@@ -1,8 +1,8 @@
 // Модуль «Тетради Kocham Czytać» (по методике проф. Ягоды Цешиньской — Metoda Krakowska, Zeszyty 1–18)
 // и база слов по слогам для «Собери слово»
 
-import { shuffleArray } from './data.js?v=30';
-import { sound } from './audio.js?v=30';
+import { shuffleArray } from './data.js?v=31';
+import { sound } from './audio.js?v=31';
 
 // Слова, разбитые на слоги, с лишним «слогом-ловушкой» (дистрактором)
 export const SYLLABLE_WORDS_DATA = {

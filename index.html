@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@600;700&family=Marck+Script&family=Nunito:wght@700;800;900&family=Playwrite+PL:wght@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=30">
+  <link rel="stylesheet" href="style.css?v=31">
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
 </head>
@@ -37,7 +37,7 @@
         </div>
         <!-- Альбом наклеек -->
         <button class="album-badge" id="btn-album" title="Альбом наклеек">
-          <span class="album-icon">📖</span>
+          <span class="album-icon">🎁</span>
           <span class="album-text" id="header-album-text">0/24</span>
         </button>
       </div>
@@ -63,27 +63,11 @@
       </nav>
 
       <div class="header-right">
-        <!-- Переключатель языков: RU / PL / EN -->
-        <div class="lang-selector">
-          <button class="lang-btn active" id="btn-lang-ru" title="Русский язык">
-            <span class="flag-icon">🇷🇺</span>
-            <span class="lang-text">RU</span>
-          </button>
-          <button class="lang-btn" id="btn-lang-pl" title="Język polski">
-            <span class="flag-icon">🇵🇱</span>
-            <span class="lang-text">PL</span>
-          </button>
-          <button class="lang-btn" id="btn-lang-en" title="English">
-            <span class="flag-icon">🇬🇧</span>
-            <span class="lang-text">EN</span>
-          </button>
-        </div>
-
-        <!-- Кнопка звука -->
-        <button class="icon-btn" id="btn-sound" title="Вкл / Выкл звук">🔊</button>
-
-        <!-- Кнопка на весь экран (удобно для планшета) -->
-        <button class="icon-btn" id="btn-fullscreen" title="На весь экран">⛶</button>
+        <!-- Компактная кнопка настроек (защита от случайных нажатий детьми) -->
+        <button class="icon-btn settings-trigger-btn" id="btn-settings" title="Настройки">
+          <span class="settings-flag" id="header-lang-flag">🇷🇺</span>
+          <span>⚙️</span>
+        </button>
       </div>
     </header>
 
@@ -92,10 +76,9 @@
       <div id="game-area"></div>
     </main>
 
-    <!-- Подсказка для ребенка внизу -->
+    <!-- Динамическая подсказка для ребенка внизу -->
     <footer class="app-footer">
-      <span>Нажимай на слова, чтобы услышать, как они звучат! 🔊</span>
-      <a href="LICENSE" target="_blank" rel="noopener" class="footer-license-link" title="Open MIT License">MIT License</a>
+      <span id="footer-hint">Нажимай на слова, чтобы услышать, как они звучат! 🔊</span>
     </footer>
   </div>
 
@@ -120,7 +103,11 @@
           <div class="player-avatar" id="avatar-player1">👦</div>
           <div class="player-info">
             <div class="player-name" id="name-player1">Игрок 1</div>
-            <div class="player-stars">⭐ <span id="stars-player1">0</span></div>
+            <div class="player-meta-row">
+              <span class="player-stars">⭐ <span id="stars-player1">0</span></span>
+              <span class="player-stickers">🎁 <span id="stickers-player1">0/24</span></span>
+              <span class="player-meta-badge" id="meta-player1"></span>
+            </div>
           </div>
           <button class="player-select-btn" id="select-player1">Выбрать</button>
         </div>
@@ -129,7 +116,11 @@
           <div class="player-avatar" id="avatar-player2">👧</div>
           <div class="player-info">
             <div class="player-name" id="name-player2">Игрок 2</div>
-            <div class="player-stars">⭐ <span id="stars-player2">0</span></div>
+            <div class="player-meta-row">
+              <span class="player-stars">⭐ <span id="stars-player2">0</span></span>
+              <span class="player-stickers">🎁 <span id="stickers-player2">0/24</span></span>
+              <span class="player-meta-badge" id="meta-player2"></span>
+            </div>
           </div>
           <button class="player-select-btn" id="select-player2">Выбрать</button>
         </div>
@@ -141,6 +132,11 @@
         <div class="profile-input-row">
           <input type="text" id="profile-name-input" class="profile-name-input" maxlength="12" placeholder="Имя игрока" />
           <button class="profile-save-btn" id="btn-save-name">Сохранить</button>
+        </div>
+        <div class="profile-avatars-label" id="profile-diff-label">Уровень сложности:</div>
+        <div class="profile-diff-row">
+          <button class="profile-diff-btn active" id="btn-profile-diff-easy" data-diff="easy">🐣 Лёгкий (3–4)</button>
+          <button class="profile-diff-btn" id="btn-profile-diff-hard" data-diff="hard">🚀 Мастер (5+)</button>
         </div>
         <div class="profile-avatars-label" id="profile-avatars-label">Выбери значок:</div>
         <div class="profile-avatars-grid">
@@ -161,9 +157,47 @@
     </div>
   </div>
 
+  <!-- Модальное окно настроек (Язык, Звук, Экран, Лицензия) -->
+  <div class="modal-overlay hidden" id="settings-modal">
+    <div class="modal-card settings-modal-card">
+      <button class="modal-close-icon" id="btn-close-settings" title="Закрыть">✖</button>
+      <h2 class="modal-title" id="settings-modal-title">⚙️ Настройки</h2>
+
+      <div class="settings-section">
+        <div class="settings-label" id="settings-lang-label">Язык игры:</div>
+        <div class="lang-selector settings-lang-selector">
+          <button class="lang-btn active" id="btn-lang-ru" title="Русский язык">
+            <span class="flag-icon">🇷🇺</span>
+            <span class="lang-text">RU</span>
+          </button>
+          <button class="lang-btn" id="btn-lang-pl" title="Język polski">
+            <span class="flag-icon">🇵🇱</span>
+            <span class="lang-text">PL</span>
+          </button>
+          <button class="lang-btn" id="btn-lang-en" title="English">
+            <span class="flag-icon">🇬🇧</span>
+            <span class="lang-text">EN</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-label" id="settings-controls-label">Звук и экран:</div>
+        <div class="settings-actions-row">
+          <button class="settings-action-btn" id="btn-sound" title="Вкл / Выкл звук">🔊 Звук вкл.</button>
+          <button class="settings-action-btn" id="btn-fullscreen" title="На весь экран">⛶ Полный экран</button>
+        </div>
+      </div>
+
+      <div class="settings-footer">
+        <a href="LICENSE" target="_blank" rel="noopener" class="footer-license-link" title="Open MIT License">MIT License</a>
+      </div>
+    </div>
+  </div>
+
   <!-- Модальное окно альбома наклеек -->
   <div class="modal-overlay hidden" id="album-modal"></div>
 
-  <script type="module" src="src/app.js?v=30"></script>
+  <script type="module" src="src/app.js?v=31"></script>
 </body>
 </html>

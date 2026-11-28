@@ -1,9 +1,9 @@
 // Раздел «Слова»: Сетка слов, Собери слово, Барабан слов, Прочитай сам, Рифмы и Лишнее слово
-import { sound } from './audio.js?v=30';
-import { WordSearchGame } from './word-search.js?v=30';
-import { WordBuilderGame } from './word-builder.js?v=30';
-import { WordLogicGame } from './word-logic.js?v=30';
-import { PracticeLabGame } from './practice-lab.js?v=30';
+import { sound } from './audio.js?v=31';
+import { WordSearchGame } from './word-search.js?v=31';
+import { WordBuilderGame } from './word-builder.js?v=31';
+import { WordLogicGame } from './word-logic.js?v=31';
+import { PracticeLabGame } from './practice-lab.js?v=31';
 
 export class WordsHubGame {
   constructor(options = {}) {
@@ -68,6 +68,33 @@ export class WordsHubGame {
       this.wordBuilder.startNewWord();
     } else {
       this.start();
+    }
+  }
+
+  setDifficulty(diff, { forceBuilder = false, rerender = false } = {}) {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('ws_difficulty', diff);
+      const curWb = localStorage.getItem('wb_difficulty');
+      if (forceBuilder || curWb !== 'syllables') {
+        localStorage.setItem('wb_difficulty', diff);
+      }
+    }
+    if (this.wordSearch && this.wordSearch.difficulty !== diff) {
+      this.wordSearch.difficulty = diff;
+      this.wordSearch.gridSize = diff === 'hard' ? 8 : 6;
+      this.wordSearch.usedWords.clear();
+      if (rerender && this.subMode === 'search') {
+        this.wordSearch.startNewGame();
+      }
+    }
+    if (this.wordBuilder && (forceBuilder || this.wordBuilder.difficulty !== 'syllables')) {
+      if (this.wordBuilder.difficulty !== diff) {
+        this.wordBuilder.difficulty = diff;
+        this.wordBuilder.usedWords.clear();
+        if (rerender && this.subMode === 'builder') {
+          this.wordBuilder.startNewWord();
+        }
+      }
     }
   }
 
