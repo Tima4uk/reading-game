@@ -1,12 +1,25 @@
 :root {
-  --font-family: 'Comfortaa', 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --bg-gradient: linear-gradient(135deg, #e0f2fe 0%, #fdf2f8 50%, #fef3c7 100%);
-  --primary-color: #3b82f6;
-  --primary-hover: #2563eb;
-  --success-color: #10b981;
-  --warning-color: #f59e0b;
-  --card-bg: rgba(255, 255, 255, 0.88);
-  --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+  --font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Comfortaa', 'Nunito', sans-serif;
+  --surface-page: #F6F8FC;
+  --bg-gradient: radial-gradient(circle at 12% 10%, rgba(59, 130, 246, 0.08) 0%, transparent 42%), radial-gradient(circle at 88% 12%, rgba(245, 158, 11, 0.08) 0%, transparent 40%), var(--surface-page);
+  --surface-card: #FFFFFF;
+  --surface-muted: #F1F5F9;
+  --text-primary: #1E293B;
+  --text-secondary: #475569;
+  --text-muted: #64748B;
+  --border-subtle: #E2E8F0;
+  --border-lip: #CBD5E1;
+  --primary-color: #3B82F6;
+  --primary-hover: #2563EB;
+  --primary-lip: #1D4ED8;
+  --primary-soft: #EFF6FF;
+  --success-color: #22C55E;
+  --success-lip: #16A34A;
+  --warning-color: #F59E0B;
+  --card-bg: var(--surface-card);
+  --card-shadow: 0 4px 16px rgba(15, 23, 42, 0.05), 0 1px 3px rgba(15, 23, 42, 0.04);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 * {
@@ -23,7 +36,7 @@ body {
   background: var(--bg-gradient);
   min-height: 100vh;
   min-height: 100dvh;
-  color: #1e293b;
+  color: var(--text-primary);
   overflow-x: hidden;
   touch-action: manipulation;
 }
@@ -7615,5 +7628,358 @@ body {
   .lt-wrap:not(.lt-compact) > .lt-progress-track,
   .lt-wrap:not(.lt-compact) > .lt-feedback {
     grid-column: 1;
+  }
+}
+
+/* ========================================================
+   TACTILE PLAYFUL REDESIGN & COLOR THEMES (v33)
+   ======================================================== */
+:root[data-theme="forest"] {
+  --surface-page: #F3F9F4;
+  --bg-gradient: radial-gradient(circle at 12% 10%, rgba(16, 185, 129, 0.1) 0%, transparent 42%), radial-gradient(circle at 88% 12%, rgba(245, 158, 11, 0.08) 0%, transparent 40%), var(--surface-page);
+  --primary-color: #10B981;
+  --primary-hover: #059669;
+  --primary-lip: #047857;
+  --primary-soft: #ECFDF5;
+  --border-subtle: #D1FAE5;
+  --border-lip: #A7F3D0;
+}
+
+:root[data-theme="cozy"] {
+  --surface-page: #FAF5EC;
+  --bg-gradient: radial-gradient(circle at 12% 10%, rgba(234, 88, 12, 0.08) 0%, transparent 42%), radial-gradient(circle at 88% 12%, rgba(245, 158, 11, 0.09) 0%, transparent 40%), var(--surface-page);
+  --surface-card: #FFFDF9;
+  --surface-muted: #F3ECE0;
+  --border-subtle: #E8DEC8;
+  --border-lip: #D6C7AA;
+  --primary-color: #EA580C;
+  --primary-hover: #C2410C;
+  --primary-lip: #9A3412;
+  --primary-soft: #FFF7ED;
+}
+
+:root[data-theme="space"] {
+  --surface-page: #181C2E;
+  --bg-gradient: radial-gradient(circle at 15% 12%, rgba(96, 165, 250, 0.16) 0%, transparent 44%), radial-gradient(circle at 86% 18%, rgba(167, 139, 250, 0.16) 0%, transparent 42%), var(--surface-page);
+  --surface-card: #232942;
+  --surface-muted: #2E3554;
+  --text-primary: #F8FAFC;
+  --text-secondary: #CBD5E1;
+  --text-muted: #94A3B8;
+  --border-subtle: #384166;
+  --border-lip: #111526;
+  --primary-color: #60A5FA;
+  --primary-hover: #3B82F6;
+  --primary-lip: #2563EB;
+  --primary-soft: rgba(96, 165, 250, 0.16);
+  --card-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.app-title {
+  font-family: var(--font-display);
+}
+
+.ui-svg-icon {
+  display: block;
+  flex-shrink: 0;
+}
+
+.app-header {
+  background: var(--surface-card);
+  border: 2px solid var(--border-subtle);
+  box-shadow: 0 3px 0 var(--border-subtle), var(--card-shadow);
+}
+
+.mode-nav {
+  background: var(--surface-muted);
+}
+
+.mode-tab {
+  color: var(--text-muted);
+}
+
+.mode-tab.active {
+  background: var(--surface-card);
+  color: var(--primary-color);
+  border: 2px solid var(--border-subtle);
+  box-shadow: 0 3px 0 var(--border-lip);
+}
+
+.ws-toolbar,
+.ws-grid,
+.wb-card,
+.wt-quiz-card,
+.wt-blitz-card,
+.pl-game-card,
+.kc-card,
+.ap-chapter-card,
+.bukvar-stage-card,
+.modal-card,
+.ab-quiz-header,
+.lp-tray-panel,
+.lp-header-card {
+  background: var(--surface-card);
+  border: 2px solid var(--border-subtle);
+  box-shadow: var(--card-shadow);
+}
+
+.ab-subnav-btn,
+.ws-diff-btn,
+.wt-dir-btn,
+.wb-tile,
+.wt-card,
+.wt-quiz-btn,
+.wl-option-btn,
+.wl-odd-btn,
+.wl-read-btn,
+.ab-quiz-btn,
+.ab-letter-card {
+  border: 2px solid var(--border-subtle);
+  box-shadow: 0 4px 0 var(--border-lip);
+  transition: transform 0.15s var(--ease-spring), box-shadow 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.ab-subnav-btn:active,
+.ws-diff-btn:active,
+.wt-dir-btn:active,
+.wb-tile:active,
+.wt-card:active,
+.wt-quiz-btn:active,
+.wl-option-btn:active,
+.wl-odd-btn:active,
+.wl-read-btn:active,
+.ab-quiz-btn:active,
+.ab-letter-card:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--border-lip);
+}
+
+.ab-subnav-btn.active,
+.wt-dir-btn.active {
+  background: var(--primary-soft);
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+  box-shadow: 0 4px 0 var(--primary-lip);
+}
+
+.modal-btn,
+.btn-next,
+.pl-primary-btn {
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 4px 0 var(--success-lip);
+}
+
+.pl-primary-btn {
+  box-shadow: 0 4px 0 var(--primary-lip);
+}
+
+.modal-btn:active,
+.btn-next:active,
+.pl-primary-btn:active {
+  transform: translateY(3px);
+}
+
+.settings-theme-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.theme-pick-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 9px 10px;
+  border-radius: 14px;
+  border: 2px solid var(--border-subtle);
+  background: var(--surface-muted);
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  box-shadow: 0 3px 0 var(--border-lip);
+  cursor: pointer;
+  transition: transform 0.14s var(--ease-spring), box-shadow 0.14s ease, border-color 0.14s ease, background-color 0.14s ease;
+}
+
+.theme-pick-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--border-lip);
+}
+
+.theme-pick-btn.active {
+  background: var(--primary-soft);
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+  box-shadow: 0 3px 0 var(--primary-lip);
+}
+
+.star-badge {
+  position: relative;
+}
+
+.star-float-toast {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #fef08a;
+  border: 2px solid #eab308;
+  color: #854d0e;
+  font-size: 0.85rem;
+  font-weight: 900;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 30;
+  animation: starFloatUp 0.95s ease-out forwards;
+}
+
+@keyframes starFloatUp {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 6px) scale(0.8);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(-50%, -6px) scale(1.1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -28px) scale(0.95);
+  }
+}
+
+@keyframes stageFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  #game-area > * {
+    animation: stageFadeIn 0.2s ease-out;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .star-float-toast,
+  #game-area > * {
+    animation: none;
+  }
+}
+
+/* Темная игровая тема: Space */
+:root[data-theme="space"] body {
+  color: var(--text-primary);
+}
+
+:root[data-theme="space"] .app-header,
+:root[data-theme="space"] .mode-nav,
+:root[data-theme="space"] .modal-card,
+:root[data-theme="space"] .album-modal-card,
+:root[data-theme="space"] .ab-modal-box {
+  background: var(--surface-card);
+  color: var(--text-primary);
+  border-color: var(--border-subtle);
+}
+
+:root[data-theme="space"] .ws-cell,
+:root[data-theme="space"] .wb-tile,
+:root[data-theme="space"] .wt-card,
+:root[data-theme="space"] .wt-quiz-btn,
+:root[data-theme="space"] .wt-listen-opt,
+:root[data-theme="space"] .wl-option-btn,
+:root[data-theme="space"] .wl-odd-btn,
+:root[data-theme="space"] .wl-read-btn,
+:root[data-theme="space"] .ab-quiz-btn,
+:root[data-theme="space"] .ab-letter-card,
+:root[data-theme="space"] .ab-subnav-btn,
+:root[data-theme="space"] .ws-diff-btn,
+:root[data-theme="space"] .wt-dir-btn,
+:root[data-theme="space"] .player-card,
+:root[data-theme="space"] .settings-action-btn,
+:root[data-theme="space"] .theme-pick-btn,
+:root[data-theme="space"] .icon-btn,
+:root[data-theme="space"] .profile-name-input,
+:root[data-theme="space"] .wb-listen-btn,
+:root[data-theme="space"] .ab-digraph-card,
+:root[data-theme="space"] .kc-chapter-btn,
+:root[data-theme="space"] .kc-quiz-pill,
+:root[data-theme="space"] .ap-story-pill,
+:root[data-theme="space"] .ap-choice-btn,
+:root[data-theme="space"] .pl-tab,
+:root[data-theme="space"] .pl-pill-btn,
+:root[data-theme="space"] .pl-str-card,
+:root[data-theme="space"] .pl-mirror-card {
+  background: var(--surface-muted);
+  color: var(--text-primary);
+  border-color: var(--border-subtle);
+}
+
+:root[data-theme="space"] .modal-title,
+:root[data-theme="space"] .player-name,
+:root[data-theme="space"] .wt-card-text,
+:root[data-theme="space"] .wt-quiz-source,
+:root[data-theme="space"] .wt-listen-word,
+:root[data-theme="space"] .wl-prompt,
+:root[data-theme="space"] .wl-option-word,
+:root[data-theme="space"] .wl-odd-word,
+:root[data-theme="space"] .ab-card-letter,
+:root[data-theme="space"] .pl-game-title,
+:root[data-theme="space"] .bukvar-stage-title,
+:root[data-theme="space"] .ap-chapter-title {
+  color: var(--text-primary);
+}
+
+:root[data-theme="space"] .settings-label,
+:root[data-theme="space"] .profile-edit-title,
+:root[data-theme="space"] .profile-avatars-label,
+:root[data-theme="space"] .wb-hint-text,
+:root[data-theme="space"] .wt-quiz-hint,
+:root[data-theme="space"] .pl-game-sub,
+:root[data-theme="space"] .bukvar-stage-goal,
+:root[data-theme="space"] .app-footer {
+  color: var(--text-secondary);
+}
+
+:root[data-theme="space"] .lang-selector,
+:root[data-theme="space"] .modal-close-icon {
+  background: var(--surface-muted);
+  color: var(--text-secondary);
+}
+
+:root[data-theme="space"] .lang-btn.active {
+  background: var(--primary-soft);
+  color: var(--primary-color);
+}
+
+:root[data-theme="space"] .ab-subnav-btn.active,
+:root[data-theme="space"] .wt-dir-btn.active,
+:root[data-theme="space"] .theme-pick-btn.active,
+:root[data-theme="space"] .pl-tab.active {
+  background: var(--primary-soft);
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+:root[data-theme="space"] .wb-slot.filled {
+  background: var(--surface-muted);
+  color: var(--text-primary);
+}
+
+@media (max-width: 640px) {
+  :root[data-theme="space"] .app-header,
+  :root[data-theme="space"] .mode-nav {
+    background: var(--surface-card);
+    border-color: var(--border-subtle);
   }
 }

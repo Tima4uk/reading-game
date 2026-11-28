@@ -12,8 +12,8 @@
   <title>Словознайка / Słowotwórca — Учимся читать</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@600;700&family=Marck+Script&family=Nunito:wght@700;800;900&family=Playwrite+PL:wght@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=32">
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@700&family=Marck+Script&family=Nunito:wght@600;700;800;900&family=Playwrite+PL:wght@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=33">
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
 </head>
@@ -68,7 +68,7 @@
         <!-- Компактная кнопка настроек (защита от случайных нажатий детьми) -->
         <button class="icon-btn settings-trigger-btn" id="btn-settings" title="Настройки">
           <span class="settings-flag" id="header-lang-flag">🇷🇺</span>
-          <span>⚙️</span>
+          <svg class="ui-svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
         </button>
       </div>
     </header>
@@ -97,7 +97,7 @@
   <!-- Модальное окно выбора/настройки профиля игрока -->
   <div class="modal-overlay hidden" id="profile-modal">
     <div class="modal-card profile-modal-card">
-      <button class="modal-close-icon" id="btn-close-profile" title="Закрыть">✖</button>
+      <button class="modal-close-icon" id="btn-close-profile" title="Закрыть" aria-label="Закрыть"><svg class="ui-svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
       <h2 class="modal-title" id="profile-modal-title">Кто сейчас играет?</h2>
       
       <div class="profiles-list">
@@ -162,7 +162,7 @@
   <!-- Модальное окно настроек (Язык, Звук, Экран, Лицензия) -->
   <div class="modal-overlay hidden" id="settings-modal">
     <div class="modal-card settings-modal-card">
-      <button class="modal-close-icon" id="btn-close-settings" title="Закрыть">✖</button>
+      <button class="modal-close-icon" id="btn-close-settings" title="Закрыть" aria-label="Закрыть"><svg class="ui-svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
       <h2 class="modal-title" id="settings-modal-title">⚙️ Настройки</h2>
 
       <div class="settings-section">
@@ -184,6 +184,16 @@
       </div>
 
       <div class="settings-section">
+        <div class="settings-label" id="settings-theme-label">Тема оформления:</div>
+        <div class="settings-theme-grid" id="settings-theme-grid">
+          <button type="button" class="theme-pick-btn active" data-theme-id="day" id="btn-theme-day">☀️ День</button>
+          <button type="button" class="theme-pick-btn" data-theme-id="forest" id="btn-theme-forest">🌿 Лес</button>
+          <button type="button" class="theme-pick-btn" data-theme-id="cozy" id="btn-theme-cozy">🌙 Вечер</button>
+          <button type="button" class="theme-pick-btn" data-theme-id="space" id="btn-theme-space">🚀 Космос</button>
+        </div>
+      </div>
+
+      <div class="settings-section">
         <div class="settings-label" id="settings-controls-label">Звук и экран:</div>
         <div class="settings-actions-row">
           <button class="settings-action-btn" id="btn-sound" title="Вкл / Выкл звук">🔊 Звук вкл.</button>
@@ -200,6 +210,6 @@
   <!-- Модальное окно альбома наклеек -->
   <div class="modal-overlay hidden" id="album-modal"></div>
 
-  <script type="module" src="src/app.js?v=31"></script>
+  <script type="module" src="src/app.js?v=33"></script>
 </body>
 </html>

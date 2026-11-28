@@ -18,6 +18,7 @@ class App {
     this.syncDifficultyStorage(activeProfile.difficulty, { forceBuilder: true });
 
     this.initDOM();
+    this.applyTheme(activeProfile.theme);
     this.initGames();
     this.wordTranslate.difficulty = activeProfile.difficulty;
     this.attachGlobalEvents();
@@ -48,6 +49,7 @@ class App {
     if (!['ru', 'pl', 'en'].includes(base.lang)) base.lang = fallback.lang;
     if (base.difficulty !== 'hard' && base.difficulty !== 'easy') base.difficulty = fallback.difficulty;
     if (!['letters', 'reading', 'words', 'translate'].includes(base.lastMode)) base.lastMode = fallback.lastMode;
+    if (!['day', 'forest', 'cozy', 'space'].includes(base.theme)) base.theme = fallback.theme || 'day';
     base.stars = Number.isFinite(Number(base.stars)) ? Number(base.stars) : 0;
     return base;
   }
@@ -55,8 +57,8 @@ class App {
   initProfiles() {
     const legacyStars = parseInt(localStorage.getItem('reading_game_stars') || '0', 10) || 0;
     const defaultProfiles = {
-      player1: { id: 'player1', name: 'Игрок 1', avatar: '👦', stars: legacyStars, stickers: [], lang: 'ru', difficulty: 'easy', lastMode: 'words' },
-      player2: { id: 'player2', name: 'Игрок 2', avatar: '👧', stars: 0, stickers: [], lang: 'ru', difficulty: 'easy', lastMode: 'words' }
+      player1: { id: 'player1', name: 'Игрок 1', avatar: '👦', stars: legacyStars, stickers: [], lang: 'ru', difficulty: 'easy', lastMode: 'words', theme: 'day' },
+      player2: { id: 'player2', name: 'Игрок 2', avatar: '👧', stars: 0, stickers: [], lang: 'ru', difficulty: 'easy', lastMode: 'words', theme: 'day' }
     };
 
     let p1 = null;
@@ -129,7 +131,39 @@ class App {
     this.updateProfilesUI();
     this.updateStarsDisplay();
     this.updateAlbumBadge();
+    this.applyTheme(p.theme);
     this.switchMode(targetMode, { silent: true });
+  }
+
+  applyTheme(themeId) {
+    const allowed = ['day', 'forest', 'cozy', 'space'];
+    const safeTheme = allowed.includes(themeId) ? themeId : 'day';
+    if (typeof document !== 'undefined') {
+      document.documentElement.dataset.theme = safeTheme;
+      const themeColors = {
+        day: '#3B82F6',
+        forest: '#10B981',
+        cozy: '#D97706',
+        space: '#1E2235'
+      };
+      const metaTheme = document.querySelector('meta[name="theme-color"]');
+      if (metaTheme) {
+        metaTheme.setAttribute('content', themeColors[safeTheme] || '#3B82F6');
+      }
+      document.querySelectorAll('.theme-pick-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.themeId === safeTheme);
+      });
+    }
+  }
+
+  setProfileTheme(themeId) {
+    if (!['day', 'forest', 'cozy', 'space'].includes(themeId)) return;
+    if (this.profiles && this.profiles[this.activePlayerId]) {
+      this.profiles[this.activePlayerId].theme = themeId;
+      this.saveProfile(this.activePlayerId);
+    }
+    this.applyTheme(themeId);
+    sound.playLetterClick();
   }
 
   setProfileDifficulty(diff) {
@@ -379,6 +413,12 @@ class App {
         this.settingsModal.classList.add('hidden');
       });
     }
+
+    document.querySelectorAll('.theme-pick-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        this.setProfileTheme(btn.dataset.themeId);
+      });
+    });
 
     // Модальное окно победы
     const nextRoundBtn = document.getElementById('btn-next-round');
@@ -684,6 +724,20 @@ class App {
     if (settingsCtrlsLbl) {
       settingsCtrlsLbl.textContent = isRu ? 'Звук и экран:' : (isPl ? 'Dźwięk i ekran:' : 'Sound & display:');
     }
+    const settingsThemeLbl = document.getElementById('settings-theme-label');
+    if (settingsThemeLbl) {
+      settingsThemeLbl.textContent = isRu ? 'Тема оформления:' : (isPl ? 'Motyw kolorystyczny:' : 'Color theme:');
+    }
+    const themeLabels = {
+      day: isRu ? '☀️ День' : (isPl ? '☀️ Dzień' : '☀️ Day'),
+      forest: isRu ? '🌿 Лес' : (isPl ? '🌿 Las' : '🌿 Forest'),
+      cozy: isRu ? '🌙 Вечер' : (isPl ? '🌙 Wieczór' : '🌙 Cozy'),
+      space: isRu ? '🚀 Космос' : (isPl ? '🚀 Kosmos' : '🚀 Space')
+    };
+    Object.entries(themeLabels).forEach(([id, label]) => {
+      const btn = document.getElementById(`btn-theme-${id}`);
+      if (btn) btn.textContent = label;
+    });
     if (this.btnFullscreen) {
       this.btnFullscreen.textContent = isRu ? '⛶ Полный экран' : (isPl ? '⛶ Pełny ekran' : '⛶ Fullscreen');
     }
@@ -742,11 +796,24 @@ class App {
     }
     this.updateStarsDisplay();
 
-    // Анимация подпрыгивания счетчика звезд
-    this.starCountEl.parentElement.classList.add('star-bump');
-    setTimeout(() => {
-      this.starCountEl.parentElement.classList.remove('star-bump');
-    }, 400);
+    // Анимация подпрыгивания счетчика звезд и всплывающий бейдж +⭐
+    const starBadge = this.starCountEl && this.starCountEl.parentElement;
+    if (starBadge) {
+      starBadge.classList.add('star-bump');
+      setTimeout(() => {
+        starBadge.classList.remove('star-bump');
+      }, 400);
+
+      if (count > 0 && typeof document !== 'undefined') {
+        const toast = document.createElement('span');
+        toast.className = 'star-float-toast';
+        toast.textContent = `+${count} ⭐`;
+        starBadge.appendChild(toast);
+        setTimeout(() => {
+          toast.remove();
+        }, 950);
+      }
+    }
   }
 
   updateStarsDisplay() {
